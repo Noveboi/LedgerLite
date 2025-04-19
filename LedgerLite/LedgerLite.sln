@@ -1,6 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.WebApi", "LedgerLite.WebApi\LedgerLite.WebApi.csproj", "{957F82F6-EED4-4133-97A5-68CD004D5E4F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8E409049-D387-43D5-8DB6-504C47193701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Accounting", "src\LedgerLite.Accounting\LedgerLite.Accounting.csproj", "{C541295F-2516-469E-ADCA-270985E23EF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.SharedKernel", "src\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj", "{2DFEBFD7-8631-4C15-823B-BCDC08D5F210}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Users", "src\LedgerLite.Users\LedgerLite.Users.csproj", "{C733474C-C28A-4BF1-907B-95996D8D2329}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.WebApi", "src\LedgerLite.WebApi\LedgerLite.WebApi.csproj", "{E83D9174-87CB-4839-BD15-899104712F9A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Accounting.Tests.Unit", "test\LedgerLite.Accounting.Tests.Unit\LedgerLite.Accounting.Tests.Unit.csproj", "{39BF58FA-B2C9-4D7D-886C-14384412390A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +20,32 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C541295F-2516-469E-ADCA-270985E23EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C541295F-2516-469E-ADCA-270985E23EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C541295F-2516-469E-ADCA-270985E23EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C541295F-2516-469E-ADCA-270985E23EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DFEBFD7-8631-4C15-823B-BCDC08D5F210}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DFEBFD7-8631-4C15-823B-BCDC08D5F210}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DFEBFD7-8631-4C15-823B-BCDC08D5F210}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DFEBFD7-8631-4C15-823B-BCDC08D5F210}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C733474C-C28A-4BF1-907B-95996D8D2329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C733474C-C28A-4BF1-907B-95996D8D2329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C733474C-C28A-4BF1-907B-95996D8D2329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C733474C-C28A-4BF1-907B-95996D8D2329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E83D9174-87CB-4839-BD15-899104712F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E83D9174-87CB-4839-BD15-899104712F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E83D9174-87CB-4839-BD15-899104712F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E83D9174-87CB-4839-BD15-899104712F9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C541295F-2516-469E-ADCA-270985E23EF2} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
+		{2DFEBFD7-8631-4C15-823B-BCDC08D5F210} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
+		{C733474C-C28A-4BF1-907B-95996D8D2329} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
+		{E83D9174-87CB-4839-BD15-899104712F9A} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
+		{39BF58FA-B2C9-4D7D-886C-14384412390A} = {8E409049-D387-43D5-8DB6-504C47193701}
 	EndGlobalSection
 EndGlobal

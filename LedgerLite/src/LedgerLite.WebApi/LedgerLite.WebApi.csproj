@@ -10,4 +10,9 @@
         <PackageReference Include="FastEndpoints" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LedgerLite.Accounting\LedgerLite.Accounting.csproj" />
+      <ProjectReference Include="..\LedgerLite.Users\LedgerLite.Users.csproj" />
+    </ItemGroup>
 </Project>
