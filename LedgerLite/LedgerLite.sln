@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.WebApi", "LedgerLite.WebApi\LedgerLite.WebApi.csproj", "{957F82F6-EED4-4133-97A5-68CD004D5E4F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{957F82F6-EED4-4133-97A5-68CD004D5E4F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
