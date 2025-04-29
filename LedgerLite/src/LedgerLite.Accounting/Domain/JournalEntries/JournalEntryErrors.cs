@@ -43,9 +43,21 @@ internal static class JournalEntryErrors
         errorCode: "JEN-ALREADY_POSTED",
         severity: ValidationSeverity.Error);
 
+    public static ValidationError CannotEdit(JournalEntryStatus status) => new(
+        identifier: EntryIdentifer,
+        errorMessage: $"Cannot edit the journal entry because it is {status}.",
+        errorCode: "JEN-NO_EDIT",
+        severity: ValidationSeverity.Error);
+
     public static ValidationError CantPostBecauseIsReversed() => new(
         identifier: EntryIdentifer,
         errorMessage: "The journal entry has been reversed and can't be posted",
         errorCode: "JEN-NO_POST_REVERSED",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError Imbalanced() => new(
+        identifier: EntryIdentifer,
+        errorMessage: "The journal entry is imbalanced.",
+        errorCode: "JEN-IMBALANCED",
         severity: ValidationSeverity.Error);
 }

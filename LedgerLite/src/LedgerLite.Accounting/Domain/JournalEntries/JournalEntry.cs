@@ -41,8 +41,24 @@ public sealed class JournalEntry : AuditableEntity
         });
     }
 
+    public bool IsBalanced()
+    {
+        var debitAmount = _lines
+            .Where(x => x.TransactionType == TransactionType.Debit)
+            .Sum(x => x.Amount);
+
+        var creditAmount = _lines
+            .Where(x => x.TransactionType == TransactionType.Credit)
+            .Sum(x => x.Amount);
+
+        return creditAmount == debitAmount;
+    }
+
     public Result AddLine(Guid accountId, TransactionType type, decimal amount)
     {
+        if (Status != JournalEntryStatus.Editable)
+            return Result.Invalid(JournalEntryErrors.CannotEdit(Status));
+        
         if (amount <= 0)
             return Result.Invalid(JournalEntryErrors.NonPositiveAmount(amount));
         
@@ -81,6 +97,9 @@ public sealed class JournalEntry : AuditableEntity
             case 2 when _lines[0].TransactionType == _lines[1].TransactionType:
                 return Result.Invalid(JournalEntryErrors.SameTransactionTypeOnBothLines(_lines[0].TransactionType));
         }
+
+        if (!IsBalanced())
+            return Result.Invalid(JournalEntryErrors.Imbalanced());
         
         Status = JournalEntryStatus.Posted;
         return Result.Success();
