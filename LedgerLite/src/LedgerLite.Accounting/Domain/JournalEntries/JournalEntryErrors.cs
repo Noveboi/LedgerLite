@@ -5,6 +5,7 @@ namespace LedgerLite.Accounting.Domain.JournalEntries;
 internal static class JournalEntryErrors
 {
     private const string LineIdentifier = "JournalEntryLine";
+    private const string EntryIdentifer = "JournalEntry";
     
     public static ValidationError MoreThanTwoLinesWhenTypeIsNotCompound(int lineCount) => new(
         identifier: LineIdentifier,
@@ -22,5 +23,29 @@ internal static class JournalEntryErrors
         identifier: LineIdentifier,
         errorMessage: $"Got 2 journal entry lines of type {type}, expected one {TransactionType.Credit} line and one {TransactionType.Debit}",
         errorCode: "JEN.LINE-SAME_TRANSACTIONS",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError NonPositiveAmount(decimal amount) => new(
+        identifier: LineIdentifier,
+        errorMessage: $"A journal entry line can only have a positive amount, got {amount}",
+        errorCode: "JEN.LINE-NEGATIVE",
+        severity: ValidationSeverity.Error);
+    
+    public static ValidationError EmptyReferenceNumber() => new(
+        identifier: EntryIdentifer,
+        errorMessage: "A journal entry requires a non-empty reference number.",
+        errorCode: "JEN-EMPTY_REF_NUMBER",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError AlreadyPosted() => new(
+        identifier: EntryIdentifer,
+        errorMessage: "The journal entry has already been posted.",
+        errorCode: "JEN-ALREADY_POSTED",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError CantPostBecauseIsReversed() => new(
+        identifier: EntryIdentifer,
+        errorMessage: "The journal entry has been reversed and can't be posted",
+        errorCode: "JEN-NO_POST_REVERSED",
         severity: ValidationSeverity.Error);
 }

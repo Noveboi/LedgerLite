@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses;
-using LedgerLite.Accounting.Domain.Extensions;
 using LedgerLite.SharedKernel;
 
 namespace LedgerLite.Accounting.Domain.JournalEntries;
@@ -7,7 +6,7 @@ namespace LedgerLite.Accounting.Domain.JournalEntries;
 /// <summary>
 /// Records one part of a financial transaction.
 /// </summary>
-public sealed class JournalEntryLine : Entity
+public sealed class JournalEntryLine : AuditableEntity
 {
     private JournalEntryLine() { }
     
