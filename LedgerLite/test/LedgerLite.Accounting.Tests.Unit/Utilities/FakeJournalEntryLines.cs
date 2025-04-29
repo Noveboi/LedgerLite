@@ -3,7 +3,7 @@ using LedgerLite.Accounting.Domain;
 using LedgerLite.Accounting.Domain.JournalEntries;
 using LedgerLite.Tests.Shared;
 
-namespace LedgerLite.Accounting.Tests.Unit.Fakes;
+namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
 public sealed class JournalEntryLineFakerOptions
 {

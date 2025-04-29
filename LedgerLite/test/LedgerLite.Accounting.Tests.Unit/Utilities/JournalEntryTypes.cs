@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Domain.JournalEntries;
 
-namespace LedgerLite.Accounting.Tests.Unit.Domain;
+namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
 public static class JournalEntryTypes
 {
