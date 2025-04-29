@@ -1,6 +1,6 @@
 ﻿namespace LedgerLite.SharedKernel;
 
-public abstract class Entity
+public abstract class Entity : IAuditable
 {
     protected Entity() { }
     protected Entity(Guid? id)
@@ -20,4 +20,7 @@ public abstract class Entity
 
     public override int GetHashCode() => Id.GetHashCode();
     private static Guid GenerateId() => Guid.CreateVersion7();
+
+    public DateTime CreatedAtUtc { get; set; } = default;
+    public DateTime ModifiedAtUtc { get; set; } = default;
 }
