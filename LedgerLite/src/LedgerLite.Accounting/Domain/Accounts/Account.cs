@@ -31,8 +31,8 @@ public sealed class Account : AuditableEntity
         return new Account
         {   
             Name = name,
-            Number = number,
             Type = type,
+            Number = number,
             Currency = currency,
             Description = description,
             IsPlaceholder = isPlaceholder,
@@ -41,15 +41,32 @@ public sealed class Account : AuditableEntity
 
     public Result AddChildAccount(Account account)
     {
+        if (account.Equals(this))
+            return Result.Invalid(AccountErrors.AddAccountToItself());
+        
         if (!IsPlaceholder)
-            return Result.Invalid();
+            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder());
 
         if (account.Type != Type)
-            return Result.Invalid();
+            return Result.Invalid(AccountErrors.ChildHasDifferentType(expected: Type, actual: account.Type));
 
         account.ParentAccountId = Id;
         _childAccounts.Add(account);
         
         return Result.Success();
     }
+
+    public Result RemoveChildAccount(Account account)
+    {
+        if (!IsPlaceholder)
+            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder());
+        
+        if (!_childAccounts.Remove(account))
+            return Result.NotFound($"Account '{account}' is not in {this}.");
+
+        account.ParentAccountId = null;
+        return Result.Success();
+    }
+
+    public override string ToString() => $"{Number} - {Name}";
 }
