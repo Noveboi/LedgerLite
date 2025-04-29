@@ -2,7 +2,10 @@
 
 public abstract class Entity
 {
-    protected Entity() { }
+    protected Entity()
+    {
+        Id = GenerateId();
+    }
     protected Entity(Guid? id)
     {
         Id = (id == Guid.Empty ? GenerateId() : id) ?? GenerateId();
