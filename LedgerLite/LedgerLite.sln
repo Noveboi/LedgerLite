@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.WebApi", "src\Le
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Accounting.Tests.Unit", "test\LedgerLite.Accounting.Tests.Unit\LedgerLite.Accounting.Tests.Unit.csproj", "{39BF58FA-B2C9-4D7D-886C-14384412390A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Tests.Shared", "test\LedgerLite.Tests.Shared\LedgerLite.Tests.Shared.csproj", "{1301A56E-1FE8-4AEC-923E-A16B3F11A2CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39BF58FA-B2C9-4D7D-886C-14384412390A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1301A56E-1FE8-4AEC-923E-A16B3F11A2CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1301A56E-1FE8-4AEC-923E-A16B3F11A2CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1301A56E-1FE8-4AEC-923E-A16B3F11A2CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1301A56E-1FE8-4AEC-923E-A16B3F11A2CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{C541295F-2516-469E-ADCA-270985E23EF2} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
@@ -47,5 +53,6 @@ Global
 		{C733474C-C28A-4BF1-907B-95996D8D2329} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
 		{E83D9174-87CB-4839-BD15-899104712F9A} = {F98D01AD-09CE-4C83-A3DB-8CBA6BA99A81}
 		{39BF58FA-B2C9-4D7D-886C-14384412390A} = {8E409049-D387-43D5-8DB6-504C47193701}
+		{1301A56E-1FE8-4AEC-923E-A16B3F11A2CC} = {8E409049-D387-43D5-8DB6-504C47193701}
 	EndGlobalSection
 EndGlobal
