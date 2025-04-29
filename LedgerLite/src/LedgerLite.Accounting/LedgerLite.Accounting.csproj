@@ -9,6 +9,10 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="LedgerLite.Accounting.Tests.Unit"/>
+    </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />

@@ -1,13 +1,15 @@
-﻿namespace LedgerLite.Accounting.Domain;
+﻿using Ardalis.SmartEnum;
 
-public enum TransactionType
+namespace LedgerLite.Accounting.Domain;
+
+public sealed class TransactionType(string name, int value) : SmartEnum<TransactionType>(name, value)
 {
     /// <summary>
     /// Increases the value of liability, equity and revenue.
     /// </summary>
-    Credit = 1, 
+    public static readonly TransactionType Credit = new(nameof(Credit), 1); 
     /// <summary>
     /// Debit increases the value of assets and expenses.
     /// </summary>
-    Debit = 2
+    public static readonly TransactionType Debit = new(nameof(Debit), 2);
 }
