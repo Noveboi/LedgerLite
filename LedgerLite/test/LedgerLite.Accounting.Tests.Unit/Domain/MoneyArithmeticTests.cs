@@ -1,5 +1,4 @@
 ﻿using LedgerLite.Accounting.Domain;
-using Shouldly;
 
 namespace LedgerLite.Accounting.Tests.Unit.Domain;
 
