@@ -3,7 +3,7 @@ using LedgerLite.Accounting.Domain;
 using LedgerLite.Accounting.Domain.JournalEntries;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 
-namespace LedgerLite.Accounting.Tests.Unit.Domain;
+namespace LedgerLite.Accounting.Tests.Unit.Domain.JournalEntries;
 
 public class JournalEntryPostValidationTests
 {
@@ -126,8 +126,9 @@ public class JournalEntryPostValidationTests
     [Fact]
     public void Valid_ManyLines_WhenCompound()
     {
-        var lines = FakeJournalEntryLines.Get(TransactionType.Credit, TransactionType.Credit, TransactionType.Debit);
-        var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Compound, lines);
+        var credit = FakeJournalEntryLines.GetCreditFaker(o => o.Amount = 5).Generate(3);
+        var debits = FakeJournalEntryLines.GetDebitFaker(o => o.Amount = 3).Generate(5);
+        var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Compound, [..credit, ..debits]);
 
         var result = entry.Post();
         

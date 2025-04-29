@@ -3,7 +3,7 @@ using LedgerLite.Accounting.Domain;
 using LedgerLite.Accounting.Domain.JournalEntries;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 
-namespace LedgerLite.Accounting.Tests.Unit.Domain;
+namespace LedgerLite.Accounting.Tests.Unit.Domain.JournalEntries;
 
 public class JournalEntryAddLineTests
 {
@@ -36,6 +36,21 @@ public class JournalEntryAddLineTests
     }
 
     [Fact]
+    public void Invalid_WhenNotEditable()
+    {
+        var lines = FakeJournalEntryLines.GenerateStandardLines();
+        var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, lines);
+        entry.Post();
+
+        var result = entry.AddLine(_id, TransactionType.Credit, 10);
+        
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ValidationErrors
+            .ShouldHaveSingleItem()
+            .ShouldBeEquivalentTo(JournalEntryErrors.CannotEdit(entry.Status));
+    }
+
+    [Fact]
     public void DoesNotAddToList_WhenInvalid()
     {
         var entry = JournalEntryHelper.Create(JournalEntryType.Standard);
@@ -45,7 +60,7 @@ public class JournalEntryAddLineTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         entry.Lines.ShouldBeEmpty();
     }
-
+    
     [Fact]
     public void AddsToList_WhenValid()
     {
@@ -55,6 +70,7 @@ public class JournalEntryAddLineTests
         var result = entry.AddLine(_id, TransactionType.Credit, 10);
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        entry.Lines.ShouldHaveSingleItem().ShouldBeEquivalentTo(expected);
+        var line = entry.Lines.ShouldHaveSingleItem();
+        line.Amount.ShouldBe(expected.Amount);
     }
 }
