@@ -1,6 +1,6 @@
 ﻿using Bogus;
-using LedgerLite.Accounting.Domain;
-using LedgerLite.Accounting.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain;
+using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Tests.Shared;
 
 namespace LedgerLite.Accounting.Tests.Unit.Utilities;

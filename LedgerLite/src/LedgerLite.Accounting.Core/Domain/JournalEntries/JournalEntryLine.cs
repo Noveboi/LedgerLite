@@ -1,7 +1,6 @@
-﻿using Ardalis.GuardClauses;
-using LedgerLite.SharedKernel.Domain;
+﻿using LedgerLite.SharedKernel.Domain;
 
-namespace LedgerLite.Accounting.Domain.JournalEntries;
+namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 /// <summary>
 /// Records one part of a financial transaction.

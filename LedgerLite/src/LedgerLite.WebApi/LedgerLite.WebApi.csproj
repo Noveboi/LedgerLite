@@ -13,7 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LedgerLite.Accounting\LedgerLite.Accounting.csproj" />
+      <ProjectReference Include="..\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj" />
       <ProjectReference Include="..\LedgerLite.Users\LedgerLite.Users.csproj" />
     </ItemGroup>
 </Project>

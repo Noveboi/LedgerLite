@@ -1,4 +1,4 @@
-﻿using LedgerLite.Accounting.Domain;
+﻿using LedgerLite.Accounting.Core.Domain;
 
 namespace LedgerLite.Accounting.Tests.Unit.Domain;
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace LedgerLite.Accounting;
+namespace LedgerLite.Accounting.Core;
 
 public static class DependencyInjection
 {

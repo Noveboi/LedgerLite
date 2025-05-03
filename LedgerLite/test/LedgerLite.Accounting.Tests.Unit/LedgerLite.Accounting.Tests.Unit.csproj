@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\LedgerLite.Accounting\LedgerLite.Accounting.csproj" />
+      <ProjectReference Include="..\..\src\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj" />
       <ProjectReference Include="..\LedgerLite.Tests.Shared\LedgerLite.Tests.Shared.csproj" />
     </ItemGroup>
 </Project>

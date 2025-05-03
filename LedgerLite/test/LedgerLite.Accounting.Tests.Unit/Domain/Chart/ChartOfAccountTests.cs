@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Domain.Chart;
+using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 using Microsoft.AspNetCore.Identity;
 

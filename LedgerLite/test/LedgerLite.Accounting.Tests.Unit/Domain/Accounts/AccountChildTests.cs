@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Domain.Accounts;
+using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 
 namespace LedgerLite.Accounting.Tests.Unit.Domain.Accounts;

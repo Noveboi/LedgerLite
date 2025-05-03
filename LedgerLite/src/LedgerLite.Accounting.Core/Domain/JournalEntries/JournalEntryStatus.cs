@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace LedgerLite.Accounting.Domain.JournalEntries;
+namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 public sealed class JournalEntryStatus(string name, int value) : SmartEnum<JournalEntryStatus>(name, value)
 {

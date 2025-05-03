@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain;
 
-namespace LedgerLite.Accounting.Domain.JournalEntries;
+namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 /// <summary>
 /// Records one financial transaction.

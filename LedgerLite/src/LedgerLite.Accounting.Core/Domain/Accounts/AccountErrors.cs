@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
 
-namespace LedgerLite.Accounting.Domain.Accounts;
+namespace LedgerLite.Accounting.Core.Domain.Accounts;
 
 internal static class AccountErrors
 {

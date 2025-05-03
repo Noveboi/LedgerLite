@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace LedgerLite.Accounting.Domain.Accounts;
+namespace LedgerLite.Accounting.Core.Domain.Accounts;
 
 public sealed class AccountType(string name, int value) : SmartEnum<AccountType>(name, value)
 {

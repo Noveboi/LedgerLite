@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using LedgerLite.Accounting;
+using LedgerLite.Accounting.Core;
 using LedgerLite.Users;
 
 namespace LedgerLite.WebApi;

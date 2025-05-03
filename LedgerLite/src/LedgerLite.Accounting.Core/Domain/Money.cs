@@ -1,4 +1,4 @@
-﻿namespace LedgerLite.Accounting.Domain;
+﻿namespace LedgerLite.Accounting.Core.Domain;
 
 /// <summary>
 /// An amount tied to a specific currency

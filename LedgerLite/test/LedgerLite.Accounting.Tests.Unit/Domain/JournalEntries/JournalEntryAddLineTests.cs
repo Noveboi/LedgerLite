@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Domain;
-using LedgerLite.Accounting.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain;
+using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 
 namespace LedgerLite.Accounting.Tests.Unit.Domain.JournalEntries;

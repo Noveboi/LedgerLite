@@ -4,7 +4,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F98D01AD-09C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8E409049-D387-43D5-8DB6-504C47193701}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Accounting", "src\LedgerLite.Accounting\LedgerLite.Accounting.csproj", "{C541295F-2516-469E-ADCA-270985E23EF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.Accounting.Core", "src\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj", "{C541295F-2516-469E-ADCA-270985E23EF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LedgerLite.SharedKernel", "src\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj", "{2DFEBFD7-8631-4C15-823B-BCDC08D5F210}"
 EndProject

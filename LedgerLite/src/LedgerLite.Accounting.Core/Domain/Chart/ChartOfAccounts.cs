@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Domain.Accounts;
+using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.SharedKernel.Domain;
 
-namespace LedgerLite.Accounting.Domain.Chart;
+namespace LedgerLite.Accounting.Core.Domain.Chart;
 
 /// <summary>
 /// Organizes all <see cref="Account"/>s that are used for a fiscal period.

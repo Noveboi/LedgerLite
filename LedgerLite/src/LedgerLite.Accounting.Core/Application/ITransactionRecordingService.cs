@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain.JournalEntries;
 
-namespace LedgerLite.Accounting.Application;
+namespace LedgerLite.Accounting.Core.Application;
 
 /// <summary>
 /// Orchestrates use cases involving the recording of financial transactions

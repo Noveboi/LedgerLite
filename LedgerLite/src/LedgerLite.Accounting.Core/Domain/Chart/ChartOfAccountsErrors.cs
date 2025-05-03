@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Domain.Accounts;
 
-namespace LedgerLite.Accounting.Domain.Chart;
+namespace LedgerLite.Accounting.Core.Domain.Chart;
 
 internal static class ChartOfAccountsErrors
 {

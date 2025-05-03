@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
 
-namespace LedgerLite.Accounting.Domain.JournalEntries;
+namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 internal static class JournalEntryErrors
 {

@@ -1,4 +1,4 @@
-﻿namespace LedgerLite.Accounting.Application;
+﻿namespace LedgerLite.Accounting.Core.Application;
 
 public sealed record RecordStandardEntryRequest(
     string ReferenceNumber,

@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain;
 
-namespace LedgerLite.Accounting.Domain.Accounts;
+namespace LedgerLite.Accounting.Core.Domain.Accounts;
 
 public sealed class Account : AuditableEntity
 {
