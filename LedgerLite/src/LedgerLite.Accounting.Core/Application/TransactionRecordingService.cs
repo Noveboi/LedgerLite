@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
-using LedgerLite.Accounting.Core.Infrastructure.Persistence;
+using LedgerLite.Accounting.Core.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

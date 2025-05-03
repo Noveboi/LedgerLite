@@ -1,6 +1,6 @@
 ﻿using LedgerLite.SharedKernel.Persistence;
 
-namespace LedgerLite.Accounting.Core.Infrastructure.Persistence;
+namespace LedgerLite.Accounting.Core.Infrastructure;
 
 public interface IAccountingUnitOfWork : IUnitOfWork
 {
