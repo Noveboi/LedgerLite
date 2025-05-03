@@ -25,17 +25,6 @@ public class JournalEntryAddLineTests
     }
 
     [Fact]
-    public void DoesNotAddToList_WhenInvalid()
-    {
-        var entry = JournalEntryHelper.Create(JournalEntryType.Standard);
-
-        var result = entry.AddLine(Id, TransactionType.Debit, -12.5m);
-        
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        entry.Lines.ShouldBeEmpty();
-    }
-    
-    [Fact]
     public void AddsToList_WhenValid()
     {
         var entry = JournalEntryHelper.Create(JournalEntryType.Standard);

@@ -11,11 +11,11 @@ internal static class JournalEntryHelper
         JournalEntryType type,
         IEnumerable<JournalEntryLine> lines)
     {
-        var entry = JournalEntry.Record(
+        var entry = JournalEntry.Create(
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occuredAtUtc: DateTime.Today).Value;
+            occursAtUtc: DateTime.Today).Value;
 
         foreach (var line in lines)
         {
@@ -26,9 +26,9 @@ internal static class JournalEntryHelper
     }
 
     public static JournalEntry Create(JournalEntryType type) =>
-        JournalEntry.Record(
+        JournalEntry.Create(
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occuredAtUtc: DateTime.Today).Value;
+            occursAtUtc: DateTime.Today).Value;
 }
