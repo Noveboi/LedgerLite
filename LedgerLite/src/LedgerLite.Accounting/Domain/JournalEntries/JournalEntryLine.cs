@@ -26,7 +26,7 @@ public sealed class JournalEntryLine : AuditableEntity
         new()
         {
             TransactionType = type,
-            Amount = Guard.Against.NegativeOrZero(amount),
+            Amount = amount,
             AccountId = accountId,
             EntryId = entryId,
         };
