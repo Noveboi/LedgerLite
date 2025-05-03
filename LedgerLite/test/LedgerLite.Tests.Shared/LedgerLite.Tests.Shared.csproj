@@ -8,5 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Bogus" Version="35.6.3" />
+        <PackageReference Include="CompareNETObjects" Version="4.83.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
     </ItemGroup>
 </Project>
