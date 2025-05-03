@@ -1,0 +1,3 @@
+﻿namespace LedgerLite.Accounting.Core.Infrastructure.Configuration;
+
+public interface IAccountingEntityConfigurationMarker;
