@@ -11,6 +11,7 @@ public sealed class FakeAccountOptions
     public AccountType? Type { get; set; }
     public Currency? Currency { get; set; }
     public IEnumerable<Account>? Children { get; set; }
+    public int HierarchyLevel { get; set; } = 0;
 }
 public static class FakeAccounts
 {
@@ -24,6 +25,7 @@ public static class FakeAccounts
             .RuleFor(x => x.Type, f => options?.Type ?? f.PickRandom((IEnumerable<AccountType>)AccountType.List))
             .RuleFor(x => x.ParentAccountId, _ => options?.ParentId ?? null)
             .RuleFor(x => x.IsPlaceholder, options?.Children is not null)
+            .RuleFor(x => x.HierarchyLevel, options?.HierarchyLevel ?? 0)
             .RuleFor("_childAccounts", _ => options?.Children?.ToList() ?? []);
     }
 
