@@ -1,0 +1,11 @@
+﻿services:
+  accounting-database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: accounting_is_fun!
+    volumes:
+      - accounting_data:/var/lib/postgresql/data
+
+volumes:
+  accounting_data:
