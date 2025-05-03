@@ -31,6 +31,7 @@ public static class ConfigurationExtensions
         var enumBuilder = builder.Entity<TEnum>();
         
         enumBuilder.HasKey(x => x.Value);
+        enumBuilder.Property(x => x.Name).IsRequired();
         enumBuilder.HasData(SmartEnum<TEnum>.List);
         
         return builder;
