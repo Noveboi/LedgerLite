@@ -1,6 +1,8 @@
 ﻿services:
   accounting-database:
     image: postgres
+    ports:
+      - "5432:5432"
     restart: always
     environment:
       POSTGRES_PASSWORD: accounting_is_fun!

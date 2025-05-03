@@ -20,7 +20,6 @@ public static class ConfigurationExtensions
         where TProp : SmartEnum<TProp> 
         where T : class
     {
-        builder.HasOne(propertyExpression).WithMany();
         builder.Property(propertyExpression)
             .HasConversion(
                 convertToProviderExpression: prop => prop!.Value,

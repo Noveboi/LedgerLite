@@ -2,8 +2,11 @@
 
 namespace LedgerLite.Accounting.Core.Domain;
 
-public sealed class TransactionType(string name, int value) : SmartEnum<TransactionType>(name, value)
+public sealed class TransactionType : SmartEnum<TransactionType>
 {
+    private TransactionType() : this("", 0) { }
+    private TransactionType(string name, int value) : base(name, value) { }
+
     /// <summary>
     /// Increases the value of liability, equity and revenue.
     /// </summary>
