@@ -17,4 +17,9 @@
     <ItemGroup>
       <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+      <PackageReference Include="Serilog" Version="4.2.0" />
+    </ItemGroup>
 </Project>
