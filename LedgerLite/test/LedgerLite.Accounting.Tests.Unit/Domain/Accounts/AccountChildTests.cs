@@ -122,4 +122,30 @@ public class AccountChildTests
         result.Status.ShouldBe(ResultStatus.Ok);
         child.ParentAccountId.ShouldBeNull();
     }
+
+    [Fact]
+    public void Add_IncrementsHierarchyLevel_OfChildAccount()
+    {
+        var account = FakeAccounts.Get(o => o.Children = []);
+        var child = FakeAccounts.Get(o => o.Type = account.Type);
+
+        account.AddChildAccount(child);
+        
+        child.HierarchyLevel.ShouldBe(account.HierarchyLevel + 1);
+    }
+
+    [Fact]
+    public void Remove_SetsHierarchyLevel_ToZero()
+    {
+        var child = FakeAccounts.Get(o => o.Type = AccountType.Equity);
+        var account = FakeAccounts.Get(o =>
+        {
+            o.Children = [child];
+            o.Type = AccountType.Equity;
+        });
+
+        account.RemoveChildAccount(child);
+        
+        child.HierarchyLevel.ShouldBe(0);
+    }
 }
