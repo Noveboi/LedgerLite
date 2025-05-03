@@ -1,5 +1,5 @@
 ﻿using Ardalis.GuardClauses;
-using LedgerLite.SharedKernel;
+using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Domain.JournalEntries;
 

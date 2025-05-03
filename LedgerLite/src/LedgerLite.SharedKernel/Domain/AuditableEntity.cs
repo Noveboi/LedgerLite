@@ -1,4 +1,4 @@
-﻿namespace LedgerLite.SharedKernel;
+﻿namespace LedgerLite.SharedKernel.Domain;
 
 public class AuditableEntity : Entity, IAuditable
 {

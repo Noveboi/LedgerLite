@@ -25,12 +25,6 @@ internal static class JournalEntryErrors
         errorCode: "JEN.LINE-SAME_TRANSACTIONS",
         severity: ValidationSeverity.Error);
 
-    public static ValidationError NonPositiveAmount(decimal amount) => new(
-        identifier: LineIdentifier,
-        errorMessage: $"A journal entry line can only have a positive amount, got {amount}",
-        errorCode: "JEN.LINE-NEGATIVE",
-        severity: ValidationSeverity.Error);
-    
     public static ValidationError EmptyReferenceNumber() => new(
         identifier: EntryIdentifer,
         errorMessage: "A journal entry requires a non-empty reference number.",

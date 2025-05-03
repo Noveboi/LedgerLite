@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using LedgerLite.SharedKernel;
+using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Domain.JournalEntries;
 
@@ -58,9 +58,6 @@ public sealed class JournalEntry : AuditableEntity
     {
         if (Status != JournalEntryStatus.Editable)
             return Result.Invalid(JournalEntryErrors.CannotEdit(Status));
-        
-        if (amount <= 0)
-            return Result.Invalid(JournalEntryErrors.NonPositiveAmount(amount));
         
         var line = JournalEntryLine.Create(
             type: type,
