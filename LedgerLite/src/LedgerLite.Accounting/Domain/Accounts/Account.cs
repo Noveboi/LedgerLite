@@ -15,10 +15,13 @@ public sealed class Account : AuditableEntity
     public Currency Currency { get; private init; } = null!;
     public bool IsPlaceholder { get; private init; }
     
+    public int HierarchyLevel { get; private set; }
     public Guid? ParentAccountId { get; private set; }
 
     private readonly List<Account> _childAccounts = [];
     public IReadOnlyCollection<Account> ChildAccounts => _childAccounts;
+
+    public bool IsRootLevel => HierarchyLevel == 0;
 
     public static Account Create(
         string name,
@@ -51,6 +54,7 @@ public sealed class Account : AuditableEntity
             return Result.Invalid(AccountErrors.ChildHasDifferentType(expected: Type, actual: account.Type));
 
         account.ParentAccountId = Id;
+        account.HierarchyLevel = HierarchyLevel + 1;
         _childAccounts.Add(account);
         
         return Result.Success();
@@ -65,6 +69,7 @@ public sealed class Account : AuditableEntity
             return Result.NotFound($"Account '{account}' is not in {this}.");
 
         account.ParentAccountId = null;
+        account.HierarchyLevel = 0;
         return Result.Success();
     }
 
