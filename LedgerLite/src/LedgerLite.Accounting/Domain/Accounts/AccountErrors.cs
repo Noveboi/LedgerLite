@@ -2,7 +2,7 @@
 
 namespace LedgerLite.Accounting.Domain.Accounts;
 
-public static class AccountErrors
+internal static class AccountErrors
 {
     public const string AccountIdentifier = "Account";
 
