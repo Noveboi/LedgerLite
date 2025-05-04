@@ -14,21 +14,22 @@ public class ChartOfAccountTests
     {
         var expected = FakeAccounts.Get(o => o.IsPlaceholder = true);
 
-        var result = _chart.AddRootAccount(expected);
+        var result = _chart.Add(expected);
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        var node = _chart.Accounts.ShouldHaveSingleItem();
-        node.Account.ShouldBeEquivalentTo(expected);
-        node.Parent.ShouldBeNull();
+        _chart.Accounts
+            .ShouldHaveSingleItem()
+            .ShouldBeEquivalentTo(expected);
     }
     
-        [Fact]
-    public void AddWithParent_Invalid_WhenAccountIsNotPlaceholder()
+    [Fact]
+    public void Attach_Invalid_WhenAccountIsNotPlaceholder()
     {
         var parent = FakeAccounts.Get(o => o.IsPlaceholder = false);
         var account = FakeAccounts.NewAccount();
+        var chart = FakeChartOfAccounts.With(parent);
 
-        var result = _chart.AddAccountWithParent(account: account, parent: parent);
+        var result = chart.Attach(account: account, parentId: parent.Id);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
@@ -37,7 +38,7 @@ public class ChartOfAccountTests
     }
 
     [Fact]
-    public void AddWithParent_Invalid_WhenChildAccount_IsNotOfTheSameType()
+    public void Attach_Invalid_WhenChildAccount_IsNotOfTheSameType()
     {
         var parent = FakeAccounts.Get(o =>
         {
@@ -45,8 +46,9 @@ public class ChartOfAccountTests
             o.Type = AccountType.Asset;
         });
         var child = FakeAccounts.Get(o => o.Type = AccountType.Expense);
+        var chart = FakeChartOfAccounts.With(parent);
 
-        var result = _chart.AddAccountWithParent(account: child, parent: parent);
+        var result = chart.Attach(account: child, parentId: parent.Id);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
@@ -55,11 +57,12 @@ public class ChartOfAccountTests
     }
 
     [Fact]
-    public void Add_Invalid_WhenAddingAccountToItself()
+    public void Attach_Invalid_WhenAddingAccountToItself()
     {
-        var account = FakeAccounts.NewAccount();
+        var account = FakeAccounts.Get(o => o.IsPlaceholder = true);
+        var chart = FakeChartOfAccounts.With(account);
 
-        var result = _chart.AddAccountWithParent(account, account);
+        var result = chart.Attach(account, account.Id);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
@@ -68,31 +71,28 @@ public class ChartOfAccountTests
     }
     
     [Fact]
-    public void AddWithParent_AppendsNewAccount_ToChildren_WhenValid()
+    public void Attach_AppendsNewAccount_ToChildren_WhenValid()
     {
-        var account = FakeAccounts.Get(o => o.IsPlaceholder = true);
-        var child = FakeAccounts.Get(o => o.Type = account.Type);
+        var parent = FakeAccounts.Get(o => o.IsPlaceholder = true);
+        var child = FakeAccounts.Get(o => o.Type = parent.Type);
+        var chart = FakeChartOfAccounts.With(parent);
 
-        var result = _chart.AddAccountWithParent(account: child, parent: account);
+        var result = chart.Attach(account: child, parentId: parent.Id);
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        _chart.Accounts
-            .ShouldHaveSingleItem()
-            .Account
-            .ShouldBeEquivalentTo(child);
+        chart.Accounts.Count().ShouldBe(2);
+        chart.Accounts.ShouldContain(parent);
+        chart.Accounts.ShouldContain(child);
     }
 
     [Fact]
-    public void Add_AssignsParent_ToChildAccount()
+    public void Attach_ReturnsNotFound_WhenParentDoesNotExist()
     {
-        var account = FakeAccounts.Get(o => o.IsPlaceholder = true);
-        var child = FakeAccounts.Get(o => o.Type = account.Type);
+        var child = FakeAccounts.NewAccount();
 
-        var result = _chart.AddAccountWithParent(account: child, parent: account);
+        var result = _chart.Attach(account: child, parentId: Guid.CreateVersion7());
         
-        result.Status.ShouldBe(ResultStatus.Ok);
-        var node = _chart.Accounts.ShouldHaveSingleItem();
-        node.Parent.ShouldBeEquivalentTo(account);
-        node.ParentId.ShouldBeEquivalentTo(account.Id);
+        result.Status.ShouldBe(ResultStatus.NotFound);
+        _chart.Accounts.ShouldBeEmpty();
     }
 }

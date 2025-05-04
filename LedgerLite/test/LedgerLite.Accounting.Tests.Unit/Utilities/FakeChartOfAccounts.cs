@@ -20,12 +20,23 @@ public static class FakeChartOfAccounts
         return new PrivateFaker<ChartOfAccounts>(new PrivateBinder())
             .UsePrivateConstructor()
             .RuleFor(x => x.Id, (_, c) => options?.Id ?? c.Id)
-            .RuleFor("_accounts", (f, c) => options?.Nodes?.ToList()
+            .RuleFor("_nodes", (f, c) => options?.Nodes?.ToList()
                                        ?? AccountFaker
                                            .GenerateLazy(f.Random.Number(1, 3))
-                                           .Select(x => AccountNode.CreateRoot(c.Id, x))
+                                           .Select(x => AccountNode.Create(c.Id, x))
                                            .ToList());
-    } 
-    
+    }
+
+    public static ChartOfAccounts With(params Account[] accounts)
+    {
+        var id = Guid.NewGuid();
+        var faker = GetFaker(new ChartOfAccountsFakerOptions
+        {
+            Id = id,
+            Nodes = accounts.Select(x => AccountNode.Create(id, x))
+        });
+
+        return faker.Generate();
+    }
     public static ChartOfAccounts Empty => ChartOfAccounts.Create();
 }
