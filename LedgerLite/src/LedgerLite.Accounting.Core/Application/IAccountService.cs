@@ -7,7 +7,8 @@ namespace LedgerLite.Accounting.Core.Application;
 public interface IAccountService
 {
     Task<Result<Account>> CreateAccountAsync(CreateAccountRequest request, CancellationToken token);
-    Task<Result<Account>> RemoveAccountAsync(CancellationToken token);
+    Task<Result<Account>> RemoveAccountAsync(RemoveAccountRequest request, CancellationToken token);
+    Task<Result> MoveAccountAsync(MoveAccountRequest request, CancellationToken token);
 }
 
 public sealed record CreateAccountRequest(
@@ -17,3 +18,6 @@ public sealed record CreateAccountRequest(
     Currency Currency,
     bool IsPlaceholder,
     string Description);
+    
+public sealed record RemoveAccountRequest;
+public sealed record MoveAccountRequest;
