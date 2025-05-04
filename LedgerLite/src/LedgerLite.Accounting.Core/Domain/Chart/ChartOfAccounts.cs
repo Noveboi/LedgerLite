@@ -9,33 +9,47 @@ namespace LedgerLite.Accounting.Core.Domain.Chart;
 /// </summary>
 public sealed class ChartOfAccounts : AuditableEntity
 {
-    private readonly List<Account> _accounts = [];
+    private readonly List<AccountNode> _accounts = [];
     
     private ChartOfAccounts() { }
 
-    public Guid UserId { get; private init; }
-    
-    /// <summary>
-    /// All root-level accounts.
-    /// </summary>
-    public IReadOnlyCollection<Account> Accounts => _accounts;
+    // Adjacency list of accounts and their neighbouring accounts.
+    public IReadOnlyCollection<AccountNode> Accounts => _accounts;
 
-    public static ChartOfAccounts Create(Guid userId) => new()
+    public static ChartOfAccounts Create() => new();
+    public Result AddRootAccount(Account account)
     {
-        UserId = userId
-    };
+        if (_accounts.Any(acc => acc == account))
+            return Result.Conflict($"Account {account} already exists.");
 
-    public Result AddAccount(Account account)
-    {
-        if (!account.IsRootLevel)
-            return Result.Invalid(ChartOfAccountsErrors.AccountNotRootLevel());
-        
-        _accounts.Add(account);
+        var node = AccountNode.CreateRoot(Id, account);
+        _accounts.Add(node);
         return Result.Success();
     }
+    
+    public Result AddAccountWithParent(Account account, Account parent)
+    {
+        if (_accounts.Any(acc => acc == account))
+            return Result.Conflict($"Account {account} already exists.");
+        
+        if (account == parent)
+            return Result.Invalid(AccountErrors.AddAccountToItself());
 
-    public Result RemoveAccount(Account account) =>
-        _accounts.Remove(account) 
-            ? Result.Success() 
-            : Result.NotFound($"Account {account} does not exist in current Chart of Accounts.");
+        if (!parent.IsPlaceholder)
+            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder());
+
+        if (account.Type != parent.Type)
+            return Result.Invalid(AccountErrors.ChildHasDifferentType(
+                expected: parent.Type, 
+                actual: account.Type));
+
+        var node = AccountNode.CreateWithParent(
+            chartId: Id,
+            account: account,
+            parent: parent);
+        
+        _accounts.Add(node);
+        
+        return Result.Success();
+    }
 }
