@@ -9,47 +9,50 @@ namespace LedgerLite.Accounting.Core.Domain.Chart;
 /// </summary>
 public sealed class ChartOfAccounts : AuditableEntity
 {
-    private readonly List<AccountNode> _accounts = [];
+    /*
+     * Accounts are organized hierarchically, instead of having the organization logic and data structures in the Account
+     * entity, we delegate the responsibility to the ChartOfAccounts entity which is solely responsible for the organization
+     * of accounts. The way the hierarchy is modelled here is with the use of an Adjacency List, done in a way to also
+     * be compatible with EF Core and relational databases.
+     */
     
     private ChartOfAccounts() { }
+    
+    private readonly List<AccountNode> _nodes = [];
+    public IEnumerable<Account> Accounts => _nodes.Select(x => x.Account);
 
-    // Adjacency list of accounts and their neighbouring accounts.
-    public IReadOnlyCollection<AccountNode> Accounts => _accounts;
+    public static Result<ChartOfAccounts> Create() => Result.Success(new ChartOfAccounts());
 
-    public static ChartOfAccounts Create() => new();
-    public Result AddRootAccount(Account account)
+    /// <summary>
+    /// Creates an account at the 'root' level of the hierarchy.
+    /// </summary>
+    public Result<ChartOfAccounts> Add(Account account)
     {
-        if (_accounts.Any(acc => acc == account))
+        if (_nodes.Any(acc => acc == account))
             return Result.Conflict($"Account {account} already exists.");
 
-        var node = AccountNode.CreateRoot(Id, account);
-        _accounts.Add(node);
-        return Result.Success();
+        var node = AccountNode.Create(Id, account);
+        _nodes.Add(node);
+        
+        return this;
     }
     
-    public Result AddAccountWithParent(Account account, Account parent)
+    /// <summary>
+    /// Establishes a parent-child relationship between two accounts.
+    /// </summary>
+    public Result<ChartOfAccounts> Attach(Account account, Guid parentId)
     {
-        if (_accounts.Any(acc => acc == account))
-            return Result.Conflict($"Account {account} already exists.");
-        
-        if (account == parent)
-            return Result.Invalid(AccountErrors.AddAccountToItself());
+        var parent = _nodes.FirstOrDefault(x => x.Account.Id == parentId);
+        if (parent is null)
+            return Result.NotFound($"Couldn't find account with ID {parentId}");
 
-        if (!parent.IsPlaceholder)
-            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder());
+        var addChildResult = parent.AddChild(account);
+        if (!addChildResult.IsOk())
+            return addChildResult.Map();
 
-        if (account.Type != parent.Type)
-            return Result.Invalid(AccountErrors.ChildHasDifferentType(
-                expected: parent.Type, 
-                actual: account.Type));
-
-        var node = AccountNode.CreateWithParent(
-            chartId: Id,
-            account: account,
-            parent: parent);
+        var node = addChildResult.Value;
+        _nodes.Add(node);
         
-        _accounts.Add(node);
-        
-        return Result.Success();
+        return this;
     }
 }
