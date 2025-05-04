@@ -7,26 +7,21 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
 public sealed class FakeAccountOptions
 {
-    public Guid? ParentId { get; set; }
+    public bool? IsPlaceholder { get; set; }
     public AccountType? Type { get; set; }
     public Currency? Currency { get; set; }
-    public IEnumerable<Account>? Children { get; set; }
-    public int HierarchyLevel { get; set; } = 0;
 }
 public static class FakeAccounts
 {
     public static Faker<Account> GetAccountFaker(FakeAccountOptions? options = null)
     {
-        return new PrivateFaker<Account>(new PrivateBinder())
+        return new PrivateFaker<Account>()
             .UsePrivateConstructor()
             .RuleFor(x => x.Currency, options?.Currency ?? Currency.Euro)
             .RuleFor(x => x.Name, f => f.Lorem.Word())
             .RuleFor(x => x.Number, f => f.Random.String2(3, "0123456789"))
             .RuleFor(x => x.Type, f => options?.Type ?? f.PickRandom((IEnumerable<AccountType>)AccountType.List))
-            .RuleFor(x => x.ParentAccountId, _ => options?.ParentId ?? null)
-            .RuleFor(x => x.IsPlaceholder, options?.Children is not null)
-            .RuleFor(x => x.HierarchyLevel, options?.HierarchyLevel ?? 0)
-            .RuleFor("_childAccounts", _ => options?.Children?.ToList() ?? []);
+            .RuleFor(x => x.IsPlaceholder, options?.IsPlaceholder ?? false);
     }
 
     public static Account NewAccount() => GetAccountFaker().Generate();
