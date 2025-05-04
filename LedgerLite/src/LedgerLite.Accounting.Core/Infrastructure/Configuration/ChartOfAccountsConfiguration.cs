@@ -11,7 +11,7 @@ internal sealed class ChartOfAccountsConfiguration : IEntityTypeConfiguration<Ch
     {
         builder.IsDomainEntity();
         builder
-            .HasMany(x => x.Accounts)
+            .HasMany<AccountNode>("_nodes")
             .WithOne()
             .HasForeignKey(x => x.ChartId);
     }
