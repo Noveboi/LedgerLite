@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    [Migration("20250503084136_Initial")]
+    [Migration("20250504121851_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -30,9 +30,6 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("AccountId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -40,10 +37,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<int>("HierarchyLevel")
-                        .HasColumnType("integer");
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
                     b.Property<bool>("IsPlaceholder")
                         .HasColumnType("boolean");
@@ -62,15 +57,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(6)");
 
-                    b.Property<Guid?>("ParentAccountId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
 
                     b.ToTable("Account");
                 });
@@ -83,6 +73,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Value");
 
                     b.ToTable("AccountType");
@@ -90,24 +84,71 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Value = 1
+                            Value = 1,
+                            Name = "Asset"
                         },
                         new
                         {
-                            Value = 5
+                            Value = 5,
+                            Name = "Equity"
                         },
                         new
                         {
-                            Value = 3
+                            Value = 3,
+                            Name = "Expense"
                         },
                         new
                         {
-                            Value = 4
+                            Value = 4,
+                            Name = "Income"
                         },
                         new
                         {
-                            Value = 2
+                            Value = 2,
+                            Name = "Liability"
                         });
+                });
+
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChartId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ChartId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("AccountNode");
+                });
+
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.ChartOfAccounts", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ModifiedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ChartOfAccounts");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Currency", b =>
@@ -118,6 +159,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Value");
 
                     b.ToTable("Currency");
@@ -125,15 +170,18 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Value = 1
+                            Value = 1,
+                            Name = "EUR"
                         },
                         new
                         {
-                            Value = 3
+                            Value = 3,
+                            Name = "GBP"
                         },
                         new
                         {
-                            Value = 2
+                            Value = 2,
+                            Name = "USD"
                         });
                 });
 
@@ -211,6 +259,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Value");
 
                     b.ToTable("JournalEntryStatus");
@@ -218,15 +270,18 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Value = 1
+                            Value = 1,
+                            Name = "Editable"
                         },
                         new
                         {
-                            Value = 2
+                            Value = 2,
+                            Name = "Posted"
                         },
                         new
                         {
-                            Value = 3
+                            Value = 3,
+                            Name = "Reversed"
                         });
                 });
 
@@ -238,6 +293,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Value");
 
                     b.ToTable("JournalEntryType");
@@ -245,31 +304,38 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Value = 3
+                            Value = 3,
+                            Name = "Adjusting"
                         },
                         new
                         {
-                            Value = 7
+                            Value = 7,
+                            Name = "Closing"
                         },
                         new
                         {
-                            Value = 5
+                            Value = 5,
+                            Name = "Compound"
                         },
                         new
                         {
-                            Value = 6
+                            Value = 6,
+                            Name = "Opening"
                         },
                         new
                         {
-                            Value = 2
+                            Value = 2,
+                            Name = "Recurring"
                         },
                         new
                         {
-                            Value = 4
+                            Value = 4,
+                            Name = "Reversing"
                         },
                         new
                         {
-                            Value = 1
+                            Value = 1,
+                            Name = "Standard"
                         });
                 });
 
@@ -281,6 +347,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Value");
 
                     b.ToTable("TransactionType");
@@ -288,19 +358,37 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Value = 1
+                            Value = 1,
+                            Name = "Credit"
                         },
                         new
                         {
-                            Value = 2
+                            Value = 2,
+                            Name = "Debit"
                         });
                 });
 
-            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Accounts.Account", b =>
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
                 {
-                    b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", null)
-                        .WithMany("ChildAccounts")
-                        .HasForeignKey("AccountId");
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.Chart.ChartOfAccounts", null)
+                        .WithMany("Accounts")
+                        .HasForeignKey("ChartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntryLine", b =>
@@ -318,9 +406,9 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Accounts.Account", b =>
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.ChartOfAccounts", b =>
                 {
-                    b.Navigation("ChildAccounts");
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", b =>

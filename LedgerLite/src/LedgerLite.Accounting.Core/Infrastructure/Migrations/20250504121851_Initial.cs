@@ -4,6 +4,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -19,24 +21,16 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Number = table.Column<string>(type: "character varying(6)", unicode: false, maxLength: 6, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Description = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Currency = table.Column<int>(type: "integer", nullable: false),
                     IsPlaceholder = table.Column<bool>(type: "boolean", nullable: false),
-                    HierarchyLevel = table.Column<int>(type: "integer", nullable: false),
-                    ParentAccountId = table.Column<Guid>(type: "uuid", nullable: true),
-                    AccountId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Account", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Account_Account_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Account",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -44,7 +38,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,11 +47,25 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChartOfAccounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChartOfAccounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Currency",
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,7 +95,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +108,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,11 +121,43 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TransactionType", x => x.Value);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountNode",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChartId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountNode", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountNode_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountNode_Account_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Account",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_AccountNode_ChartOfAccounts_ChartId",
+                        column: x => x.ChartId,
+                        principalTable: "ChartOfAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -148,63 +191,73 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "AccountType",
-                column: "Value",
-                values: new object[]
+                columns: new[] { "Value", "Name" },
+                values: new object[,]
                 {
-                    1,
-                    2,
-                    3,
-                    4,
-                    5
+                    { 1, "Asset" },
+                    { 2, "Liability" },
+                    { 3, "Expense" },
+                    { 4, "Income" },
+                    { 5, "Equity" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Currency",
-                column: "Value",
-                values: new object[]
+                columns: new[] { "Value", "Name" },
+                values: new object[,]
                 {
-                    1,
-                    2,
-                    3
+                    { 1, "EUR" },
+                    { 2, "USD" },
+                    { 3, "GBP" }
                 });
 
             migrationBuilder.InsertData(
                 table: "JournalEntryStatus",
-                column: "Value",
-                values: new object[]
+                columns: new[] { "Value", "Name" },
+                values: new object[,]
                 {
-                    1,
-                    2,
-                    3
+                    { 1, "Editable" },
+                    { 2, "Posted" },
+                    { 3, "Reversed" }
                 });
 
             migrationBuilder.InsertData(
                 table: "JournalEntryType",
-                column: "Value",
-                values: new object[]
+                columns: new[] { "Value", "Name" },
+                values: new object[,]
                 {
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7
+                    { 1, "Standard" },
+                    { 2, "Recurring" },
+                    { 3, "Adjusting" },
+                    { 4, "Reversing" },
+                    { 5, "Compound" },
+                    { 6, "Opening" },
+                    { 7, "Closing" }
                 });
 
             migrationBuilder.InsertData(
                 table: "TransactionType",
-                column: "Value",
-                values: new object[]
+                columns: new[] { "Value", "Name" },
+                values: new object[,]
                 {
-                    1,
-                    2
+                    { 1, "Credit" },
+                    { 2, "Debit" }
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Account_AccountId",
-                table: "Account",
+                name: "IX_AccountNode_AccountId",
+                table: "AccountNode",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountNode_ChartId",
+                table: "AccountNode",
+                column: "ChartId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountNode_ParentId",
+                table: "AccountNode",
+                column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JournalEntryLine_AccountId",
@@ -220,6 +273,9 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccountNode");
+
             migrationBuilder.DropTable(
                 name: "AccountType");
 
@@ -237,6 +293,9 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "TransactionType");
+
+            migrationBuilder.DropTable(
+                name: "ChartOfAccounts");
 
             migrationBuilder.DropTable(
                 name: "Account");
