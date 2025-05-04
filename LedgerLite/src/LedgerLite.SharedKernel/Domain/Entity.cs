@@ -21,6 +21,19 @@ public abstract class Entity
         return false;
     }
 
+    public static bool operator ==(Entity? a, Entity? b)
+    {
+        if (a is null && b is null)
+            return true;
+
+        if (a is null || b is null)
+            return false;
+
+        return a.Equals(b);
+    }
+
+    public static bool operator !=(Entity? a, Entity? b) => !(a == b);
+
     public override int GetHashCode() => Id.GetHashCode();
     private static Guid GenerateId() => Guid.CreateVersion7();
 }
