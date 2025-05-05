@@ -17,7 +17,9 @@ public sealed record CreateAccountRequest(
     AccountType Type,
     Currency Currency,
     bool IsPlaceholder,
-    string Description);
+    string Description,
+    Guid ChartOfAccountsId,
+    Guid? ParentId);
     
-public sealed record RemoveAccountRequest;
-public sealed record MoveAccountRequest;
+public sealed record RemoveAccountRequest(Guid AccountId);
+public sealed record MoveAccountRequest(Guid AccountId, Guid ParentId);
