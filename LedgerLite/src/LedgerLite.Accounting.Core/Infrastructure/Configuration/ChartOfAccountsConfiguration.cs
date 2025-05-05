@@ -10,9 +10,13 @@ internal sealed class ChartOfAccountsConfiguration : IEntityTypeConfiguration<Ch
     public void Configure(EntityTypeBuilder<ChartOfAccounts> builder)
     {
         builder.IsDomainEntity();
+        builder.Ignore(x => x.Accounts);
+
         builder
-            .HasMany<AccountNode>("_nodes")
+            .HasMany(x => x.Nodes)
             .WithOne()
             .HasForeignKey(x => x.ChartId);
+
+        builder.Navigation(x => x.Nodes).AutoInclude();
     }
 }
