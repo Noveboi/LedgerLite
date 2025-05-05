@@ -1,6 +1,8 @@
-﻿namespace LedgerLite.SharedKernel.Persistence;
+﻿using Ardalis.Result;
+
+namespace LedgerLite.SharedKernel.Persistence;
 
 public interface IUnitOfWork
 {
-    Task SaveChangesAsync(CancellationToken token);
+    Task<Result> SaveChangesAsync(CancellationToken token);
 }
