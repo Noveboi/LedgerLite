@@ -33,4 +33,12 @@ public static class FakeAccounts
         configure?.Invoke(options);
         return GetAccountFaker(options).Generate();
     }
+
+    public static Account GetPlaceholder(Action<FakeAccountOptions>? configure = null)
+    {
+        var options = new FakeAccountOptions();
+        configure?.Invoke(options);
+        options.IsPlaceholder = true;
+        return GetAccountFaker(options).Generate();
+    }
 }
