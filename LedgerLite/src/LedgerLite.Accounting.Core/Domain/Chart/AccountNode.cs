@@ -7,9 +7,10 @@ namespace LedgerLite.Accounting.Core.Domain.Chart;
 public sealed class AccountNode : Entity
 {
     private AccountNode() {}
-    private AccountNode(Guid chartId)
+    private AccountNode(Guid chartId, Account account)
     {
         ChartId = chartId;
+        Account = account;
     }
     
     /// <summary>
@@ -27,43 +28,45 @@ public sealed class AccountNode : Entity
 
     private readonly List<AccountNode> _children = [];
     public IReadOnlyCollection<AccountNode> Children => _children;
-    
-    public static AccountNode Create(Guid chartId, Account account) => new(chartId)
-    {
-        Account = account
-    };
 
-    private static AccountNode CreateAttachedTo(AccountNode parent, Account account, Guid chartId)
-    {
-        var node = new AccountNode(chartId)
-        {
-            Account = account,
-            Parent = parent,
-            ParentId = parent.Id
-        };
+    public static AccountNode Create(Guid chartId, Account account) => new(chartId, account);
 
-        return node;
-    }
-
-    public Result<AccountNode> AddChild(Account child)
+    public Result AddChild(AccountNode child)
     {
-        if (Account == child)
+        if (Account == child.Account)
             return Result.Invalid(AccountErrors.AddAccountToItself());
 
         if (!Account.IsPlaceholder)
             return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder());
 
-        if (Account.Type != child.Type)
+        if (Account.Type != child.Account.Type)
             return Result.Invalid(AccountErrors.ChildHasDifferentType(
                 expected: Account.Type, 
-                actual: child.Type));
+                actual: child.Account.Type));
         
-        if (_children.Any(node => node.Account == child))
-            return Result.Invalid(ChartOfAccountsErrors.AccountAlreadyExists(child));
+        if (_children.Any(node => node.Account == child.Account))
+            return Result.Invalid(ChartOfAccountsErrors.AccountAlreadyExists(child.Account));
 
-        var childNode = CreateAttachedTo(this, child, ChartId);
-        _children.Add(childNode);
-
-        return childNode;
+        _children.Add(child);
+        child.Parent = this;
+        child.ParentId = Id;
+        
+        return Result.Success();
     }
+
+    public Result RemoveChild(AccountNode child)
+    {
+        if (_children.Count == 0)
+            return Result.Invalid(ChartOfAccountsErrors.AccountHasNoChildrenToRemove(Account));
+
+        if (!_children.Remove(child))
+            return Result.Invalid(ChartOfAccountsErrors.AccountNotChild(parent: Account, child: child.Account));
+
+        child.Parent = null;
+        child.ParentId = null!;
+
+        return Result.Success();
+    }
+
+    public override string ToString() => $"{Account} ({_children.Count} children, {(Parent is null ? "Root" : "Leaf")})";
 }

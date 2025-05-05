@@ -19,40 +19,49 @@ public sealed class ChartOfAccounts : AuditableEntity
     private ChartOfAccounts() { }
     
     private readonly List<AccountNode> _nodes = [];
-    public IEnumerable<Account> Accounts => _nodes.Select(x => x.Account);
+    public IReadOnlyCollection<Account> Accounts => _nodes.Select(x => x.Account).ToList();
+    public IReadOnlyCollection<AccountNode> Nodes => _nodes;
 
     public static Result<ChartOfAccounts> Create() => Result.Success(new ChartOfAccounts());
 
     /// <summary>
-    /// Creates an account at the 'root' level of the hierarchy.
+    /// Creates an account initially at the 'root' level of the hierarchy.
     /// </summary>
-    public Result<ChartOfAccounts> Add(Account account)
+    public Result Add(Account account)
     {
-        if (_nodes.Any(acc => acc == account))
-            return Result.Conflict($"Account {account} already exists.");
+        if (_nodes.Any(acc => acc.Account == account))
+            return Result.Invalid(ChartOfAccountsErrors.AccountAlreadyExists(account));
 
         var node = AccountNode.Create(Id, account);
         _nodes.Add(node);
         
-        return this;
+        return Result.Success();
     }
-    
+
     /// <summary>
-    /// Establishes a parent-child relationship between two accounts.
+    /// Position the target account under the desired parent.
     /// </summary>
-    public Result<ChartOfAccounts> Attach(Account account, Guid parentId)
+    public Result Move(Guid accountId, Guid parentId)
     {
-        var parent = _nodes.FirstOrDefault(x => x.Account.Id == parentId);
+        var account = _nodes.FirstOrDefault(node => node.Account.Id == accountId);
+        if (account is null)
+            return Result.Invalid(ChartOfAccountsErrors.AccountNotFound(accountId));
+
+        var parent = _nodes.FirstOrDefault(node => node.Account.Id == parentId);
         if (parent is null)
-            return Result.NotFound($"Couldn't find account with ID {parentId}");
+            return Result.Invalid(ChartOfAccountsErrors.AccountNotFound(parentId));
+
+        if (account.Parent == parent)
+            return Result.Invalid(ChartOfAccountsErrors.MoveToSameParent());
+
+        var removeChildResult = account.Parent?.RemoveChild(account);
+        if (removeChildResult is { IsSuccess: false })
+            return removeChildResult.Map();
 
         var addChildResult = parent.AddChild(account);
-        if (!addChildResult.IsOk())
-            return addChildResult.Map();
+        if (!addChildResult.IsSuccess)
+            return addChildResult;
 
-        var node = addChildResult.Value;
-        _nodes.Add(node);
-        
-        return this;
+        return Result.Success();
     }
 }
