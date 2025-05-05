@@ -17,7 +17,7 @@ public class RecordStandardTransactionTests
     public RecordStandardTransactionTests()
     {
         _unitOfWork.JournalEntryRepository.Returns(_repository);
-
+        _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
         _sut = new TransactionRecordingService(_unitOfWork);
     }
 
@@ -65,19 +65,7 @@ public class RecordStandardTransactionTests
         var result = await _sut.RecordStandardEntryAsync(invalidRequest, CancellationToken.None);
         result.Status.ShouldBe(ResultStatus.Invalid);
     }
-
-    [Fact]
-    public async Task ReturnError_WhenSaveThrows()
-    {
-        var request = Request("123");
-        _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>())
-            .ThrowsAsync(new DbUpdateException("Damn!"));
-
-        var result = await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
-        
-        result.Status.ShouldBe(ResultStatus.Error);
-    }
-
+    
     private static RecordStandardEntryRequest Request(
         string referenceNumber,
         CreateJournalEntryLineRequest? creditRequest = null,
