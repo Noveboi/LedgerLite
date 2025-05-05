@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    [Migration("20250504121851_Initial")]
+    [Migration("20250505100052_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -62,7 +62,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Account");
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Accounts.AccountType", b =>
@@ -112,7 +112,6 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
@@ -148,7 +147,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChartOfAccounts");
+                    b.ToTable("Charts");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Currency", b =>
@@ -216,7 +215,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("JournalEntry");
+                    b.ToTable("JournalEntries");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntryLine", b =>
@@ -248,7 +247,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("JournalEntryLine");
+                    b.ToTable("JournalEntryLines");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntryStatus", b =>
@@ -377,13 +376,13 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("LedgerLite.Accounting.Core.Domain.Chart.ChartOfAccounts", null)
-                        .WithMany("Accounts")
+                        .WithMany("Nodes")
                         .HasForeignKey("ChartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Parent")
-                        .WithMany()
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", "Parent")
+                        .WithMany("Children")
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Account");
@@ -406,9 +405,14 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.ChartOfAccounts", b =>
                 {
-                    b.Navigation("Accounts");
+                    b.Navigation("Nodes");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", b =>
