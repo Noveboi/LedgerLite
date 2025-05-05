@@ -16,7 +16,7 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
         await CreateStandardJournalEntry(req)
             .Bind(entry => AddCreditLine(entry, req.CreditLine))
             .Bind(entry => AddDebitLine(entry, req.DebitLine))
-            .Bind(entry => MarkJournalEntryAsAdded(entry))
+            .Bind(entry => AddJournalEntryToRepository(entry))
             .BindAsync(entry => SaveChangesAsync(entry, ct));
 
     private static Result<JournalEntry> CreateStandardJournalEntry(RecordStandardEntryRequest request) => 
@@ -38,7 +38,7 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
             type: TransactionType.Debit,
             amount: request.Amount);
 
-    private Result<JournalEntry> MarkJournalEntryAsAdded(JournalEntry entry)
+    private Result<JournalEntry> AddJournalEntryToRepository(JournalEntry entry)
     {
         unitOfWork.JournalEntryRepository.Add(entry);
         return Result.Success(entry);
@@ -46,15 +46,7 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
 
     private async Task<Result<JournalEntry>> SaveChangesAsync(JournalEntry entry, CancellationToken token)
     {
-        try
-        {
-            await unitOfWork.SaveChangesAsync(token);
-            return Result.Success(entry);
-        }
-        catch (DbUpdateException ex)
-        {
-            Logger.Error(ex, "Couldn't persist changes to database.");
-            return Result.Error("An error occured whilst performing the operation.");
-        }
+        await unitOfWork.SaveChangesAsync(token);
+        return Result.Success(entry);
     }
 }
