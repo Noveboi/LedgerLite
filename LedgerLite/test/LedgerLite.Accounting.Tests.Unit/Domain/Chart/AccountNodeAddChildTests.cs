@@ -5,16 +5,15 @@ using LedgerLite.Accounting.Tests.Unit.Utilities;
 
 namespace LedgerLite.Accounting.Tests.Unit.Domain.Chart;
 
-public class AccountNodeHierarchyTests
+public class AccountNodeAddChildTests
 {
-    private readonly Account _child = FakeAccounts.NewAccount();
     
     [Fact]
     public void Invalid_WhenAddingAccountAsItsOwnChild()
     {
-        var node = GetNode();
+        var node = FakeAccountNodes.Get();
         
-        var result = node.AddChild(node.Account);
+        var result = node.AddChild(node);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
@@ -25,9 +24,9 @@ public class AccountNodeHierarchyTests
     [Fact]
     public void Invalid_WhenParentIsNotAPlaceholderAccount()
     {
-        var node = GetNode(o => o.IsPlaceholder = false);
+        var node = FakeAccountNodes.Get(o => o.IsPlaceholder = false);
 
-        var result = node.AddChild(_child);
+        var result = node.AddChild(FakeAccountNodes.SampleChild);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
@@ -38,12 +37,12 @@ public class AccountNodeHierarchyTests
     [Fact]
     public void Invalid_WhenParentAndChildAccountTypes_AreNotTheSame()
     {
-        var node = GetNode(o =>
+        var node = FakeAccountNodes.Get(o =>
         {
             o.Type = AccountType.Asset;
             o.IsPlaceholder = true;
         });
-        var child = FakeAccounts.Get(o => o.Type = AccountType.Equity);
+        var child = FakeAccountNodes.Get(o => o.Type = AccountType.Equity);
 
         var result = node.AddChild(child);
         
@@ -52,53 +51,46 @@ public class AccountNodeHierarchyTests
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(AccountErrors.ChildHasDifferentType(
                 expected: node.Account.Type,
-                actual: child.Type));
+                actual: child.Account.Type));
     }
 
     [Fact]
     public void Invalid_WhenChildAlreadyExists()
     {
-        var node = GetNode();
-        node.AddChild(_child);
+        var node = FakeAccountNodes.Get();
+        node.AddChild(FakeAccountNodes.SampleChild);
 
-        var result = node.AddChild(_child);
+        var result = node.AddChild(FakeAccountNodes.SampleChild);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountAlreadyExists(_child));
+            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountAlreadyExists(FakeAccountNodes.SampleChild.Account));
     }
 
     [Fact]
     public void Parent_ShouldHaveNewChild_InChildren()
     {
-        var node = GetNode();
+        var node = FakeAccountNodes.Get();
 
-        var result = node.AddChild(_child);
+        var result = node.AddChild(FakeAccountNodes.SampleChild);
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        node.Children.ShouldHaveSingleItem()
-            .Account.ShouldBeEquivalentTo(_child);
+        node.Children
+            .ShouldHaveSingleItem()
+            .ShouldBeEquivalentTo(FakeAccountNodes.SampleChild);
     }
 
     [Fact]
     public void Child_ShouldHaveParent()
     {
-        var node = GetNode();
+        var node = FakeAccountNodes.Get();
+        var child = FakeAccountNodes.SampleChild;
 
-        var result = node.AddChild(_child);
+        var result = node.AddChild(child);
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        var child = result.Value;
         child.Parent.ShouldBeEquivalentTo(node);
         child.ParentId.ShouldBeEquivalentTo(node.Id);
     }
-
-    private AccountNode GetNode(Action<FakeAccountOptions>? configure = null) => AccountNode.Create(
-        Guid.NewGuid(), 
-        FakeAccounts.Get(configure ?? (o =>
-        {
-            o.IsPlaceholder = true;
-            o.Type = _child.Type;
-        })));
 }
