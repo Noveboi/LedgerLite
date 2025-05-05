@@ -23,4 +23,22 @@ internal static class AccountErrors
         errorMessage: "Cannot add account as a child of itself.",
         errorCode: "ACC-ADD_TO_SELF",
         severity: ValidationSeverity.Error);
+
+    public static ValidationError AccountNumberTooLong() => new(
+        identifier: AccountIdentifier,
+        errorMessage: "Account numbers may only be up to 5 digits long.",
+        errorCode: "ACC-NUMBER_TOO_LONG",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError AccountNumberIsEmpty() => new(
+        identifier: AccountIdentifier,
+        errorMessage: "Account number is required.",
+        errorCode: "ACC-NUMBER_EMPTY",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError AccountNameIsEmpty() => new(
+        identifier: AccountIdentifier,
+        errorMessage: "Account name is required.",
+        errorCode: "ACC-NAME_EMPTY",
+        severity: ValidationSeverity.Error);
 }

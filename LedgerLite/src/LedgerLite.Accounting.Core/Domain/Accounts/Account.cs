@@ -23,6 +23,15 @@ public sealed class Account : AuditableEntity
         bool isPlaceholder,
         string description = "")
     {
+        if (string.IsNullOrWhiteSpace(number))
+            return Result.Invalid(AccountErrors.AccountNumberIsEmpty());
+        
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Invalid(AccountErrors.AccountNameIsEmpty());
+        
+        if (number.Length > 5)
+            return Result.Invalid(AccountErrors.AccountNumberTooLong());
+        
         return new Account
         {   
             Name = name,
