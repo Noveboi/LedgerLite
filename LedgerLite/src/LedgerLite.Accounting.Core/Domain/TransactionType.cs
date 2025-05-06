@@ -12,7 +12,7 @@ public sealed class TransactionType : SmartEnum<TransactionType>
     /// </summary>
     public static readonly TransactionType Credit = new(nameof(Credit), 1); 
     /// <summary>
-    /// Debit increases the value of assets and expenses.
+    /// Increases the value of assets and expenses.
     /// </summary>
     public static readonly TransactionType Debit = new(nameof(Debit), 2);
 }

@@ -5,6 +5,7 @@ using LedgerLite.Accounting.Core.Application;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.SharedKernel.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Serilog;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
@@ -16,7 +17,7 @@ internal sealed class CreateAccountEndpoint(IAccountService accountService) : En
     public override void Configure()
     {
         AllowAnonymous();
-        Post("/accounts");
+        Post(AccountSchemes.ResourceUri);
     }
 
     public override async Task HandleAsync(CreateAccountRequestDto req, CancellationToken ct)
@@ -31,7 +32,18 @@ internal sealed class CreateAccountEndpoint(IAccountService accountService) : En
         }
 
         var creationResult = await accountService.CreateAccountAsync(request, ct);
-        await SendResultAsync(creationResult.ToMinimalApiResult());
+        if (!creationResult.IsSuccess)
+        {
+            await SendResultAsync(creationResult.ToMinimalApiResult());
+            return;
+        }
+
+        var account = creationResult.Value;
+
+        await SendCreatedAtAsync<GetAccountEndpoint>(
+            routeValues: new { account.Id },
+            responseBody: AccountResponseDto.FromEntity(account),
+            cancellation: ct);
     }
 
     private static Result<CreateAccountRequest> MapToEntity(CreateAccountRequestDto r)
@@ -66,5 +78,3 @@ internal sealed record CreateAccountRequestDto(
     string? Description,
     Guid ChartOfAccountsId,
     Guid? ParentId);
-
-internal sealed record CreateAccountResponse;
