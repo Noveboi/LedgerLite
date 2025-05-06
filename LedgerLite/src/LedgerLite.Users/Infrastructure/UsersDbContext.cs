@@ -1,4 +1,6 @@
-﻿using LedgerLite.Users.Domain;
+﻿using LedgerLite.SharedKernel.Persistence;
+using LedgerLite.Users.Domain;
+using LedgerLite.Users.Domain.Organization;
 using LedgerLite.Users.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -13,6 +15,8 @@ internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
     {
         base.OnModelCreating(builder);
         builder.HasDefaultSchema("Users");
+
+        builder.ConfigureEnumeration<OrganizationMemberRole>();
 
         builder.ApplyConfigurationsFromAssembly(typeof(IUserEntityConfigurationMarker).Assembly);
     }

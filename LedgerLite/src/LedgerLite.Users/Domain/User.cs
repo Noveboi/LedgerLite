@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Domain;
 
-internal sealed class User : IdentityUser<Guid>, IAuditable
+public sealed class User : IdentityUser<Guid>, IAuditable
 {
     [ProtectedPersonalData]
     public string? FirstName { get; set; }
@@ -12,20 +12,11 @@ internal sealed class User : IdentityUser<Guid>, IAuditable
     [ProtectedPersonalData]
     public string? LastName { get; set; }
     
-    public Guid? OrganizationId { get; private set; }
+    public Guid? OrganizationMemberId { get; private set; }
 
 
     public bool IsUsingEmailAsUsername() => Email == UserName;
     
-    public Result RegisterToOrganization(Guid organizationId)
-    {
-        if (organizationId == OrganizationId)
-            return Result.Invalid(OrganizationErrors.CannotTransferUserToSameOrganization(this));
-        
-        OrganizationId = organizationId;
-        return Result.Success();
-    }
-
     public DateTime CreatedAtUtc { get; set; }
     public DateTime ModifiedAtUtc { get; set;}
 }

@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
 
-namespace LedgerLite.Users.Domain;
+namespace LedgerLite.Users.Domain.Organization;
 
 internal static class OrganizationErrors
 {
