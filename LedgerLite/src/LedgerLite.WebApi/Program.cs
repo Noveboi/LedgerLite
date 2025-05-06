@@ -20,12 +20,16 @@ try
         .AddApiInfrastructure(builder.Configuration);
 
     var app = builder.Build();
+
+    if (app.Environment.IsProduction())
+    {
+        app.UseHttpsRedirection();
+    }
     
     app.UseSerilogRequestLogging();
     app.MapOpenApi();
     app.UseAuthorization();
     app.UseFastEndpoints();
-    app.MapUserEndpoints();
     app.Run();
 }
 catch (Exception ex)
