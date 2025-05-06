@@ -1,4 +1,5 @@
 using FastEndpoints;
+using LedgerLite.Users;
 using LedgerLite.WebApi;
 using Serilog;
 using Serilog.Events;
@@ -11,21 +12,20 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     Log.Information("Starting LedgerLite web API...");
-    
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Services.AddSerilog((services, config) => config
-        .ReadFrom.Configuration(builder.Configuration));
-
     builder.Services
+        .AddLedgerLiteAuth()
         .AddModules(builder.Configuration)
-        .AddApiInfrastructure();
+        .AddApiInfrastructure(builder.Configuration);
 
     var app = builder.Build();
-
+    
     app.UseSerilogRequestLogging();
     app.MapOpenApi();
+    app.UseAuthorization();
     app.UseFastEndpoints();
+    app.MapUserEndpoints();
     app.Run();
 }
 catch (Exception ex)
