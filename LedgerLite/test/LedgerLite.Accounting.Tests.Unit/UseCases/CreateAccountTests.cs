@@ -1,9 +1,10 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Accounting.Core.Application;
+using LedgerLite.Accounting.Core.Application.Accounts;
+using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
-using LedgerLite.Accounting.Core.Infrastructure;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 
 namespace LedgerLite.Accounting.Tests.Unit.UseCases;

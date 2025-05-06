@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Accounts;
 
-namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
+namespace LedgerLite.Accounting.Core.Endpoints.Accounts.Data;
 
 internal sealed record AccountResponseDto(
     string Name,

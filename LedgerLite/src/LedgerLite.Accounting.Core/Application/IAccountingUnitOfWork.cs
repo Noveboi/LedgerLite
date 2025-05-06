@@ -1,4 +1,6 @@
-﻿using LedgerLite.Accounting.Core.Domain.Accounts;
+﻿using LedgerLite.Accounting.Core.Application.Accounts;
+using LedgerLite.Accounting.Core.Application.JournalEntries;
+using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.SharedKernel.Persistence;
 
 namespace LedgerLite.Accounting.Core.Application;

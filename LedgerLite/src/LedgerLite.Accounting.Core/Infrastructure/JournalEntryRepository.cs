@@ -1,4 +1,5 @@
 ﻿using LedgerLite.Accounting.Core.Application;
+using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;

@@ -1,4 +1,5 @@
 ﻿using LedgerLite.Accounting.Core.Application;
+using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using Microsoft.EntityFrameworkCore;

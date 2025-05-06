@@ -1,7 +1,7 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 
-namespace LedgerLite.Accounting.Core.Application;
+namespace LedgerLite.Accounting.Core.Application.JournalEntries;
 
 public interface IJournalEntryLineRepository
 {

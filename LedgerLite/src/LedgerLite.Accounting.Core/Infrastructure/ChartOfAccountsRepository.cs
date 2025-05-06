@@ -1,4 +1,4 @@
-﻿using LedgerLite.Accounting.Core.Application;
+﻿using LedgerLite.Accounting.Core.Application.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using Microsoft.EntityFrameworkCore;
 

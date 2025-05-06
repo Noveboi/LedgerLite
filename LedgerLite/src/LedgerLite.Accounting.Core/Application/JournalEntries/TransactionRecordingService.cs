@@ -1,12 +1,11 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Accounting.Core.Application.JournalEntries.Requests;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
-using LedgerLite.Accounting.Core.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 // ReSharper disable once ConvertClosureToMethodGroup
-namespace LedgerLite.Accounting.Core.Application;
+namespace LedgerLite.Accounting.Core.Application.JournalEntries;
 
 internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWork) : ITransactionRecordingService
 {

@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
-using LedgerLite.Accounting.Core.Infrastructure;
 
-namespace LedgerLite.Accounting.Core.Application;
+namespace LedgerLite.Accounting.Core.Application.Accounts;
 
 internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccountService
 {

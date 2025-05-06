@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using LedgerLite.Accounting.Core.Endpoints.Accounts.Data;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 

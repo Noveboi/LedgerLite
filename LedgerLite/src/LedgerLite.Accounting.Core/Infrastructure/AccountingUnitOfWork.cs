@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Ardalis.Result;
 using LedgerLite.Accounting.Core.Application;
+using LedgerLite.Accounting.Core.Application.Accounts;
+using LedgerLite.Accounting.Core.Application.JournalEntries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
