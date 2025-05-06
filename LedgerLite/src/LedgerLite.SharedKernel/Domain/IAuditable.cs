@@ -2,6 +2,6 @@
 
 public interface IAuditable
 {
-    DateTime CreatedAtUtc { get; internal set; }
-    DateTime ModifiedAtUtc { get; internal set; }
+    DateTime CreatedAtUtc { get; set; }
+    DateTime ModifiedAtUtc { get; set; }
 }
