@@ -1,7 +1,4 @@
-﻿using LedgerLite.Accounting.Core.Application;
-using LedgerLite.Accounting.Core.Application.Accounts;
-using LedgerLite.Accounting.Core.Application.JournalEntries;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 

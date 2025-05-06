@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Chart;
 
-namespace LedgerLite.Accounting.Core.Application.Accounts;
+namespace LedgerLite.Accounting.Core.Infrastructure;
 
 public interface IChartOfAccountsRepository
 {

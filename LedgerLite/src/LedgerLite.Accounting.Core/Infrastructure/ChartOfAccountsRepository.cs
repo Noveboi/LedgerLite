@@ -1,5 +1,4 @@
-﻿using LedgerLite.Accounting.Core.Application.Accounts;
-using LedgerLite.Accounting.Core.Domain.Chart;
+﻿using LedgerLite.Accounting.Core.Domain.Chart;
 using Microsoft.EntityFrameworkCore;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;

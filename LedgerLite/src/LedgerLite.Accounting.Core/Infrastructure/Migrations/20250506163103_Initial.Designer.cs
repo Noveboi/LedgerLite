@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    [Migration("20250505100052_Initial")]
+    [Migration("20250506163103_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,6 +20,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("Accounting")
                 .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -62,7 +63,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", "Accounting");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Accounts.AccountType", b =>
@@ -79,7 +80,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Value");
 
-                    b.ToTable("AccountType");
+                    b.ToTable("AccountType", "Accounting");
 
                     b.HasData(
                         new
@@ -131,7 +132,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("AccountNode");
+                    b.ToTable("AccountNode", "Accounting");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.ChartOfAccounts", b =>
@@ -147,7 +148,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Charts");
+                    b.ToTable("Charts", "Accounting");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Currency", b =>
@@ -164,7 +165,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Value");
 
-                    b.ToTable("Currency");
+                    b.ToTable("Currency", "Accounting");
 
                     b.HasData(
                         new
@@ -215,7 +216,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("JournalEntries");
+                    b.ToTable("JournalEntries", "Accounting");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntryLine", b =>
@@ -247,7 +248,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasIndex("EntryId");
 
-                    b.ToTable("JournalEntryLines");
+                    b.ToTable("JournalEntryLines", "Accounting");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntryStatus", b =>
@@ -264,7 +265,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Value");
 
-                    b.ToTable("JournalEntryStatus");
+                    b.ToTable("JournalEntryStatus", "Accounting");
 
                     b.HasData(
                         new
@@ -298,7 +299,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Value");
 
-                    b.ToTable("JournalEntryType");
+                    b.ToTable("JournalEntryType", "Accounting");
 
                     b.HasData(
                         new
@@ -352,7 +353,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Value");
 
-                    b.ToTable("TransactionType");
+                    b.ToTable("TransactionType", "Accounting");
 
                     b.HasData(
                         new

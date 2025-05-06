@@ -2,12 +2,22 @@
 using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
+using LedgerLite.Accounting.Core.Infrastructure;
 
 namespace LedgerLite.Accounting.Core.Application.Accounts;
 
 internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccountService
 {
-    public async Task<Result<Account>> CreateAccountAsync(CreateAccountRequest request, CancellationToken token)
+    public async Task<Result<Account>> GetAsync(Guid id, CancellationToken token)
+    {
+        var account = await unitOfWork.AccountRepository.GetByIdAsync(id, token);
+        if (account is null)
+            return Result.NotFound($"Account with ID '{id}' does not exist.");
+
+        return account;
+    }
+
+    public async Task<Result<Account>> CreateAsync(CreateAccountRequest request, CancellationToken token)
     {
         var createAccountResult = CreateAccount(request);
         if (!createAccountResult.IsSuccess)
@@ -26,12 +36,12 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
             .BindAsync(acc => SaveChangesAsync(token).MapAsync(() => acc));
     }
 
-    public Task<Result<Account>> RemoveAccountAsync(RemoveAccountRequest request, CancellationToken token)
+    public Task<Result<Account>> RemoveAsync(RemoveAccountRequest request, CancellationToken token)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result> MoveAccountAsync(MoveAccountRequest request, CancellationToken token)
+    public Task<Result> MoveAsync(MoveAccountRequest request, CancellationToken token)
     {
         throw new NotImplementedException();
     }

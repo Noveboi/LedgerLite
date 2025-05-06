@@ -14,8 +14,12 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Accounting");
+
             migrationBuilder.CreateTable(
                 name: "Accounts",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -35,6 +39,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AccountType",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
@@ -48,6 +53,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Charts",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -61,6 +67,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Currency",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
@@ -74,6 +81,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "JournalEntries",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -92,6 +100,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "JournalEntryStatus",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
@@ -105,6 +114,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "JournalEntryType",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
@@ -118,6 +128,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "TransactionType",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Value = table.Column<int>(type: "integer", nullable: false)
@@ -131,6 +142,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "AccountNode",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -144,17 +156,20 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_AccountNode_AccountNode_ParentId",
                         column: x => x.ParentId,
+                        principalSchema: "Accounting",
                         principalTable: "AccountNode",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_AccountNode_Accounts_AccountId",
                         column: x => x.AccountId,
+                        principalSchema: "Accounting",
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_AccountNode_Charts_ChartId",
                         column: x => x.ChartId,
+                        principalSchema: "Accounting",
                         principalTable: "Charts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -162,6 +177,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "JournalEntryLines",
+                schema: "Accounting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -178,18 +194,21 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_JournalEntryLines_Accounts_AccountId",
                         column: x => x.AccountId,
+                        principalSchema: "Accounting",
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_JournalEntryLines_JournalEntries_EntryId",
                         column: x => x.EntryId,
+                        principalSchema: "Accounting",
                         principalTable: "JournalEntries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
+                schema: "Accounting",
                 table: "AccountType",
                 columns: new[] { "Value", "Name" },
                 values: new object[,]
@@ -202,6 +221,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "Accounting",
                 table: "Currency",
                 columns: new[] { "Value", "Name" },
                 values: new object[,]
@@ -212,6 +232,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "Accounting",
                 table: "JournalEntryStatus",
                 columns: new[] { "Value", "Name" },
                 values: new object[,]
@@ -222,6 +243,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "Accounting",
                 table: "JournalEntryType",
                 columns: new[] { "Value", "Name" },
                 values: new object[,]
@@ -236,6 +258,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "Accounting",
                 table: "TransactionType",
                 columns: new[] { "Value", "Name" },
                 values: new object[,]
@@ -246,26 +269,31 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountNode_AccountId",
+                schema: "Accounting",
                 table: "AccountNode",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountNode_ChartId",
+                schema: "Accounting",
                 table: "AccountNode",
                 column: "ChartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountNode_ParentId",
+                schema: "Accounting",
                 table: "AccountNode",
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JournalEntryLines_AccountId",
+                schema: "Accounting",
                 table: "JournalEntryLines",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JournalEntryLines_EntryId",
+                schema: "Accounting",
                 table: "JournalEntryLines",
                 column: "EntryId");
         }
@@ -274,34 +302,44 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AccountNode");
+                name: "AccountNode",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "AccountType");
+                name: "AccountType",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "Currency");
+                name: "Currency",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "JournalEntryLines");
+                name: "JournalEntryLines",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "JournalEntryStatus");
+                name: "JournalEntryStatus",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "JournalEntryType");
+                name: "JournalEntryType",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "TransactionType");
+                name: "TransactionType",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "Charts");
+                name: "Charts",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "Accounts");
+                name: "Accounts",
+                schema: "Accounting");
 
             migrationBuilder.DropTable(
-                name: "JournalEntries");
+                name: "JournalEntries",
+                schema: "Accounting");
         }
     }
 }

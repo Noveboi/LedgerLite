@@ -1,9 +1,12 @@
 ﻿using LedgerLite.Accounting.Core.Application;
 using LedgerLite.Accounting.Core.Infrastructure;
+using LedgerLite.SharedKernel.Constants;
+using LedgerLite.SharedKernel.Extensions;
 using LedgerLite.SharedKernel.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace LedgerLite.Accounting.Core;
 
@@ -11,8 +14,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAccountingModule(this IServiceCollection services, IConfiguration configuration)
     {
+        Log.Logger.RegisteringModule("Accounting");
+
         services.AddDbContext<AccountingDbContext>(options => options
-            .UseNpgsql(configuration.GetConnectionString("AccountingDatabase"))
+            .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.CoreDatabase))
             .AddAuditLogging());
 
         services.AddAccountingInfrastructure();

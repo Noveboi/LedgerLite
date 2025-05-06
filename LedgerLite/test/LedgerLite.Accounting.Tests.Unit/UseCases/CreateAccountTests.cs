@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Core.Application;
 using LedgerLite.Accounting.Core.Application.Accounts;
 using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
+using LedgerLite.Accounting.Core.Infrastructure;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 
 namespace LedgerLite.Accounting.Tests.Unit.UseCases;
@@ -30,7 +30,7 @@ public class CreateAccountTests
     {
         var request = GetRequest(req => req with { Name = "" });
         
-        var result = await _sut.CreateAccountAsync(request, CancellationToken.None);
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors.ShouldHaveSingleItem().ShouldBeEquivalentTo(AccountErrors.AccountNameIsEmpty());
@@ -44,7 +44,7 @@ public class CreateAccountTests
     {
         var request = GetRequest();
 
-        var result = await _sut.CreateAccountAsync(request, CancellationToken.None);
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
         
         result.Status.ShouldBe(ResultStatus.NotFound);
         await _chartRepository.Received(1).GetByIdAsync(_chartId, Arg.Any<CancellationToken>());
@@ -57,7 +57,7 @@ public class CreateAccountTests
         var chart = FakeChartOfAccounts.Empty;
         ConfigureChart(chart);
 
-        var result = await _sut.CreateAccountAsync(request, CancellationToken.None);
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
         
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -73,7 +73,7 @@ public class CreateAccountTests
         var chart = FakeChartOfAccounts.Empty;
         ConfigureChart(chart);
 
-        var result = await _sut.CreateAccountAsync(request, CancellationToken.None);
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
         
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -87,7 +87,7 @@ public class CreateAccountTests
         var chart = FakeChartOfAccounts.Empty;
         ConfigureChart(chart);
 
-        var result = await _sut.CreateAccountAsync(request, CancellationToken.None);
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
         
         result.Status.ShouldBe(ResultStatus.Ok);
         chart.Nodes.ShouldHaveSingleItem().Parent.ShouldBeNull();
@@ -101,7 +101,7 @@ public class CreateAccountTests
         var chart = FakeChartOfAccounts.With(parent);
         ConfigureChart(chart);
 
-        var result = await _sut.CreateAccountAsync(request, CancellationToken.None);
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
         
         result.Status.ShouldBe(ResultStatus.Ok);

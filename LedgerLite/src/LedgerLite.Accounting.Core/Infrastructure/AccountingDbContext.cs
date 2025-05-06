@@ -5,6 +5,7 @@ using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Infrastructure.Configuration;
 using LedgerLite.SharedKernel.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 
@@ -17,6 +18,8 @@ internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> 
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("Accounting");
+        
         modelBuilder
             .ConfigureEnumeration<AccountType>()
             .ConfigureEnumeration<JournalEntryType>()

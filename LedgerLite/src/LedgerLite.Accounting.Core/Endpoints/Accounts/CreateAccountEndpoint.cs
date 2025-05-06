@@ -16,9 +16,9 @@ internal sealed class CreateAccountEndpoint(IAccountService accountService) : En
     private readonly ILogger _log = Log.ForContext<CreateAccountEndpoint>();
 
     public override void Configure()
-    {
-        AllowAnonymous();
-        Post(AccountSchemes.ResourceUri);
+    {        
+        Post("");
+        Group<AccountEndpointsGroup>();
     }
 
     public override async Task HandleAsync(CreateAccountRequestDto req, CancellationToken ct)
@@ -32,7 +32,7 @@ internal sealed class CreateAccountEndpoint(IAccountService accountService) : En
             return;
         }
 
-        var creationResult = await accountService.CreateAccountAsync(request, ct);
+        var creationResult = await accountService.CreateAsync(request, ct);
         if (!creationResult.IsSuccess)
         {
             await SendResultAsync(creationResult.ToMinimalApiResult());
