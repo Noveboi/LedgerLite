@@ -1,5 +1,6 @@
 ﻿using LedgerLite.SharedKernel.Constants;
 using LedgerLite.SharedKernel.Extensions;
+using LedgerLite.SharedKernel.Persistence;
 using LedgerLite.Users.Domain;
 using LedgerLite.Users.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -31,7 +32,8 @@ public static class UsersDependencyInjection
         Log.Logger.RegisteringModule("Users");
 
         services.AddDbContext<UsersDbContext>(options => options
-            .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.CoreDatabase)));
+            .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.CoreDatabase))
+            .AddAuditLogging());
         
         return services
             .AddIdentityCore<User>()
@@ -40,8 +42,5 @@ public static class UsersDependencyInjection
             .Services;
     }
 
-    public static IEndpointConventionBuilder MapUserEndpoints(this IEndpointRouteBuilder app)
-    {
-        return app.MapIdentityApi<User>();
-    }
+    private static void t(IEndpointRouteBuilder s) => s.MapIdentityApi<User>();
 }
