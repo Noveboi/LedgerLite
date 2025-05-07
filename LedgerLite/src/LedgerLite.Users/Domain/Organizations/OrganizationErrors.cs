@@ -17,4 +17,10 @@ internal static class OrganizationErrors
             errorMessage: $"User '{member.User.UserName}' is not in organization.",
             errorCode: "ORG-MEMBER_NOT_FOUND",
             severity: ValidationSeverity.Error);
+
+    public static ValidationError NameIsTheSame() =>
+        new(identifier: OrganizationIdentifier,
+            errorMessage: "Cannot rename organization using the same name.",
+            errorCode: "ORG-SAME_NAME",
+            severity: ValidationSeverity.Error);
 }

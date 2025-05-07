@@ -48,6 +48,13 @@ public sealed class Organization : AuditableEntity
 
     public Result Rename(string newName)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(newName))
+            return Result.Invalid(CommonErrors.NameIsEmpty());
+
+        if (newName == Name)
+            return Result.Invalid(OrganizationErrors.NameIsTheSame());
+
+        Name = newName;
+        return Result.Success();
     }
 }
