@@ -1,36 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Ardalis.Result;
-using Microsoft.EntityFrameworkCore;
+using LedgerLite.SharedKernel.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 
-internal sealed class AccountingUnitOfWork(
-    IServiceProvider serviceProvider,
-    AccountingDbContext context) : IAccountingUnitOfWork
+internal sealed class AccountingUnitOfWork(IServiceProvider serviceProvider, AccountingDbContext context) 
+    : UnitOfWork<AccountingDbContext>(context), IAccountingUnitOfWork
 {
-    private static readonly ILogger Logger = Log.ForContext<AccountingUnitOfWork>();
-    
-    public async Task<Result> SaveChangesAsync(CancellationToken token)
-    {
-        try
-        {
-            await context.SaveChangesAsync(token);
-            return Result.Success();
-        }
-        catch (DbUpdateException exception)
-        {
-            Logger.Error(exception, "Save Changes ERROR");
-            return Result.Error("Something went wrong.");
-        }
-        catch (Exception exception)
-        {
-            Logger.Error(exception, "Save Changes UNKNOWN ERROR!");
-            return Result.Error("Something went wrong.");
-        }
-    }
-
     [field: AllowNull, MaybeNull]
     public IAccountRepository AccountRepository => 
         field ?? serviceProvider.GetRequiredService<IAccountRepository>();
