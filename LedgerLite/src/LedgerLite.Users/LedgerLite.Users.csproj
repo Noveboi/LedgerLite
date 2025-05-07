@@ -22,4 +22,8 @@
     <ItemGroup>
         <InternalsVisibleTo Include="LedgerLite.Users.Tests.Unit"/>
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Application\" />
+    </ItemGroup>
 </Project>
