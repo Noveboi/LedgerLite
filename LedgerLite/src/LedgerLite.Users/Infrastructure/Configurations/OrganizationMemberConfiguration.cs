@@ -1,6 +1,6 @@
 ﻿using LedgerLite.SharedKernel.Persistence;
 using LedgerLite.Users.Domain;
-using LedgerLite.Users.Domain.Organization;
+using LedgerLite.Users.Domain.Organizations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

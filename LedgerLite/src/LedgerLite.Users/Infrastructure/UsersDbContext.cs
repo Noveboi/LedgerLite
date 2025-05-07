@@ -1,6 +1,6 @@
 ﻿using LedgerLite.SharedKernel.Persistence;
 using LedgerLite.Users.Domain;
-using LedgerLite.Users.Domain.Organization;
+using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

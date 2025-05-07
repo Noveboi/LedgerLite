@@ -1,5 +1,5 @@
 ﻿using LedgerLite.SharedKernel.Persistence;
-using LedgerLite.Users.Domain.Organization;
+using LedgerLite.Users.Domain.Organizations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,8 +10,10 @@ internal sealed class OrganizationConfiguration : IEntityTypeConfiguration<Organ
     public void Configure(EntityTypeBuilder<Organization> builder)
     {
         builder.IsDomainEntity();
+        
         builder.Property(x => x.Name).HasMaxLength(256);
-
+        builder.HasIndex(x => x.Name).IsUnique();
+        
         builder
             .HasMany(x => x.Members)
             .WithOne()
