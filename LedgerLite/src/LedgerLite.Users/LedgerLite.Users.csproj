@@ -18,4 +18,8 @@
     <ItemGroup>
       <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="LedgerLite.Users.Tests.Unit"/>
+    </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace LedgerLite.Users.Domain.Organization;
+namespace LedgerLite.Users.Domain.Organizations;
 
 public sealed class OrganizationMemberRole(string name, int value) : SmartEnum<OrganizationMemberRole>(name, value)
 {
