@@ -2,14 +2,14 @@
 
 namespace LedgerLite.SharedKernel.Domain;
 
-public abstract class Entity
+public abstract class Entity : IHaveDomainEvents
 {
     protected Entity() => Id = GenerateId();
 
     public Guid Id { get; private init; }
 
     private List<DomainEvent>? _domainEvents;
-    internal IReadOnlyList<DomainEvent> DomainEvents => _domainEvents ??= [];
+    IReadOnlyList<DomainEvent> IHaveDomainEvents.DomainEvents => _domainEvents ??= [];
     public void AddDomainEvent<T>(T domainEvent) where T : DomainEvent => (_domainEvents ??= []).Add(domainEvent);
     
     public override bool Equals(object? obj)
@@ -35,4 +35,9 @@ public abstract class Entity
 
     public override int GetHashCode() => Id.GetHashCode();
     private static Guid GenerateId() => Guid.CreateVersion7();
+}
+
+internal interface IHaveDomainEvents
+{
+    IReadOnlyList<DomainEvent> DomainEvents { get; }
 }

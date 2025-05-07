@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
 using Serilog;
 
 namespace LedgerLite.SharedKernel.Events;
@@ -9,8 +10,8 @@ internal static class DependencyInjection
     public static IServiceCollection AddEventInfrastructure(this IServiceCollection services)
     {
         var time = Stopwatch.GetTimestamp();
-        
         var handlerInterfaceType = typeof(IEventHandler<>);
+
         var assemblyScanCount = 0;
         var handlerTypes = AppDomain.CurrentDomain.GetAssemblies()
             .SelectMany(assembly =>
@@ -19,7 +20,10 @@ internal static class DependencyInjection
                 Log.Debug("Searching for event handlers in {assemblyName}", assembly.FullName);
                 return assembly
                     .GetTypes()
-                    .Where(t => t is { IsAbstract: false, IsClass: true } && handlerInterfaceType.IsAssignableFrom(t));
+                    .Where(t => t is { IsAbstract: false, IsClass: true } && t
+                        .GetInterfaces()
+                        .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterfaceType)
+                    );
             })
             .ToList();
         
@@ -28,7 +32,13 @@ internal static class DependencyInjection
 
         foreach (var handlerImplementationType in handlerTypes)
         {
-            services.AddScoped(handlerInterfaceType, handlerImplementationType);
+            var interfaces = handlerImplementationType.GetInterfaces()
+                .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerInterfaceType);
+
+            foreach (var @interface in interfaces)
+            {
+                services.AddScoped(@interface, handlerImplementationType);
+            }
         }
         
         return services

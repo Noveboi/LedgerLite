@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+﻿
+using LedgerLite.SharedKernel.Events;
 
 namespace LedgerLite.SharedKernel.Domain.Events;
 
