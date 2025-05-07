@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain;
 using LedgerLite.SharedKernel.Domain.Errors;
+using LedgerLite.Users.Domain.Organizations.Events;
 
 namespace LedgerLite.Users.Domain.Organizations;
 
@@ -27,7 +28,10 @@ public sealed class Organization : AuditableEntity
         if (string.IsNullOrWhiteSpace(name))
             return Result.Invalid(CommonErrors.NameIsEmpty());
 
-        return Result.Success(new Organization(name));
+        var organization = new Organization(name);
+        organization.AddDomainEvent(new OrganizationCreatedEvent(name));
+        
+        return Result.Success(organization);
     }
 
     public Result AddMember(OrganizationMember member)
