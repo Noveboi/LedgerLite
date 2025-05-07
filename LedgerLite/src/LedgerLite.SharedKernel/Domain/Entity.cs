@@ -1,18 +1,17 @@
-﻿namespace LedgerLite.SharedKernel.Domain;
+﻿using LedgerLite.SharedKernel.Domain.Events;
+
+namespace LedgerLite.SharedKernel.Domain;
 
 public abstract class Entity
 {
-    protected Entity()
-    {
-        Id = GenerateId();
-    }
-    protected Entity(Guid? id)
-    {
-        Id = (id == Guid.Empty ? GenerateId() : id) ?? GenerateId();
-    }
+    protected Entity() => Id = GenerateId();
 
     public Guid Id { get; private init; }
 
+    private List<DomainEvent>? _domainEvents;
+    internal IReadOnlyList<DomainEvent> DomainEvents => _domainEvents ??= [];
+    public void AddDomainEvent<T>(T domainEvent) where T : DomainEvent => (_domainEvents ??= []).Add(domainEvent);
+    
     public override bool Equals(object? obj)
     {
         if (obj is Entity entity)

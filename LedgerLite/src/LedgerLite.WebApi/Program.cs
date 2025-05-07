@@ -1,4 +1,5 @@
 using FastEndpoints;
+using LedgerLite.SharedKernel;
 using LedgerLite.Users;
 using LedgerLite.WebApi;
 using Serilog;
@@ -16,6 +17,7 @@ try
 
     builder.Services
         .AddLedgerLiteAuth()
+        .AddSharedKernelServices()
         .AddModules(builder.Configuration)
         .AddApiInfrastructure(builder.Configuration);
 

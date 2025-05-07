@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using LedgerLite.Accounting.Core;
+using LedgerLite.SharedKernel;
 using LedgerLite.Users;
 using Serilog;
 

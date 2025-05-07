@@ -19,4 +19,9 @@
       <PackageReference Include="Serilog" Version="4.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="LedgerLite.Events.Tests.Unit"/>
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
+    </ItemGroup>
+    
 </Project>
