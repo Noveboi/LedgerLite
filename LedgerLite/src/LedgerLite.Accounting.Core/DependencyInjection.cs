@@ -16,9 +16,10 @@ public static class DependencyInjection
     {
         Log.Logger.RegisteringModule("Accounting");
 
-        services.AddDbContext<AccountingDbContext>(options => options
+        services.AddDbContext<AccountingDbContext>((sp, options) => options
             .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.CoreDatabase))
-            .AddAuditLogging());
+            .AddAuditLogging()
+            .AddDomainEventProcessing(sp));
 
         services.AddAccountingInfrastructure();
         services.AddAccountingApplication();

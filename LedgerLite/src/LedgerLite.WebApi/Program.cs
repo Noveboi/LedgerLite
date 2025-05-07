@@ -17,9 +17,9 @@ try
 
     builder.Services
         .AddLedgerLiteAuth()
-        .AddSharedKernelServices()
         .AddModules(builder.Configuration)
-        .AddApiInfrastructure(builder.Configuration);
+        .AddApiInfrastructure(builder.Configuration)
+        .AddSharedKernelServices();
 
     var app = builder.Build();
 

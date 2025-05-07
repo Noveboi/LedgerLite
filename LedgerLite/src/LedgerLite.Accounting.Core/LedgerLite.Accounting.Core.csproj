@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
+      <ProjectReference Include="..\LedgerLite.Users.Contracts\LedgerLite.Users.Contracts.csproj" />
     </ItemGroup>
 
     <ItemGroup>
