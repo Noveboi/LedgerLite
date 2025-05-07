@@ -33,6 +33,81 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrganizationMemberRole",
+                schema: "Users",
+                columns: table => new
+                {
+                    Value = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrganizationMemberRole", x => x.Value);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Organizations",
+                schema: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Organizations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                schema: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalSchema: "Users",
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrganizationMember",
+                schema: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrganizationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrganizationMember", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrganizationMember_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalSchema: "Users",
+                        principalTable: "Organizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 schema: "Users",
                 columns: table => new
@@ -61,58 +136,12 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Organization",
-                schema: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Organization", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrganizationMemberRole",
-                schema: "Users",
-                columns: table => new
-                {
-                    Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrganizationMemberRole", x => x.Value);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                schema: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ClaimType = table.Column<string>(type: "text", nullable: true),
-                    ClaimValue = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_AspNetUsers_OrganizationMember_OrganizationMemberId",
+                        column: x => x.OrganizationMemberId,
                         principalSchema: "Users",
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "OrganizationMember",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -209,36 +238,6 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "OrganizationMember",
-                schema: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    OrganizationId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Role = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrganizationMember", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OrganizationMember_AspNetUsers_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalSchema: "Users",
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrganizationMember_Organization_OrganizationId",
-                        column: x => x.OrganizationId,
-                        principalSchema: "Users",
-                        principalTable: "Organization",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 schema: "Users",
                 table: "OrganizationMemberRole",
@@ -288,6 +287,13 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_OrganizationMemberId",
+                schema: "Users",
+                table: "AspNetUsers",
+                column: "OrganizationMemberId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "Users",
                 table: "AspNetUsers",
@@ -298,7 +304,13 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                 name: "IX_OrganizationMember_OrganizationId",
                 schema: "Users",
                 table: "OrganizationMember",
-                column: "OrganizationId",
+                column: "OrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Organizations_Name",
+                schema: "Users",
+                table: "Organizations",
+                column: "Name",
                 unique: true);
         }
 
@@ -326,10 +338,6 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                 schema: "Users");
 
             migrationBuilder.DropTable(
-                name: "OrganizationMember",
-                schema: "Users");
-
-            migrationBuilder.DropTable(
                 name: "OrganizationMemberRole",
                 schema: "Users");
 
@@ -342,7 +350,11 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                 schema: "Users");
 
             migrationBuilder.DropTable(
-                name: "Organization",
+                name: "OrganizationMember",
+                schema: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Organizations",
                 schema: "Users");
         }
     }

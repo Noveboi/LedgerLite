@@ -23,7 +23,7 @@ namespace LedgerLite.Users.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.Organization", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.Organization", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -41,10 +41,13 @@ namespace LedgerLite.Users.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organization", "Users");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Organizations", "Users");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMember", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMember", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -68,7 +71,7 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                     b.ToTable("OrganizationMember", "Users");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMemberRole", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMemberRole", b =>
                 {
                     b.Property<int>("Value")
                         .ValueGeneratedOnAdd()
@@ -317,9 +320,9 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", "Users");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMember", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMember", b =>
                 {
-                    b.HasOne("LedgerLite.Users.Domain.Organization.Organization", null)
+                    b.HasOne("LedgerLite.Users.Domain.Organizations.Organization", null)
                         .WithMany("Members")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,7 +331,7 @@ namespace LedgerLite.Users.Infrastructure.Migrations
 
             modelBuilder.Entity("LedgerLite.Users.Domain.User", b =>
                 {
-                    b.HasOne("LedgerLite.Users.Domain.Organization.OrganizationMember", null)
+                    b.HasOne("LedgerLite.Users.Domain.Organizations.OrganizationMember", null)
                         .WithOne("User")
                         .HasForeignKey("LedgerLite.Users.Domain.User", "OrganizationMemberId");
                 });
@@ -384,12 +387,12 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.Organization", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.Organization", b =>
                 {
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMember", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMember", b =>
                 {
                     b.Navigation("User")
                         .IsRequired();

@@ -11,6 +11,8 @@ namespace LedgerLite.Users.Infrastructure;
 internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options) 
     : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
 {
+    public DbSet<Organization> Organizations { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

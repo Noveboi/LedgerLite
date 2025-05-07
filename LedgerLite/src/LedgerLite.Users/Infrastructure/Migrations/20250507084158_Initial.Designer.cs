@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Users.Infrastructure.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20250506195953_Initial")]
+    [Migration("20250507084158_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace LedgerLite.Users.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.Organization", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.Organization", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -44,10 +44,13 @@ namespace LedgerLite.Users.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Organization", "Users");
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Organizations", "Users");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMember", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMember", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
@@ -66,13 +69,12 @@ namespace LedgerLite.Users.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizationId")
-                        .IsUnique();
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("OrganizationMember", "Users");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMemberRole", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMemberRole", b =>
                 {
                     b.Property<int>("Value")
                         .ValueGeneratedOnAdd()
@@ -184,6 +186,9 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("OrganizationMemberId")
+                        .IsUnique();
 
                     b.ToTable("AspNetUsers", "Users");
                 });
@@ -318,21 +323,20 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", "Users");
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.OrganizationMember", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMember", b =>
                 {
-                    b.HasOne("LedgerLite.Users.Domain.Organization.Organization", null)
+                    b.HasOne("LedgerLite.Users.Domain.Organizations.Organization", null)
                         .WithMany("Members")
                         .HasForeignKey("OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("LedgerLite.Users.Domain.User", "User")
-                        .WithOne()
-                        .HasForeignKey("LedgerLite.Users.Domain.Organization.OrganizationMember", "OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+            modelBuilder.Entity("LedgerLite.Users.Domain.User", b =>
+                {
+                    b.HasOne("LedgerLite.Users.Domain.Organizations.OrganizationMember", null)
+                        .WithOne("User")
+                        .HasForeignKey("LedgerLite.Users.Domain.User", "OrganizationMemberId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -386,9 +390,15 @@ namespace LedgerLite.Users.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LedgerLite.Users.Domain.Organization.Organization", b =>
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.Organization", b =>
                 {
                     b.Navigation("Members");
+                });
+
+            modelBuilder.Entity("LedgerLite.Users.Domain.Organizations.OrganizationMember", b =>
+                {
+                    b.Navigation("User")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
