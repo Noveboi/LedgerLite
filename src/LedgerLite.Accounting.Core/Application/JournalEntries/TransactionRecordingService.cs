@@ -2,6 +2,7 @@
 using LedgerLite.Accounting.Core.Application.JournalEntries.Requests;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure;
 using Serilog;
 
@@ -10,21 +11,28 @@ namespace LedgerLite.Accounting.Core.Application.JournalEntries;
 
 internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWork) : ITransactionRecordingService
 {
-    private static readonly ILogger Logger = Log.ForContext<TransactionRecordingService>();
-    
-    public async Task<Result<JournalEntry>> RecordStandardEntryAsync(RecordStandardEntryRequest req, CancellationToken ct) =>
-        await CreateStandardJournalEntry(req)
+    public async Task<Result<JournalEntry>> RecordStandardEntryAsync(RecordStandardEntryRequest req, CancellationToken ct)
+    {
+        if (await unitOfWork.FiscalPeriodRepository.GetByIdAsync(req.FiscalPeriodId, ct) is not { } period)
+        {
+            return Result.Invalid(TransactionRecordingErrors.FiscalPeriodNotFound(req.FiscalPeriodId));
+        }
+        
+        return await CreateStandardJournalEntry(req, period)
             .Bind(entry => AddCreditLine(entry, req.CreditLine))
             .Bind(entry => AddDebitLine(entry, req.DebitLine))
             .Bind(entry => AddJournalEntryToRepository(entry))
             .BindAsync(entry => SaveChangesAsync(entry, ct));
+    }
 
-    private static Result<JournalEntry> CreateStandardJournalEntry(RecordStandardEntryRequest request) => 
+    private static Result<JournalEntry> CreateStandardJournalEntry(RecordStandardEntryRequest request, FiscalPeriod period) => 
         JournalEntry.Create(
             type: JournalEntryType.Standard,
             referenceNumber: request.ReferenceNumber,
             description: request.Description,
-            occursAtUtc: request.OccursAtUtc);
+            occursAtUtc: request.OccursAtUtc,
+            createdByUserId: request.RequestedByUserId,
+            fiscalPeriod: period);
     
     private static Result<JournalEntry> AddCreditLine(JournalEntry journalEntry, CreateJournalEntryLineRequest request) =>
         journalEntry.AddLine(
