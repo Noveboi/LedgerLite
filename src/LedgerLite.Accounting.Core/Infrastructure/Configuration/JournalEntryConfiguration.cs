@@ -1,4 +1,5 @@
 ﻿using LedgerLite.Accounting.Core.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.SharedKernel.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -18,6 +19,11 @@ internal sealed class JournalEntryConfiguration : IEntityTypeConfiguration<Journ
         builder.Property(x => x.Description)
             .IsRequired(false)
             .HasMaxLength(200);
+
+        builder
+            .HasOne<FiscalPeriod>()
+            .WithMany()
+            .HasForeignKey(x => x.FiscalPeriodId);
         
         builder.HasEnumeration(x => x.Type);
         builder.HasEnumeration(x => x.Status);
