@@ -5,4 +5,6 @@ public sealed record RecordStandardEntryRequest(
     DateTime OccursAtUtc, 
     string Description,
     CreateJournalEntryLineRequest CreditLine,
-    CreateJournalEntryLineRequest DebitLine);
+    CreateJournalEntryLineRequest DebitLine,
+    Guid RequestedByUserId,
+    Guid FiscalPeriodId);
