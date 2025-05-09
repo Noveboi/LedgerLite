@@ -1,8 +1,12 @@
 ﻿using Ardalis.Result;
+using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Application.JournalEntries.Requests;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure;
+using LedgerLite.Accounting.Tests.Unit.Utilities;
+using LedgerLite.Tests.Shared;
 
 namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
@@ -32,7 +36,7 @@ public class RecordStandardTransactionTests
     [Fact]
     public async Task AddToRepository_WhenCreationSuccessful()
     {
-        var request = Request("MARK41039213231");
+        var request = SuccessfulRequest();
         await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
         _repository.Received(1).Add(Arg.Any<JournalEntry>());
     }
@@ -40,7 +44,7 @@ public class RecordStandardTransactionTests
     [Fact]
     public async Task SaveChanges_WhenCreationSuccessful()
     {
-        var request = Request("ABC123");
+        var request = SuccessfulRequest();
         await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -48,7 +52,7 @@ public class RecordStandardTransactionTests
     [Fact]
     public async Task ReturnValidJournalEntry_WhenCreationAndSaveSuccessful()
     {
-        var request = Request("Hello!");
+        var request = SuccessfulRequest();
 
         var result = await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
         
@@ -65,17 +69,50 @@ public class RecordStandardTransactionTests
         var result = await _sut.RecordStandardEntryAsync(invalidRequest, CancellationToken.None);
         result.Status.ShouldBe(ResultStatus.Invalid);
     }
-    
+
+    [Fact]
+    public async Task ReturnInvalid_WhenFiscalPeriodDoesNotExist()
+    {
+        var request = Request("123");
+        var result = await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ShouldHaveError(TransactionRecordingErrors.FiscalPeriodNotFound(Guid.Empty));
+    }
+
+    private FiscalPeriod ConfigureFiscalPeriod(FiscalPeriod? period = null)
+    {
+        period ??= FakeFiscalPeriods.Get();
+        
+        _unitOfWork.FiscalPeriodRepository
+            .GetByIdAsync(period.Id, Arg.Any<CancellationToken>())
+            .Returns(period);
+
+        return period;
+    }
+
+    private RecordStandardEntryRequest SuccessfulRequest()
+    {
+        var period = ConfigureFiscalPeriod();
+        return Request(
+            referenceNumber: "Cool!",
+            userId: Guid.NewGuid(),
+            periodId: period.Id);
+    }
+
     private static RecordStandardEntryRequest Request(
         string referenceNumber,
         CreateJournalEntryLineRequest? creditRequest = null,
-        CreateJournalEntryLineRequest? debitRequest = null)
+        CreateJournalEntryLineRequest? debitRequest = null,
+        Guid? userId = null, 
+        Guid? periodId = null)
     {
         return new RecordStandardEntryRequest(
             ReferenceNumber: referenceNumber,
             OccursAtUtc: DateTime.Today,
             Description: "",
             CreditLine: creditRequest ?? LineRequest,
-            DebitLine: debitRequest ?? LineRequest);
+            DebitLine: debitRequest ?? LineRequest,
+            RequestedByUserId: userId.GetValueOrDefault(),
+            FiscalPeriodId: periodId.GetValueOrDefault());
     }
 }
