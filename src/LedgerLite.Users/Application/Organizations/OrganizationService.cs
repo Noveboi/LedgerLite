@@ -15,7 +15,11 @@ public sealed class OrganizationService(IUserUnitOfWork unitOfWork) : IOrganizat
         }
         
         return await Organization.Create(req.Name)
-            .Bind(org => unitOfWork.OrganizationRepository.Add(org))
+            .Bind(org =>
+            {
+                unitOfWork.OrganizationRepository.Add(org);
+                return Result.Success(org);
+            })
             .BindAsync(org => unitOfWork.SaveChangesAsync(token).MapAsync(() => org));
     }
 
