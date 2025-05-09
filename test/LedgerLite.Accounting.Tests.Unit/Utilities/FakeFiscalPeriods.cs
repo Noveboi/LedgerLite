@@ -13,4 +13,8 @@ public static class FakeFiscalPeriods
         .RuleFor(x => x.OrganizationId, _ => Guid.NewGuid());
 
     public static FiscalPeriod Get() => Faker().Generate();
+
+    public static FiscalPeriod GetClosed() => Faker()
+        .RuleFor(x => x.ClosedAtUtc, f => f.Date.Past())
+        .Generate();
 }

@@ -17,6 +17,15 @@ public class JournalEntryCreationTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(JournalEntryErrors.EmptyReferenceNumber());
     }
+
+    [Fact]
+    public void Invalid_WhenFiscalPeriod_IsClosed()
+    {
+        var period = FakeFiscalPeriods.GetClosed();
+        var result = HelpCreateEntry("abc123", period);
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ShouldHaveError(JournalEntryErrors.CannotEditBecausePeriodIsClosed(period));
+    }
     
     private static Result<JournalEntry> HelpCreateEntry(string referenceNumber, FiscalPeriod period) => JournalEntry.Create(
         referenceNumber: referenceNumber,
