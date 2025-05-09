@@ -7,5 +7,5 @@ public interface IOrganizationRepository
 {
     Task<bool> NameExistsAsync(string name, CancellationToken token);
     Task<Organization?> GetByIdAsync(Guid id, CancellationToken token);
-    Result<Organization> Add(Organization organization);
+    void Add(Organization organization);
 }

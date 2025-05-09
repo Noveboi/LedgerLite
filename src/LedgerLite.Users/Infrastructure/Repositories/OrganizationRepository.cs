@@ -12,8 +12,5 @@ internal sealed class OrganizationRepository(UsersDbContext context) : IOrganiza
     public Task<Organization?> GetByIdAsync(Guid id, CancellationToken token) => 
         context.Organizations.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
 
-    public Result<Organization> Add(Organization organization)
-    {
-        return context.Organizations.Add(organization).Entity;
-    }
+    public void Add(Organization organization) => context.Organizations.Add(organization);
 }
