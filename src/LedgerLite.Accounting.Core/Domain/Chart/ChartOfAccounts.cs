@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Accounting.Core.Domain.Accounts;
+using LedgerLite.Accounting.Core.Integrations;
 using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.Chart;
@@ -17,12 +18,23 @@ public sealed class ChartOfAccounts : AuditableEntity
      */
     
     private ChartOfAccounts() { }
+
+    private ChartOfAccounts(Guid organizationId)
+    {
+        OrganizationId = organizationId;
+    }
     
     private readonly List<AccountNode> _nodes = [];
     public IReadOnlyCollection<Account> Accounts => _nodes.Select(x => x.Account).ToList();
     public IReadOnlyCollection<AccountNode> Nodes => _nodes;
 
-    public static Result<ChartOfAccounts> Create() => Result.Success(new ChartOfAccounts());
+    public Guid OrganizationId { get; }
+    
+    public static Result<ChartOfAccounts> Create(Guid organizationId)
+    {
+        var chart = new ChartOfAccounts(organizationId);
+        return Result.Success(chart);
+    }
 
     /// <summary>
     /// Creates an account initially at the 'root' level of the hierarchy.
