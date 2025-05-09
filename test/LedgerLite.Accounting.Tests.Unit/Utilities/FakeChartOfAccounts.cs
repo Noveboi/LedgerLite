@@ -8,6 +8,7 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 public sealed class ChartOfAccountsFakerOptions
 {
     public Guid? Id { get; set; } 
+    public Guid? OrganizationId { get; set; }
     public IEnumerable<AccountNode>? Nodes { get; set; }
 }
 
@@ -20,6 +21,7 @@ public static class FakeChartOfAccounts
         return new PrivateFaker<ChartOfAccounts>(new PrivateBinder())
             .UsePrivateConstructor()
             .RuleFor(x => x.Id, (_, c) => options?.Id ?? c.Id)
+            .RuleFor(x => x.OrganizationId, _ => options?.OrganizationId ?? Guid.NewGuid())
             .RuleFor("_nodes", (f, c) => options?.Nodes?.ToList()
                                        ?? AccountFaker
                                            .GenerateLazy(f.Random.Number(1, 3))
@@ -49,7 +51,10 @@ public static class FakeChartOfAccounts
         return faker.Generate();
     }
 
-    public static ChartOfAccounts Empty => ChartOfAccounts.Create();
+    public static ChartOfAccounts Empty => GetFaker(new ChartOfAccountsFakerOptions
+    {
+        Nodes = []
+    }).Generate();
 }
 
 public sealed record FakeNodeBuilder(Account Account, Action<FakeChartOfAccountsBuilder>? ConfigureChildren)

@@ -8,5 +8,8 @@ public static class ResultAssertionExtensions
         .ShouldHaveSingleItem()
         .ShouldBeEquivalentTo(error);
 
+    public static void ShouldHaveError<TValue>(this Result<TValue> result, ValidationError error) =>
+        result.Map().ShouldHaveError(error);
+
     public static void ShouldBeInvalid(this Result result) => result.Status.ShouldBe(ResultStatus.Invalid);
 }

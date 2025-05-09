@@ -1,4 +1,5 @@
 ﻿using LedgerLite.Accounting.Core.Domain.JournalEntries;
+using LedgerLite.Accounting.Core.Domain.Periods;
 
 namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
@@ -7,6 +8,8 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 /// </summary>
 internal static class JournalEntryHelper
 {
+    private static readonly FiscalPeriod Period = FakeFiscalPeriods.Get();
+    
     public static JournalEntry CreateWithLines(
         JournalEntryType type,
         IEnumerable<JournalEntryLine> lines)
@@ -15,7 +18,9 @@ internal static class JournalEntryHelper
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occursAtUtc: DateTime.Today).Value;
+            occursAtUtc: DateTime.Today,
+            createdByUserId: Guid.NewGuid(),
+            fiscalPeriod: Period).Value;
 
         foreach (var line in lines)
         {
@@ -30,5 +35,7 @@ internal static class JournalEntryHelper
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occursAtUtc: DateTime.Today).Value;
+            occursAtUtc: DateTime.Today,
+            createdByUserId: Guid.NewGuid(),
+            fiscalPeriod: Period).Value;
 }
