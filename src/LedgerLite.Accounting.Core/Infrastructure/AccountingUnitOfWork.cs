@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
@@ -21,6 +22,6 @@ internal sealed class AccountingUnitOfWork(IServiceProvider serviceProvider, Acc
         field ?? serviceProvider.GetRequiredService<IJournalEntryRepository>();
 
     [field: AllowNull, MaybeNull]
-    public IJournalEntryLineRepository JournalEntryLineRepository =>
-        field ?? serviceProvider.GetRequiredService<IJournalEntryLineRepository>();
+    public IFiscalPeriodRepository FiscalPeriodRepository =>
+        field ?? serviceProvider.GetRequiredService<IFiscalPeriodRepository>();
 }
