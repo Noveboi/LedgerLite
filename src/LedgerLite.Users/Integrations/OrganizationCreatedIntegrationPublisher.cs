@@ -10,5 +10,5 @@ internal sealed class OrganizationCreatedIntegrationPublisher(IPublisher publish
     IntegrationEventPropagator<OrganizationCreatedEvent, OrganizationCreatedIntegrationEvent>(publisher)
 {
     protected override OrganizationCreatedIntegrationEvent MapToIntegrationEvent(OrganizationCreatedEvent domainEvent) => 
-        new(domainEvent.Name);
+        new(domainEvent.Id, domainEvent.Name);
 }
