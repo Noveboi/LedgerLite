@@ -1,4 +1,6 @@
 ﻿using Ardalis.Result;
+using Humanizer;
+using LedgerLite.Accounting.Core.Domain.Periods;
 
 namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
@@ -54,4 +56,18 @@ internal static class JournalEntryErrors
         errorMessage: "The journal entry is imbalanced.",
         errorCode: "JEN-IMBALANCED",
         severity: ValidationSeverity.Error);
+    
+    public static ValidationError CannotEditBecausePeriodIsClosed(FiscalPeriod period)
+    {
+        if (!period.ClosedAtUtc.HasValue)
+            throw new InvalidOperationException("Tried to generate error for closed fiscal period, but period is not closed.");
+
+        var timeSinceClose = DateTime.UtcNow - period.ClosedAtUtc.Value;
+        
+        return new ValidationError(
+            identifier: LineIdentifier,
+            errorMessage: $"Cannot post to specified fiscal period because it was closed {timeSinceClose.Humanize()} ago.",
+            errorCode: "JEN-PERIOD_CLOSED",
+            severity: ValidationSeverity.Error);
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
@@ -9,6 +10,10 @@ namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 public sealed class JournalEntry : AuditableEntity
 {
     private JournalEntry() { }
+    
+    public Guid FiscalPeriodId { get; private init; }
+    public Guid CreatedByUserId { get; private init;}
+    public Guid? LastModifiedByUserId { get; private init; }
     
     public string ReferenceNumber { get; private init; } = null!;
     public DateTime OccursAtUtc { get; private init; }
@@ -23,13 +28,18 @@ public sealed class JournalEntry : AuditableEntity
     /// Start recording a new journal entry. 
     /// </summary>
     public static Result<JournalEntry> Create(
+        FiscalPeriod fiscalPeriod,
         JournalEntryType type,
         string referenceNumber,
         string description,
-        DateTime occursAtUtc)
+        DateTime occursAtUtc,
+        Guid createdByUserId)
     {
         if (string.IsNullOrWhiteSpace(referenceNumber))
             return Result.Invalid(JournalEntryErrors.EmptyReferenceNumber());
+
+        if (fiscalPeriod.IsClosed)
+            return Result.Invalid(JournalEntryErrors.CannotEditBecausePeriodIsClosed(fiscalPeriod));
         
         return Result.Success(new JournalEntry
         {
@@ -37,7 +47,9 @@ public sealed class JournalEntry : AuditableEntity
             ReferenceNumber = referenceNumber,
             Description = description,
             OccursAtUtc = occursAtUtc,
-            Status = JournalEntryStatus.Editable
+            Status = JournalEntryStatus.Editable,
+            CreatedByUserId = createdByUserId,
+            FiscalPeriodId = fiscalPeriod.Id
         });
     }
 
