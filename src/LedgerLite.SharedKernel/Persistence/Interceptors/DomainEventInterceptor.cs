@@ -27,10 +27,13 @@ internal sealed class DomainEventInterceptor(IPublisher publisher) : SaveChanges
             .Where(x => x.Entity.DomainEvents.Count > 0)
             .SelectMany(x => x.Entity.DomainEvents)
             .ToList();
-        
-        _log.Information("Queuing {eventCount} domain events for processing", domainEvents.Count);
-        _unprocessedEvents.AddRange(domainEvents);
-        
+
+        if (domainEvents.Count > 0)
+        {
+            _log.Information("Queuing {eventCount} domain events for processing", domainEvents.Count);
+            _unprocessedEvents.AddRange(domainEvents);
+        }
+
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
@@ -39,13 +42,17 @@ internal sealed class DomainEventInterceptor(IPublisher publisher) : SaveChanges
         int result,
         CancellationToken token = new())
     {
-        _log.Information("Processing and publishing {eventData} domain events...", _unprocessedEvents.Count);
-        foreach (var domainEvent in _unprocessedEvents)
+        if (_unprocessedEvents.Count > 0)
         {
-            await publisher.PublishAsync(domainEvent, token);
+            _log.Information("Processing and publishing {eventData} domain events...", _unprocessedEvents.Count);
+            foreach (var domainEvent in _unprocessedEvents)
+            {
+                await publisher.PublishAsync(domainEvent, token);
+            }
+
+            _unprocessedEvents.Clear();
         }
-        
-        _unprocessedEvents.Clear();
+
         return await base.SavedChangesAsync(eventData, result, token);
     }
 }
