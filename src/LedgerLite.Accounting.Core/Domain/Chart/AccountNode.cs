@@ -11,6 +11,7 @@ public sealed class AccountNode : Entity
     {
         ChartId = chartId;
         Account = account;
+        AccountId = account.Id;
     }
     
     /// <summary>
@@ -22,6 +23,7 @@ public sealed class AccountNode : Entity
     /// The underlying account that is wrapped by the node.
     /// </summary>
     public Account Account { get; private set; } = null!;
+    public Guid AccountId { get; private set; }
     
     public Guid? ParentId { get; private set; }
     public AccountNode? Parent { get; private set; }
