@@ -5,5 +5,5 @@ namespace LedgerLite.Accounting.Core.Application.Chart;
 
 public interface IChartOfAccountsService
 {
-    Task<Result<ChartOfAccounts>> GetByOrganizationIdAsync(Guid? organizationId, CancellationToken token);
+    Task<Result<ChartOfAccounts>> GetByUserIdAsync(Guid userId, CancellationToken token);
 }

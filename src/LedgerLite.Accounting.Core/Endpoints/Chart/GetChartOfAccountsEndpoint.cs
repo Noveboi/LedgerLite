@@ -3,16 +3,15 @@ using Ardalis.Result.AspNetCore;
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.Chart;
 using LedgerLite.Accounting.Core.Endpoints.Chart.Dto;
+using LedgerLite.SharedKernel.Identity;
 using LedgerLite.Users.Contracts;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Chart;
 
 internal sealed record GetChartOfAccountsRequestDto(
-    [property: FromClaim(ClaimTypes.NameIdentifier)] Guid UserId);
+    [property: FromClaim(LedgerClaims.UserId)] Guid UserId);
 
-internal sealed class GetChartOfAccountsEndpoint(
-    IChartOfAccountsService chartService,
-    IUsersRequests userRequests) 
+internal sealed class GetChartOfAccountsEndpoint(IChartOfAccountsService chartService) 
     : Endpoint<GetChartOfAccountsRequestDto, ChartOfAccountsDto>
 {
     public override void Configure()
@@ -23,21 +22,13 @@ internal sealed class GetChartOfAccountsEndpoint(
 
     public override async Task HandleAsync(GetChartOfAccountsRequestDto req, CancellationToken ct)
     {
-        var userResult = await userRequests.GetUserByIdAsync(req.UserId, ct);
-        if (!userResult.IsSuccess)
+        var result = await chartService.GetByUserIdAsync(req.UserId, ct);
+        if (!result.IsSuccess)
         {
-            await SendResultAsync(userResult.ToMinimalApiResult());
+            await SendResultAsync(result.ToMinimalApiResult());
             return;
         }
 
-        var user = userResult.Value;
-        var chartResult = await chartService.GetByOrganizationIdAsync(user.OrganizationId, ct);
-        if (!chartResult.IsSuccess)
-        {
-            await SendResultAsync(chartResult.ToMinimalApiResult());
-            return;
-        }
-
-        await SendAsync(ChartOfAccountsDto.FromEntity(chartResult.Value), cancellation: ct);
+        await SendAsync(ChartOfAccountsDto.FromEntity(result.Value), cancellation: ct);
     }
 }

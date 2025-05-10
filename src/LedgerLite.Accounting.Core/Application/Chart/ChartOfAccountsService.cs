@@ -1,21 +1,36 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
+using LedgerLite.SharedKernel.Domain.Errors;
+using LedgerLite.Users.Contracts;
 
 namespace LedgerLite.Accounting.Core.Application.Chart;
 
-public sealed class ChartOfAccountsService(IChartOfAccountsRepository repository) : IChartOfAccountsService
+public sealed class ChartOfAccountsService(
+    IUsersRequests userRequests,
+    IChartOfAccountsRepository repository) : IChartOfAccountsService
 {
-    public async Task<Result<ChartOfAccounts>> GetByOrganizationIdAsync(Guid? organizationId, CancellationToken token)
+    // The ChartOfAccounts is not directly linked to one user but an organization. Therefore, we must first get
+    // the organization that the user belongs and then get the ChartOfAccounts.
+    public async Task<Result<ChartOfAccounts>> GetByUserIdAsync(Guid userId, CancellationToken token)
     {
-        if (!organizationId.HasValue)
+        var userResult = await userRequests.GetUserByIdAsync(userId, token);
+        if (!userResult.IsSuccess)
+        {
+            return userResult.Map();
+        }
+
+        var user = userResult.Value;
+        
+        if (!user.OrganizationId.HasValue)
         {
             return Result.NotFound("User does not belong in an organization.");
         }
 
-        if (await repository.GetByOrganizationIdAsync(organizationId.Value, token) is not { } chart)
+        if (await repository.GetByOrganizationIdAsync(user.OrganizationId.Value, token) is not { } chart)
         {
-            return Result.NotFound($"Organization with ID '{organizationId.Value}' does not exist.");
+            return Result.NotFound($"Organization with ID '{user.OrganizationId.Value}' does not exist.");
         }
 
         return chart;
