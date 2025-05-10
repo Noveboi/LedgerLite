@@ -1,4 +1,5 @@
-﻿using LedgerLite.SharedKernel.Domain;
+﻿using LedgerLite.Accounting.Core.Domain.Accounts;
+using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
@@ -14,6 +15,7 @@ public sealed class JournalEntryLine : AuditableEntity
     /// </summary>
     public Guid EntryId { get; private init; }
     public Guid AccountId { get; private init; }
+    public Account Account { get; private init; } = null!;
     public TransactionType TransactionType { get; private init; } = null!;
     public decimal Amount { get; private init; } 
     

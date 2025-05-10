@@ -1,5 +1,4 @@
-﻿using LedgerLite.Accounting.Core.Domain.Accounts;
-using LedgerLite.Accounting.Core.Domain.JournalEntries;
+﻿using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.SharedKernel.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -19,8 +18,10 @@ internal sealed class JournalEntryLineConfiguration : IEntityTypeConfiguration<J
             .HasForeignKey(x => x.EntryId);
 
         builder
-            .HasOne<Account>()
+            .HasOne(x => x.Account)
             .WithMany()
             .HasForeignKey(x => x.AccountId);
+
+        builder.Navigation(x => x.Account).IsRequired().AutoInclude();
     }
 }
