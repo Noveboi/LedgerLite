@@ -43,7 +43,7 @@ internal sealed class CreateAccountEndpoint(IAccountService accountService) : En
 
         await SendCreatedAtAsync<GetAccountEndpoint>(
             routeValues: new { account.Id },
-            responseBody: AccountResponseDto.FromEntity(account),
+            responseBody: account.ToDto(),
             cancellation: ct);
     }
 
