@@ -6,4 +6,5 @@ public interface IJournalEntryRepository
 {
     void Add(JournalEntry entry);
     void Remove(JournalEntry entry);
+    Task<JournalEntry?> GetByIdAsync(Guid id, CancellationToken token);
 }

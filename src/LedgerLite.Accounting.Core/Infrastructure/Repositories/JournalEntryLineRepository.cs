@@ -12,6 +12,7 @@ internal sealed class JournalEntryLineRepository(AccountingDbContext context) : 
 
     public async Task<IReadOnlyList<JournalEntryLine>> GetLinesForAccountAsync(Account account) =>
         await context.JournalEntryLines
+            .Include(x => x.Entry)
             .Where(x => x.AccountId == account.Id)
             .ToListAsync();
 
