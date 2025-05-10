@@ -14,6 +14,8 @@ public sealed class JournalEntryLine : AuditableEntity
     /// The ID of the associated journal entry.
     /// </summary>
     public Guid EntryId { get; private init; }
+
+    public JournalEntry Entry { get; private init; } = null!;
     public Guid AccountId { get; private init; }
     public Account Account { get; private init; } = null!;
     public TransactionType TransactionType { get; private init; } = null!;
