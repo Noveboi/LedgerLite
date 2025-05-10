@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace LedgerLite.Users.Endpoints.Identity;

@@ -1,5 +1,4 @@
-﻿using Ardalis.Result;
-using LedgerLite.Users.Domain.Organizations;
+﻿using LedgerLite.Users.Domain.Organizations;
 using Microsoft.EntityFrameworkCore;
 
 namespace LedgerLite.Users.Infrastructure.Repositories;

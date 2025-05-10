@@ -4,9 +4,8 @@ using LedgerLite.SharedKernel.Persistence;
 using LedgerLite.Users.Application;
 using LedgerLite.Users.Domain;
 using LedgerLite.Users.Infrastructure;
-using Microsoft.AspNetCore.Builder;
+using LedgerLite.Users.Integrations;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +37,7 @@ public static class UsersDependencyInjection
             .AddDomainEventProcessing(sp));
         
         return services
+            .AddUsersIntegrations()
             .AddUsersInfrastructure()
             .AddUsersApplication()
             .AddIdentityCore<User>()

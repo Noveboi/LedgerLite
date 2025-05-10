@@ -2,7 +2,6 @@
 using System.Text;
 using FastEndpoints;
 using LedgerLite.Users.Domain;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
