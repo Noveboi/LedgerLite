@@ -13,7 +13,7 @@ internal sealed class JournalEntryLineConfiguration : IEntityTypeConfiguration<J
         builder.HasEnumeration(x => x.TransactionType);
 
         builder
-            .HasOne<JournalEntry>()
+            .HasOne(x => x.Entry)
             .WithMany(x => x.Lines)
             .HasForeignKey(x => x.EntryId);
 
