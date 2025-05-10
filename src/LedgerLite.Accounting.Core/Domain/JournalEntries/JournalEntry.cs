@@ -46,7 +46,7 @@ public sealed class JournalEntry : AuditableEntity
             Type = type,
             ReferenceNumber = referenceNumber,
             Description = description,
-            OccursAtUtc = occursAtUtc,
+            OccursAtUtc = occursAtUtc.ToUniversalTime(),
             Status = JournalEntryStatus.Editable,
             CreatedByUserId = createdByUserId,
             FiscalPeriodId = fiscalPeriod.Id
