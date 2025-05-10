@@ -8,15 +8,6 @@ namespace LedgerLite.Accounting.Core.Application.Accounts;
 
 internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccountService
 {
-    public async Task<Result<Account>> GetAsync(Guid id, CancellationToken token)
-    {
-        var account = await unitOfWork.AccountRepository.GetByIdAsync(id, token);
-        if (account is null)
-            return Result.NotFound($"Account with ID '{id}' does not exist.");
-
-        return account;
-    }
-
     public async Task<Result<Account>> CreateAsync(CreateAccountRequest request, CancellationToken token)
     {
         var createAccountResult = CreateAccount(request);
