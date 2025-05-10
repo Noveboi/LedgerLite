@@ -10,5 +10,12 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.Property(x => x.FirstName).HasMaxLength(100);
         builder.Property(x => x.LastName).HasMaxLength(100);
+
+        builder
+            .HasOne(x => x.OrganizationMember)
+            .WithOne(x => x.User)
+            .HasForeignKey<User>(x => x.OrganizationMemberId);
+
+        builder.Navigation(x => x.OrganizationMember).AutoInclude();
     }
 }

@@ -1,5 +1,5 @@
-﻿using Ardalis.Result;
-using LedgerLite.SharedKernel.Domain;
+﻿using LedgerLite.SharedKernel.Domain;
+using LedgerLite.Users.Domain.Organizations;
 using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Domain;
@@ -13,7 +13,7 @@ public sealed class User : IdentityUser<Guid>, IAuditable
     public string? LastName { get; set; }
     
     public Guid? OrganizationMemberId { get; private set; }
-
+    public OrganizationMember? OrganizationMember { get; private set; }
 
     public bool IsUsingEmailAsUsername() => Email == UserName;
     
