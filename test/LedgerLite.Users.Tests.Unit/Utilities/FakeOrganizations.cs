@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using LedgerLite.Tests.Shared;
-using LedgerLite.Users.Domain;
 using LedgerLite.Users.Domain.Organizations;
 
 namespace LedgerLite.Users.Tests.Unit.Utilities;

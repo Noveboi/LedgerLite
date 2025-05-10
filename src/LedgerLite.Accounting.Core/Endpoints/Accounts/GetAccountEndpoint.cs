@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result.AspNetCore;
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.Accounts;
-using LedgerLite.Accounting.Core.Endpoints.Accounts.Data;
+using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 

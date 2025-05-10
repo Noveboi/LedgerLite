@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
-using Scrutor;
 using Serilog;
 
 namespace LedgerLite.SharedKernel.Events;

@@ -2,7 +2,6 @@
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.Persistence;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 

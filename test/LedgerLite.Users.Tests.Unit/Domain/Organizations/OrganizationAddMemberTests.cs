@@ -3,7 +3,7 @@ using LedgerLite.Tests.Shared;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Tests.Unit.Utilities;
 
-namespace LedgerLite.Users.Tests.Unit.Organizations;
+namespace LedgerLite.Users.Tests.Unit.Domain.Organizations;
 
 public class OrganizationAddMemberTests
 {

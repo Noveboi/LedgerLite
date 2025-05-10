@@ -2,7 +2,7 @@
 using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.Users.Domain.Organizations;
 
-namespace LedgerLite.Users.Tests.Unit.Organizations;
+namespace LedgerLite.Users.Tests.Unit.Domain.Organizations;
 
 public class OrganizationCreateTests
 {

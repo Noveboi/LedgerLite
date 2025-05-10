@@ -2,7 +2,7 @@
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using Microsoft.EntityFrameworkCore;
 
-namespace LedgerLite.Accounting.Core.Infrastructure;
+namespace LedgerLite.Accounting.Core.Infrastructure.Repositories;
 
 internal sealed class JournalEntryLineRepository(AccountingDbContext context) : IJournalEntryLineRepository
 {

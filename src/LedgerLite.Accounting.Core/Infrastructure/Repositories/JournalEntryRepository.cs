@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.JournalEntries;
 
-namespace LedgerLite.Accounting.Core.Infrastructure;
+namespace LedgerLite.Accounting.Core.Infrastructure.Repositories;
 
 internal sealed class JournalEntryRepository(AccountingDbContext context) : IJournalEntryRepository
 {

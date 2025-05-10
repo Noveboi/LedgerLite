@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Accounts;
 
-namespace LedgerLite.Accounting.Core.Infrastructure;
+namespace LedgerLite.Accounting.Core.Infrastructure.Repositories;
 
 public interface IAccountRepository
 {

@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Accounting.Core.Domain.Accounts;
-using LedgerLite.Accounting.Core.Integrations;
 using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.Chart;

@@ -1,7 +1,7 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Accounts;
 using Microsoft.EntityFrameworkCore;
 
-namespace LedgerLite.Accounting.Core.Infrastructure;
+namespace LedgerLite.Accounting.Core.Infrastructure.Repositories;
 
 internal sealed class AccountRepository(AccountingDbContext context) : IAccountRepository
 {

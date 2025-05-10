@@ -1,7 +1,6 @@
 ﻿using LedgerLite.SharedKernel.Domain;
 using LedgerLite.SharedKernel.Domain.Events;
 using LedgerLite.SharedKernel.Events;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Serilog;
 

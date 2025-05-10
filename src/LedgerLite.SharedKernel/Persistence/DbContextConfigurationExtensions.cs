@@ -2,7 +2,6 @@
 using LedgerLite.SharedKernel.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 
 namespace LedgerLite.SharedKernel.Persistence;
 

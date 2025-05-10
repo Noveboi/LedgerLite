@@ -5,7 +5,7 @@ using LedgerLite.Accounting.Core.Application.Accounts;
 using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
-using LedgerLite.Accounting.Core.Endpoints.Accounts.Data;
+using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 using LedgerLite.SharedKernel.Extensions;
 using Serilog;
 

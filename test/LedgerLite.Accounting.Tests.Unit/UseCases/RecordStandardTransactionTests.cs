@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
-using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Application.JournalEntries.Requests;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure;
+using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
 using LedgerLite.Tests.Shared;
 

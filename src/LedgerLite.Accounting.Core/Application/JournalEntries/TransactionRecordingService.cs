@@ -4,7 +4,6 @@ using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure;
-using Serilog;
 
 // ReSharper disable once ConvertClosureToMethodGroup
 namespace LedgerLite.Accounting.Core.Application.JournalEntries;
