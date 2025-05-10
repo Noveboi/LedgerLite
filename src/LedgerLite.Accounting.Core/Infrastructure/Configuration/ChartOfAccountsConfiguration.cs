@@ -12,6 +12,12 @@ internal sealed class ChartOfAccountsConfiguration : IEntityTypeConfiguration<Ch
         builder.IsDomainEntity();
         builder.Ignore(x => x.Accounts);
 
+        builder.Property(x => x.OrganizationId)
+            .IsRequired()
+            .ValueGeneratedNever();
+
+        builder.HasIndex(x => x.OrganizationId).IsUnique();
+        
         builder
             .HasMany(x => x.Nodes)
             .WithOne()

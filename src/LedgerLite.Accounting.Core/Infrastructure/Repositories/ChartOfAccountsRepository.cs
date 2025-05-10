@@ -1,7 +1,7 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Chart;
 using Microsoft.EntityFrameworkCore;
 
-namespace LedgerLite.Accounting.Core.Infrastructure;
+namespace LedgerLite.Accounting.Core.Infrastructure.Repositories;
 
 internal sealed class ChartOfAccountsRepository(AccountingDbContext context) : IChartOfAccountsRepository
 {
@@ -9,4 +9,7 @@ internal sealed class ChartOfAccountsRepository(AccountingDbContext context) : I
 
     public Task<ChartOfAccounts?> GetByIdAsync(Guid id, CancellationToken token) =>
         context.Charts.FirstOrDefaultAsync(x => x.Id == id, token);
+
+    public Task<ChartOfAccounts?> GetByOrganizationIdAsync(Guid organizationId, CancellationToken token) =>
+        context.Charts.FirstOrDefaultAsync(x => x.OrganizationId == organizationId, token);
 }
