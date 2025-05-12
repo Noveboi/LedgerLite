@@ -16,6 +16,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Services
+        .AddLedgerLiteCors(builder.Configuration)
         .AddLedgerLiteAuth()
         .AddModules(builder.Configuration)
         .AddApiInfrastructure(builder.Configuration)
@@ -29,6 +30,7 @@ try
     }
     
     app.UseSerilogRequestLogging();
+    app.UseCors("LedgerLite");
     app.MapOpenApi();
     app.UseAuthorization();
     app.UseFastEndpoints();
