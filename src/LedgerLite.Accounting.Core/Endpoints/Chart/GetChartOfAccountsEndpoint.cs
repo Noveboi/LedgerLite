@@ -1,10 +1,8 @@
-﻿using System.Security.Claims;
-using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result.AspNetCore;
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.Chart;
 using LedgerLite.Accounting.Core.Endpoints.Chart.Dto;
 using LedgerLite.SharedKernel.Identity;
-using LedgerLite.Users.Contracts;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Chart;
 

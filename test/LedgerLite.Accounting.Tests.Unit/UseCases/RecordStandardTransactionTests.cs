@@ -6,6 +6,7 @@ using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure;
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
+using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 using LedgerLite.Tests.Shared;
 
 namespace LedgerLite.Accounting.Tests.Unit.UseCases;
@@ -20,8 +21,7 @@ public class RecordStandardTransactionTests
 
     public RecordStandardTransactionTests()
     {
-        _unitOfWork.JournalEntryRepository.Returns(_repository);
-        _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
+        _unitOfWork.ConfigureForTests(o => o.MockJournalEntryRepository(_repository));
         _sut = new TransactionRecordingService(_unitOfWork);
     }
 
@@ -30,7 +30,7 @@ public class RecordStandardTransactionTests
     {
         var invalidRequest = Request("");
         await _sut.RecordStandardEntryAsync(invalidRequest, CancellationToken.None);
-        await _unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _unitOfWork.AssertThatNoActionWasTaken();
     }
 
     [Fact]

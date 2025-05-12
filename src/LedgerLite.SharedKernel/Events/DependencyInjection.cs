@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using LedgerLite.SharedKernel.Internal;
+﻿using LedgerLite.SharedKernel.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 

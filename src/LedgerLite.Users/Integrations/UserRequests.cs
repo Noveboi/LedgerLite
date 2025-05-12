@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Integrations;
 
-internal sealed class UsersRequests(UserManager<User> userManager) : IUsersRequests
+internal sealed class UserRequests(UserManager<User> userManager) : IUserRequests
 {
     public async Task<Result<UserDto>> GetUserByIdAsync(Guid id, CancellationToken token)
     {

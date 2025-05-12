@@ -14,18 +14,18 @@ internal sealed class GetDetailedAccountUseCase(
     IJournalEntryLineRepository lineRepository)
     : IApplicationUseCase<GetDetailedAccountRequest, AccountWithDetails>
 {
-    public async Task<Result<AccountWithDetails>> HandleAsync(GetDetailedAccountRequest request, CancellationToken token)
+    public async Task<Result<AccountWithDetails>> HandleAsync(GetDetailedAccountRequest userId, CancellationToken token)
     {
-        var chartResult = await chartService.GetByUserIdAsync(request.UserId, token);
+        var chartResult = await chartService.GetByUserIdAsync(userId.UserId, token);
         if (!chartResult.IsSuccess)
         {
             return chartResult.Map();
         }
 
         var chart = chartResult.Value;
-        if (chart.Nodes.FirstOrDefault(node => node.Account.Id == request.AccountId) is not { } accountNode)
+        if (chart.Nodes.FirstOrDefault(node => node.Account.Id == userId.AccountId) is not { } accountNode)
         {
-            return Result.NotFound(CommonErrors.NotFound<Account>(request.AccountId));
+            return Result.NotFound(CommonErrors.NotFound<Account>(userId.AccountId));
         }
 
         var lines = await lineRepository.GetLinesForAccountAsync(accountNode.Account);

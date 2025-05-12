@@ -11,16 +11,16 @@ namespace LedgerLite.Users.Domain.Organizations;
 /// </summary>
 public sealed class Organization : AuditableEntity
 {
-    public string Name { get; private set; } = null!;
-
-    private readonly List<OrganizationMember> _members = [];
-
     private Organization() { }
     private Organization(string name)
     {
         Name = name;
     }
-
+    
+    public string Name { get; private set; } = null!;
+    
+    
+    private readonly List<OrganizationMember> _members = [];
     public IReadOnlyCollection<OrganizationMember> Members => _members;
 
     public static Result<Organization> Create(string name)

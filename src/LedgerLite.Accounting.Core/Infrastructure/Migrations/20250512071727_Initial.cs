@@ -57,6 +57,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    OrganizationId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -80,22 +81,21 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JournalEntries",
+                name: "FiscalPeriods",
                 schema: "Accounting",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ReferenceNumber = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    OccursAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
-                    Type = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false),
+                    OrganizationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ClosedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JournalEntries", x => x.Id);
+                    table.PrimaryKey("PK_FiscalPeriods", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,6 +171,35 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         column: x => x.ChartId,
                         principalSchema: "Accounting",
                         principalTable: "Charts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JournalEntries",
+                schema: "Accounting",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FiscalPeriodId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedByUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastModifiedByUserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ReferenceNumber = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    OccursAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JournalEntries", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JournalEntries_FiscalPeriods_FiscalPeriodId",
+                        column: x => x.FiscalPeriodId,
+                        principalSchema: "Accounting",
+                        principalTable: "FiscalPeriods",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -271,7 +300,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 name: "IX_AccountNode_AccountId",
                 schema: "Accounting",
                 table: "AccountNode",
-                column: "AccountId");
+                column: "AccountId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountNode_ChartId",
@@ -284,6 +314,19 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 schema: "Accounting",
                 table: "AccountNode",
                 column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Charts_OrganizationId",
+                schema: "Accounting",
+                table: "Charts",
+                column: "OrganizationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JournalEntries_FiscalPeriodId",
+                schema: "Accounting",
+                table: "JournalEntries",
+                column: "FiscalPeriodId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JournalEntryLines_AccountId",
@@ -339,6 +382,10 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "JournalEntries",
+                schema: "Accounting");
+
+            migrationBuilder.DropTable(
+                name: "FiscalPeriods",
                 schema: "Accounting");
         }
     }

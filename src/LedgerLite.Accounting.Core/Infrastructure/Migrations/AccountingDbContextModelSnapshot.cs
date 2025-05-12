@@ -123,7 +123,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.HasIndex("ChartId");
 
@@ -413,8 +414,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
                 {
                     b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne()
+                        .HasForeignKey("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -450,13 +451,15 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", null)
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", "Entry")
                         .WithMany("Lines")
                         .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");
+
+                    b.Navigation("Entry");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
