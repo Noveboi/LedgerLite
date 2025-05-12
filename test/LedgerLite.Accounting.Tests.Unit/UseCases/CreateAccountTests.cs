@@ -20,9 +20,9 @@ public class CreateAccountTests
     
     public CreateAccountTests()
     {
-        _unitOfWork.AccountRepository.Returns(_accountRepository);
-        _unitOfWork.ChartOfAccountsRepository.Returns(_chartRepository);
-        _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
+        _unitOfWork.ConfigureForTests(o => o
+            .MockAccountRepository(_accountRepository)
+            .MockChartOfAccountsRepository(_chartRepository));
         _sut = new AccountService(_unitOfWork);
     }
 
@@ -35,9 +35,8 @@ public class CreateAccountTests
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors.ShouldHaveSingleItem().ShouldBeEquivalentTo(AccountErrors.AccountNameIsEmpty());
+        await _unitOfWork.AssertThatNoActionWasTaken();
         await _chartRepository.DidNotReceive().GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
-        await _unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
-        _accountRepository.DidNotReceive().Add(Arg.Any<Account>());
     }
 
     [Fact]
@@ -49,6 +48,7 @@ public class CreateAccountTests
         
         result.Status.ShouldBe(ResultStatus.NotFound);
         await _chartRepository.Received(1).GetByIdAsync(_chartId, Arg.Any<CancellationToken>());
+        await _unitOfWork.AssertThatNoActionWasTaken();
     }
 
     [Fact]

@@ -6,5 +6,7 @@ namespace LedgerLite.Users.Integrations;
 internal static class DependencyInjection
 {
     public static IServiceCollection AddUsersIntegrations(this IServiceCollection services) => 
-        services.AddScoped<IUsersRequests, UsersRequests>();
+        services
+            .AddScoped<IOrganizationRequests, OrganizationRequests>()
+            .AddScoped<IUserRequests, UserRequests>();
 }

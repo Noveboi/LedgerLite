@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using LedgerLite.SharedKernel.Models;
 
 namespace LedgerLite.Accounting.Core.Domain.Periods;
 
@@ -11,4 +12,16 @@ public static class FiscalPeriodErrors
             errorMessage: $"Period's start date ({start:O}) is after the specified end date ({end:O})",
             errorCode: "FP-START_AFTER_END",
             severity: ValidationSeverity.Error);
+
+    public static ValidationError OverlappingPeriods(DateRange a, DateRange b)
+    {
+        var overlap = a.GetOverlapWith(b);
+        if (!overlap.HasValue)
+            throw new InvalidOperationException("Date ranges do not overlap.");
+            
+        return new ValidationError(identifier: FiscalPeriodIdentifier,
+            errorMessage: $"Periods overlap from {overlap.Value.Start:O} to {overlap.Value.End:O}",
+            errorCode: "FP-OVERLAP",
+            severity: ValidationSeverity.Error);
+    }
 }

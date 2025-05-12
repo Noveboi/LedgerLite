@@ -6,4 +6,6 @@ public interface IFiscalPeriodRepository
 {
     void Add(FiscalPeriod period);
     Task<FiscalPeriod?> GetByIdAsync(Guid id, CancellationToken token);
+
+    Task<FiscalPeriod?> FindOverlappingPeriodAsync(Guid organizationId, DateOnly startDate, DateOnly endDate, CancellationToken token);
 }

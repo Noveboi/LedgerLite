@@ -1,5 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.Periods;
+using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 

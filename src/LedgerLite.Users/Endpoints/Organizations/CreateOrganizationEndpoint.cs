@@ -2,15 +2,15 @@
 using FastEndpoints;
 using LedgerLite.Users.Application.Organizations;
 using LedgerLite.Users.Application.Organizations.Requests;
-using LedgerLite.Users.Domain.Organizations;
-using LedgerLite.Users.Endpoints.Organizations.Dto;
+using LedgerLite.Users.Contracts.Models;
+using LedgerLite.Users.Integrations.Conversions;
 
 namespace LedgerLite.Users.Endpoints.Organizations;
 
 internal sealed record CreateOrganizationRequestDto(string Name);
 
 internal sealed class CreateOrganizationEndpoint(IOrganizationService service) 
-    : Endpoint<CreateOrganizationRequestDto, OrganizationResponseDto>
+    : Endpoint<CreateOrganizationRequestDto, OrganizationDto>
 {
     public override void Configure()
     {
@@ -32,13 +32,10 @@ internal sealed class CreateOrganizationEndpoint(IOrganizationService service)
 
         await SendCreatedAtAsync<GetOrganizationEndpoint>(
             routeValues: new { organization.Id },
-            responseBody: MapResponse(organization),
+            responseBody: organization.ToDto(),
             cancellation: ct);
     }
 
     private CreateOrganizationRequest MapRequest(CreateOrganizationRequestDto req) =>
         new(Name: req.Name);
-
-    private OrganizationResponseDto MapResponse(Organization organization) =>
-        new(Id: organization.Id, Name: organization.Name);
 }

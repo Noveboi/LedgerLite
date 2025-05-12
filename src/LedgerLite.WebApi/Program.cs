@@ -10,6 +10,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateBootstrapLogger();
+
 try
 {
     Log.Information("Starting LedgerLite web API...");

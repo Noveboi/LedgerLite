@@ -1,12 +1,11 @@
 ﻿using FastEndpoints;
-using LedgerLite.Users.Endpoints.Organizations.Dto;
-using Microsoft.AspNetCore.Mvc;
+using LedgerLite.Users.Contracts.Models;
 
 namespace LedgerLite.Users.Endpoints.Organizations;
 
-internal sealed record GetOrganizationRequest([property: FromRoute] Guid Id);
+internal sealed record GetOrganizationRequest([property: RouteParam] Guid Id);
 
-internal sealed class GetOrganizationEndpoint : Endpoint<GetOrganizationRequest, OrganizationResponseDto>
+internal sealed class GetOrganizationEndpoint : Endpoint<GetOrganizationRequest, OrganizationDto>
 {
     public override void Configure()
     {

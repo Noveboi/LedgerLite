@@ -1,14 +1,12 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
-using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.Users.Contracts;
 
 namespace LedgerLite.Accounting.Core.Application.Chart;
 
 public sealed class ChartOfAccountsService(
-    IUsersRequests userRequests,
+    IUserRequests userRequests,
     IChartOfAccountsRepository repository) : IChartOfAccountsService
 {
     // The ChartOfAccounts is not directly linked to one user but an organization. Therefore, we must first get

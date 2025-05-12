@@ -1,4 +1,6 @@
-﻿using LedgerLite.Accounting.Core.Application;
+﻿using LedgerLite.Accounting.Core.Application.Accounts;
+using LedgerLite.Accounting.Core.Application.Chart;
+using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Infrastructure;
 using LedgerLite.SharedKernel.Constants;
 using LedgerLite.SharedKernel.Extensions;
@@ -10,7 +12,7 @@ using Serilog;
 
 namespace LedgerLite.Accounting.Core;
 
-public static class DependencyInjection
+public static class AccountingDependencyInjection
 {
     public static IServiceCollection AddAccountingModule(this IServiceCollection services, IConfiguration configuration)
     {
@@ -22,8 +24,11 @@ public static class DependencyInjection
             .AddDomainEventProcessing(sp));
 
         services.AddAccountingInfrastructure();
-        services.AddAccountingApplication();
 
-        return services;
+        return services
+            .AddScoped<IChartOfAccountsService, ChartOfAccountsService>()
+            .AddScoped<IAccountService, AccountService>()
+            .AddScoped<IJournalEntryService, JournalEntryService>()
+            .AddScoped<ITransactionRecordingService, TransactionRecordingService>();
     }
 }

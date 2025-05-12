@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    [Migration("20250506163103_Initial")]
+    [Migration("20250512071727_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -126,7 +126,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.HasIndex("ChartId");
 
@@ -146,7 +147,13 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.Property<DateTime>("ModifiedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OrganizationId")
+                        .IsUnique();
 
                     b.ToTable("Charts", "Accounting");
                 });
@@ -193,9 +200,18 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("FiscalPeriodId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("LastModifiedByUserId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifiedAtUtc")
                         .HasColumnType("timestamp with time zone");
@@ -215,6 +231,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FiscalPeriodId");
 
                     b.ToTable("JournalEntries", "Accounting");
                 });
@@ -339,6 +357,34 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Periods.FiscalPeriod", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime>("ModifiedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FiscalPeriods", "Accounting");
+                });
+
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.TransactionType", b =>
                 {
                     b.Property<int>("Value")
@@ -371,8 +417,8 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
                 {
                     b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
+                        .WithOne()
+                        .HasForeignKey("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -391,19 +437,32 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", b =>
+                {
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.Periods.FiscalPeriod", null)
+                        .WithMany()
+                        .HasForeignKey("FiscalPeriodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntryLine", b =>
                 {
-                    b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", null)
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", null)
+                    b.HasOne("LedgerLite.Accounting.Core.Domain.JournalEntries.JournalEntry", "Entry")
                         .WithMany("Lines")
                         .HasForeignKey("EntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Entry");
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>

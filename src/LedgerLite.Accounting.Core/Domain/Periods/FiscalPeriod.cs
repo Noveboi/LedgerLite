@@ -1,5 +1,7 @@
-﻿using Ardalis.Result;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain;
+using LedgerLite.SharedKernel.Models;
 
 namespace LedgerLite.Accounting.Core.Domain.Periods;
 
@@ -20,12 +22,14 @@ public sealed class FiscalPeriod : AuditableEntity
     
     public DateOnly StartDate { get; private init; }
     public DateOnly EndDate { get; private init; }
+
+    [NotMapped] public DateRange Range => new(Start: StartDate, End: EndDate);
     
     public DateTime? ClosedAtUtc { get; private set; }
 
     public bool IsClosed => ClosedAtUtc.HasValue;
 
-    public Result<FiscalPeriod> Create(Guid organizationId, DateOnly startDate, DateOnly endDate)
+    public static Result<FiscalPeriod> Create(Guid organizationId, DateOnly startDate, DateOnly endDate)
     {
         if (startDate > endDate)
             return Result.Invalid(FiscalPeriodErrors.StartIsAfterEnd(startDate, endDate));
