@@ -1,5 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Application.Accounts;
 using LedgerLite.Accounting.Core.Application.Chart;
+using LedgerLite.Accounting.Core.Application.FiscalPeriods;
 using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Infrastructure;
 using LedgerLite.SharedKernel.Constants;
@@ -26,6 +27,7 @@ public static class AccountingDependencyInjection
         services.AddAccountingInfrastructure();
 
         return services
+            .AddScoped<IFiscalPeriodService, FiscalPeriodService>()
             .AddScoped<IChartOfAccountsService, ChartOfAccountsService>()
             .AddScoped<IAccountService, AccountService>()
             .AddScoped<IJournalEntryService, JournalEntryService>()
