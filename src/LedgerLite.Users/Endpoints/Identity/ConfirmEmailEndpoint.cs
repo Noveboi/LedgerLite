@@ -2,6 +2,7 @@
 using System.Text;
 using FastEndpoints;
 using LedgerLite.Users.Domain;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -13,6 +14,7 @@ internal sealed class ConfirmEmailEndpoint(UserManager<User> userManager) : Endp
     {
         AllowAnonymous();
         Get("/confirmEmail");
+        Description(b => b.WithName("confirmEmail"));
         Group<IdentityEndpointGroup>();
     }
 
