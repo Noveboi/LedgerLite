@@ -12,17 +12,15 @@ namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
 public class CreateAccountTests
 {
-    private readonly Guid _chartId = Guid.NewGuid();
+    private readonly ChartOfAccounts _chart = FakeChartOfAccounts.Empty;
     private readonly AccountService _sut;
     private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
     private readonly IAccountRepository _accountRepository = Substitute.For<IAccountRepository>();
-    private readonly IChartOfAccountsRepository _chartRepository = Substitute.For<IChartOfAccountsRepository>();
     
     public CreateAccountTests()
     {
         _unitOfWork.ConfigureForTests(o => o
-            .MockAccountRepository(_accountRepository)
-            .MockChartOfAccountsRepository(_chartRepository));
+            .MockAccountRepository(_accountRepository));
         _sut = new AccountService(_unitOfWork);
     }
 
@@ -36,33 +34,17 @@ public class CreateAccountTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors.ShouldHaveSingleItem().ShouldBeEquivalentTo(AccountErrors.AccountNameIsEmpty());
         await _unitOfWork.AssertThatNoActionWasTaken();
-        await _chartRepository.DidNotReceive().GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
-    public async Task NotFound_WhenChartOfAccountDoesNotExist()
-    {
-        var request = GetRequest();
-
-        var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
-        result.Status.ShouldBe(ResultStatus.NotFound);
-        await _chartRepository.Received(1).GetByIdAsync(_chartId, Arg.Any<CancellationToken>());
-        await _unitOfWork.AssertThatNoActionWasTaken();
     }
 
     [Fact]
     public async Task EnsureProperDependencyCalls()
     {
         var request = GetRequest();
-        var chart = FakeChartOfAccounts.Empty;
-        ConfigureChart(chart);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        await _chartRepository.Received(1).GetByIdAsync(_chartId, Arg.Any<CancellationToken>());
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
         _accountRepository.Received(1).Add(Arg.Is(account));
     }
@@ -71,36 +53,31 @@ public class CreateAccountTests
     public async Task AddToChart()
     {
         var request = GetRequest();
-        var chart = FakeChartOfAccounts.Empty;
-        ConfigureChart(chart);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        chart.Accounts.ShouldHaveSingleItem().ShouldBeEquivalentTo(account);
+        _chart.Accounts.ShouldHaveSingleItem().ShouldBeEquivalentTo(account);
     }
 
     [Fact]
     public async Task AddToChart_WithNoParent_WhenParentIdNullInRequest()
     {
         var request = GetRequest(req => req with { ParentId = null });
-        var chart = FakeChartOfAccounts.Empty;
-        ConfigureChart(chart);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         
         result.Status.ShouldBe(ResultStatus.Ok);
-        chart.Nodes.ShouldHaveSingleItem().Parent.ShouldBeNull();
+        _chart.Nodes.ShouldHaveSingleItem().Parent.ShouldBeNull();
     }
 
     [Fact]
     public async Task AddToChart_WithParent_WhenParentIdIsSpecified()
     {
         var parent = FakeAccounts.GetPlaceholder(o => o.Type = AccountType.Expense);
-        var request = GetRequest(req => req with { ParentId = parent.Id });
         var chart = FakeChartOfAccounts.With(parent);
-        ConfigureChart(chart);
+        var request = GetRequest(req => req with { ParentId = parent.Id, Chart = chart});
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
@@ -112,10 +89,6 @@ public class CreateAccountTests
         parentNode.Children.ShouldHaveSingleItem().ShouldBeEquivalentTo(accountNode);
         accountNode.Parent.ShouldNotBeNull().ShouldBeEquivalentTo(parentNode);
     }
-    
-    private void ConfigureChart(ChartOfAccounts chart) => _chartRepository
-        .GetByIdAsync(_chartId, Arg.Any<CancellationToken>())
-        .Returns(chart);
 
     private CreateAccountRequest GetRequest(Func<CreateAccountRequest, CreateAccountRequest>? transform = null)
     {
@@ -126,7 +99,7 @@ public class CreateAccountTests
             Currency: Currency.Euro,
             IsPlaceholder: false,
             Description: "Tracking grocery spending.",
-            ChartOfAccountsId: _chartId,
+            Chart: _chart,
             ParentId: null);
 
         return transform?.Invoke(request) ?? request;

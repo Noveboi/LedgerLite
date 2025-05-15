@@ -3,6 +3,7 @@ using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Infrastructure;
+using LedgerLite.SharedKernel.Domain.Errors;
 
 namespace LedgerLite.Accounting.Core.Application.Accounts;
 
@@ -13,29 +14,29 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
         var createAccountResult = CreateAccount(request);
         if (!createAccountResult.IsSuccess)
             return createAccountResult;
-        
-        var chartResult = await GetChartOfAccountsAsync(request.ChartOfAccountsId, token);
-        if (!chartResult.IsSuccess)
-            return chartResult.Map();
 
         var account = createAccountResult.Value;
-        var chart = chartResult.Value;
+        var chart = request.Chart;
 
         return await AddAccountToChart(account, chart)
             .Bind(acc => PositionAccountInChart(acc, request.ParentId, chart))
-            .Bind(acc => AddAccountToRepository(acc))
-            .BindAsync(acc => SaveChangesAsync(token).MapAsync(() => acc));
+            .Bind(AddAccountToRepository)
+            .BindAsync(acc => unitOfWork.SaveChangesAsync(token).MapAsync(() => acc));
     }
 
+    // Removing an account means that JournalEntryLines connect to the account will also be removed. Since
+    // JournalEntryLines are removed, this means that JournalEntries will also need to be removed.
+    //
+    // Generally speaking, this use case is very delicate and needs to be handled with care.
     public Task<Result<Account>> RemoveAsync(RemoveAccountRequest request, CancellationToken token)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Result> MoveAsync(MoveAccountRequest request, CancellationToken token)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Result> MoveAsync(MoveAccountRequest request, CancellationToken token) =>
+        await GetAccountByIdAsync(request.AccountId, token)
+            .BindAsync(account => PositionAccountInChart(account, request.ParentId, request.Chart))
+            .BindAsync(_ => unitOfWork.SaveChangesAsync(token));
 
     private static Result<Account> CreateAccount(CreateAccountRequest request) => Account.Create(
         name: request.Name,
@@ -45,18 +46,12 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
         isPlaceholder: request.IsPlaceholder,
         description: request.Description);
 
-    private async Task<Result<ChartOfAccounts>> GetChartOfAccountsAsync(Guid chartId, CancellationToken token)
-    {
-        var chart = await unitOfWork.ChartOfAccountsRepository.GetByIdAsync(chartId, token);
-        return chart is not null 
-            ? chart
-            : Result.NotFound($"Chart of Accounts with ID '{chartId}' does not exist.");
-    }
-    
+    private async Task<Result<Account>> GetAccountByIdAsync(Guid accountId, CancellationToken token) =>
+        await unitOfWork.AccountRepository.GetByIdAsync(accountId, token) is not { } account
+            ? Result.NotFound(CommonErrors.NotFound<Account>(accountId))
+            : Result.Success(account);
     private static Result<Account> AddAccountToChart(Account account, ChartOfAccounts chart) => 
-        chart
-            .Add(account)
-            .Map(_ => account);
+        chart.Add(account).Map(_ => account);
 
     private static Result<Account> PositionAccountInChart(Account account, Guid? parentId, ChartOfAccounts chart) =>
         parentId.HasValue
@@ -70,6 +65,4 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
         unitOfWork.AccountRepository.Add(account);
         return account;
     }
-
-    private Task<Result> SaveChangesAsync(CancellationToken token) => unitOfWork.SaveChangesAsync(token);
 }

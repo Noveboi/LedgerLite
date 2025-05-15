@@ -1,3 +1,5 @@
-﻿namespace LedgerLite.Accounting.Core.Application.Accounts.Requests;
+﻿using LedgerLite.Accounting.Core.Domain.Chart;
 
-public sealed record MoveAccountRequest(Guid AccountId, Guid ParentId);
+namespace LedgerLite.Accounting.Core.Application.Accounts.Requests;
+
+public sealed record MoveAccountRequest(ChartOfAccounts Chart, Guid AccountId, Guid ParentId);
