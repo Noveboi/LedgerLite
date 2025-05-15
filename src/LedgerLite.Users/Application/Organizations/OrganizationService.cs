@@ -20,6 +20,9 @@ internal sealed class OrganizationService(
         return await Organization.Create(req.Name)
             .BindAsync(async org => await userService.GetByIdAsync(req.UserId, token)
                 .MapAsync(user => new { Organization = org, User = user}))
+            .BindAsync(state => state.User.OrganizationMemberId is not null 
+                ? Result.Invalid(OrganizationErrors.CannotBeInTwoOrganizations(state.User))
+                : Result.Success(state))
             .BindAsync(state => OrganizationMember.Create(
                 user: state.User, 
                 role: OrganizationMemberRole.Owner, 

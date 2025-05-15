@@ -24,5 +24,6 @@
     
     <ItemGroup>
         <InternalsVisibleTo Include="LedgerLite.Users.Tests.Unit"/>
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
     </ItemGroup>
 </Project>

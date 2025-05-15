@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Tests.Shared;
 using LedgerLite.Users.Application.Organizations;
 using LedgerLite.Users.Application.Organizations.Requests;
 using LedgerLite.Users.Application.Users;
@@ -52,11 +53,24 @@ public class CreateOrganizationUseCaseTests
     {
         var user = ConfigureUser();
         var request = GetRequest(user, "Ok!");
+        
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         
         result.Status.ShouldBe(ResultStatus.Ok);
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task Invalid_WhenUserAlreadyInOrganization()
+    {
+        var user = ConfigureUser(FakeUsers.Get(x => x.WithOrganizationMemberId()));
+        var request = GetRequest(user, "No no!");
+
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ShouldHaveError(OrganizationErrors.CannotBeInTwoOrganizations(user));
+;    }
 
     private static CreateOrganizationRequest GetRequest(User user, string name) => 
         new(user.Id, name);

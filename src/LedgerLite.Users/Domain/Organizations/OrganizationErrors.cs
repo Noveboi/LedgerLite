@@ -23,4 +23,10 @@ internal static class OrganizationErrors
             errorMessage: "Cannot rename organization using the same name.",
             errorCode: "ORG-SAME_NAME",
             severity: ValidationSeverity.Error);
+
+    public static ValidationError CannotBeInTwoOrganizations(User user) =>
+        new(identifier: OrganizationIdentifier,
+            errorMessage: $"{user.UserName} is already in an organization.",
+            errorCode: "ORG-ALREADY_IN_ONE",
+            severity: ValidationSeverity.Error);
 }
