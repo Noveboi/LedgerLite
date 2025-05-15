@@ -1,3 +1,3 @@
 ﻿namespace LedgerLite.Users.Application.Organizations.Requests;
 
-public sealed record CreateOrganizationRequest(string Name);
+public sealed record CreateOrganizationRequest(Guid UserId, string Name);

@@ -1,15 +1,21 @@
 ﻿using Ardalis.Result.AspNetCore;
 using FastEndpoints;
+using LedgerLite.SharedKernel.Identity;
 using LedgerLite.Users.Application.Organizations;
 using LedgerLite.Users.Application.Organizations.Requests;
 using LedgerLite.Users.Contracts.Models;
+using LedgerLite.Users.Domain;
+using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Integrations.Conversions;
+using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Endpoints.Organizations;
 
-internal sealed record CreateOrganizationRequestDto(string Name);
+internal sealed record CreateOrganizationRequestDto(
+    [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
+    string Name);
 
-internal sealed class CreateOrganizationEndpoint(IOrganizationService service) 
+internal sealed class CreateOrganizationEndpoint(IOrganizationService organizationService) 
     : Endpoint<CreateOrganizationRequestDto, OrganizationDto>
 {
     public override void Configure()
@@ -21,14 +27,14 @@ internal sealed class CreateOrganizationEndpoint(IOrganizationService service)
     public override async Task HandleAsync(CreateOrganizationRequestDto req, CancellationToken ct)
     {
         var request = MapRequest(req);
-        var result = await service.CreateAsync(request, ct);
-        if (!result.IsSuccess)
+        var createResult = await organizationService.CreateAsync(request, ct);
+        if (!createResult.IsSuccess)
         {
-            await SendResultAsync(result.ToMinimalApiResult());
+            await SendResultAsync(createResult.ToMinimalApiResult());
             return;
         }
 
-        var organization = result.Value;
+        var organization = createResult.Value;
 
         await SendCreatedAtAsync<GetOrganizationEndpoint>(
             routeValues: new { organization.Id },
@@ -36,6 +42,7 @@ internal sealed class CreateOrganizationEndpoint(IOrganizationService service)
             cancellation: ct);
     }
 
-    private CreateOrganizationRequest MapRequest(CreateOrganizationRequestDto req) =>
-        new(Name: req.Name);
+    private static CreateOrganizationRequest MapRequest(CreateOrganizationRequestDto req) =>
+        new(UserId: req.UserId,
+            Name: req.Name);
 }
