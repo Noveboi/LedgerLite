@@ -29,7 +29,7 @@ public sealed class Organization : AuditableEntity
             return Result.Invalid(CommonErrors.NameIsEmpty());
 
         var organization = new Organization(name);
-        organization.AddDomainEvent(new OrganizationCreatedEvent(organization.Id, name));
+        organization.AddDomainEvent(new OrganizationCreatedEvent(organization));
         
         return Result.Success(organization);
     }
