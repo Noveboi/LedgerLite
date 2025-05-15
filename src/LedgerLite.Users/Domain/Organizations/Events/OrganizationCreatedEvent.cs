@@ -2,8 +2,7 @@
 
 namespace LedgerLite.Users.Domain.Organizations.Events;
 
-internal sealed class OrganizationCreatedEvent(Guid id, string name) : DomainEvent
+internal sealed class OrganizationCreatedEvent(Organization org) : DomainEvent
 {
-    public Guid Id { get; } = id; 
-    public string Name { get; } = name;
+    public Organization Organization { get; } = org;
 }
