@@ -2,28 +2,29 @@
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.UseCases;
 using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
+using LedgerLite.Accounting.Core.Endpoints.Chart;
 using LedgerLite.SharedKernel.Identity;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record GetAccountRequest(
     [property: FromClaim(LedgerClaims.UserId)] Guid UserId, 
-    [property: RouteParam] Guid Id);
+    [property: RouteParam] Guid AccountId);
 
 internal sealed class GetAccountEndpoint(GetDetailedAccountUseCase useCase) 
     : Endpoint<GetAccountRequest, AccountWithLinesDto>
 {
     public override void Configure()
     {
-        Get("{id:guid}");
-        Group<AccountEndpointsGroup>();
+        Get("{accountId:guid}");
+        Group<ChartOfAccountsEndpointGroup>();
     }
 
     public override async Task HandleAsync(GetAccountRequest req, CancellationToken ct)
     {
         var request = new GetDetailedAccountRequest(
             UserId: req.UserId,
-            AccountId: req.Id);
+            AccountId: req.AccountId);
         
         var result = await useCase.HandleAsync(request, ct);
         if (!result.IsSuccess)

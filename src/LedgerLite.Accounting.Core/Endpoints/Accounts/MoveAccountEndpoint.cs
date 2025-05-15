@@ -3,6 +3,7 @@ using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.Accounts;
 using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Application.Chart;
+using LedgerLite.Accounting.Core.Endpoints.Chart;
 using LedgerLite.SharedKernel.Identity;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
@@ -16,8 +17,8 @@ internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccou
 {
     public override void Configure()
     {
-        Put("move/{newParentId:guid}");
-        Group<AccountEndpointsGroup>();
+        Put("{accountId:guid}/move/{newParentId:guid}");
+        Group<ChartOfAccountsEndpointGroup>();
     }
 
     public override async Task HandleAsync(MoveAccountRequestDto req, CancellationToken ct)
