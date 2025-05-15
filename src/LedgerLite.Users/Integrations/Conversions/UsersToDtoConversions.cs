@@ -9,6 +9,7 @@ internal static class UsersToDtoConversions
         Id: user.Id,
         OrganizationId: user.OrganizationMember?.OrganizationId,
         Username: user.UserName ?? "",
+        Email: user.Email ?? "",
         FullName: (user.FirstName, user.LastName) switch
         {
             (not null, not null) => $"{user.FirstName} {user.LastName}",

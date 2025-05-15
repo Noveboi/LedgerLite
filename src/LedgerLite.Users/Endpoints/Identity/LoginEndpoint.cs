@@ -4,14 +4,12 @@ using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
-using Serilog;
 
 namespace LedgerLite.Users.Endpoints.Identity;
 
-internal sealed class LoginEndpoint(SignInManager<User> signInManager) : Endpoint<LoginRequest, AccessTokenResponse>
+internal sealed class LoginEndpoint(SignInManager<User> signInManager) 
+    : Endpoint<LoginRequest, AccessTokenResponse>
 {
-    private readonly ILogger _log = Log.ForContext<LoginEndpoint>();
-    
     public override void Configure()
     {
         AllowAnonymous();
@@ -48,7 +46,5 @@ internal sealed class LoginEndpoint(SignInManager<User> signInManager) : Endpoin
         {
             await SendResultAsync(TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized));
         }
-        
-        // The signInManager already produced the needed response in the form of a cookie or bearer token.
     }
 }
