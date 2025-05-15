@@ -20,6 +20,12 @@ public sealed class OrganizationMember : AuditableEntity
 
     public User User { get; private init; } = null!;
     public OrganizationMemberRole Role { get; private set; } = null!;
+
+    public static Result<OrganizationMember> Create(User user, OrganizationMemberRole role, Guid organizationId) => 
+        Result.Success(new OrganizationMember(
+            user: user,
+            role: role,
+            organizationId: organizationId));
     
     /// <summary>
     /// Admin/Owner only 
