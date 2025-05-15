@@ -3,7 +3,7 @@ using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Tests.Shared;
 
-namespace LedgerLite.Accounting.Tests.Unit.Utilities;
+namespace LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 public sealed class ChartOfAccountsFakerOptions
 {

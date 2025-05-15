@@ -2,6 +2,7 @@
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Tests.Unit.Utilities;
+using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 namespace LedgerLite.Accounting.Tests.Unit.Domain.Chart;
 

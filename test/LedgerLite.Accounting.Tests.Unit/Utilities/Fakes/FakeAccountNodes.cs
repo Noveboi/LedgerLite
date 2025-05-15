@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Chart;
 
-namespace LedgerLite.Accounting.Tests.Unit.Utilities;
+namespace LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 internal static class FakeAccountNodes
 {
