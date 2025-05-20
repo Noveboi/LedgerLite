@@ -4,10 +4,7 @@ using LedgerLite.SharedKernel.Identity;
 using LedgerLite.Users.Application.Organizations;
 using LedgerLite.Users.Application.Organizations.Requests;
 using LedgerLite.Users.Contracts.Models;
-using LedgerLite.Users.Domain;
-using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Integrations.Conversions;
-using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Endpoints.Organizations;
 
