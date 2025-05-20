@@ -19,12 +19,12 @@ internal sealed class GetOrganizationFromUserUseCase(
         }
 
         var user = userResult.Value;
-        if (user.OrganizationId is null)
+        if (user.Organization?.Id is not { } organizationId)
         {
             return Result.Invalid(GetOrganizationFromUserUseCaseErrors.UserNotInOrganization(user));
         }
 
-        var organizationResult = await organizationRequests.GetOrganizationByIdAsync(user.OrganizationId.Value, token);
+        var organizationResult = await organizationRequests.GetOrganizationByIdAsync(organizationId, token);
         if (!organizationResult.IsSuccess)
         {
             return organizationResult.Map();

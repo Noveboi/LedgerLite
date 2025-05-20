@@ -21,14 +21,14 @@ public sealed class ChartOfAccountsService(
 
         var user = userResult.Value;
         
-        if (!user.OrganizationId.HasValue)
+        if (user.Organization?.Id is not { } organizationId)
         {
             return Result.NotFound("User does not belong in an organization.");
         }
 
-        if (await repository.GetByOrganizationIdAsync(user.OrganizationId.Value, token) is not { } chart)
+        if (await repository.GetByOrganizationIdAsync(organizationId, token) is not { } chart)
         {
-            return Result.NotFound($"Organization with ID '{user.OrganizationId.Value}' does not exist.");
+            return Result.NotFound($"Organization with ID '{organizationId}' does not exist.");
         }
 
         return chart;

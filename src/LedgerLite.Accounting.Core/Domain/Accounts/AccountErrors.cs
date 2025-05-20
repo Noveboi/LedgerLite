@@ -6,9 +6,9 @@ internal static class AccountErrors
 {
     public const string AccountIdentifier = "Account";
 
-    public static ValidationError NoChildrenWhenNotPlaceholder() => new(
+    public static ValidationError NoChildrenWhenNotPlaceholder(Account account) => new(
         identifier: AccountIdentifier,
-        errorMessage: "Account needs to be a placeholder to have child accounts.",
+        errorMessage: $"Account '{account}' needs to be a placeholder to have child accounts.",
         errorCode: "ACC-ADD_NOT_PLACEHOLDER",
         severity: ValidationSeverity.Error);
 
