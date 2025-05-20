@@ -32,7 +32,7 @@ public class AccountNodeAddChildTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(AccountErrors.NoChildrenWhenNotPlaceholder());
+            .ShouldBeEquivalentTo(AccountErrors.NoChildrenWhenNotPlaceholder(node.Account));
     }
 
     [Fact]

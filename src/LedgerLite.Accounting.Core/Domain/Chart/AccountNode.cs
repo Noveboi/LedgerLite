@@ -39,7 +39,7 @@ public sealed class AccountNode : Entity
             return Result.Invalid(AccountErrors.AddAccountToItself());
 
         if (!Account.IsPlaceholder)
-            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder());
+            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder(Account));
 
         if (Account.Type != child.Account.Type)
             return Result.Invalid(AccountErrors.ChildHasDifferentType(

@@ -93,7 +93,7 @@ public class ChartOfAccountsMoveTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(AccountErrors.NoChildrenWhenNotPlaceholder());
+            .ShouldBeEquivalentTo(AccountErrors.NoChildrenWhenNotPlaceholder(parent));
     }
 
     [Fact]
