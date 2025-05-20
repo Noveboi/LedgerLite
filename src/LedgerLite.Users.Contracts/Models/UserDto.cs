@@ -2,7 +2,7 @@
 
 public sealed record UserDto(
     Guid Id,
-    Guid? OrganizationId,
+    OrganizationDto? Organization,
     string Email,
     string Username,
     string FullName);
