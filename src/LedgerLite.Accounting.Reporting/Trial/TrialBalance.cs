@@ -13,6 +13,10 @@ internal sealed class TrialBalance
     public FiscalPeriod Period { get; }
     public IReadOnlyCollection<TrialBalanceEntry> WorkingBalance { get; }
 
+    public decimal GetTotals(Account account) => WorkingBalance
+        .Where(x => x.Account == account)
+        .Sum(x => x.Amount);
+
     public decimal GetTotalDebits() => WorkingBalance
         .Where(x => x.Type == TransactionType.Debit)
         .Sum(x => x.Amount);
