@@ -19,6 +19,10 @@ internal sealed class AccountingUnitOfWork(IServiceProvider serviceProvider, Acc
     [field: AllowNull, MaybeNull]
     public IJournalEntryRepository JournalEntryRepository =>
         field ?? serviceProvider.GetRequiredService<IJournalEntryRepository>();
+    
+    [field: AllowNull, MaybeNull]
+    public IJournalEntryLineRepository JournalEntryLineRepository =>
+        field ?? serviceProvider.GetRequiredService<IJournalEntryLineRepository>();
 
     [field: AllowNull, MaybeNull]
     public IFiscalPeriodRepository FiscalPeriodRepository =>
