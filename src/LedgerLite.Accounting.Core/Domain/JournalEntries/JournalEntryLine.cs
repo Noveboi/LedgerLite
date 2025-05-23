@@ -33,4 +33,6 @@ public sealed class JournalEntryLine : AuditableEntity
             AccountId = accountId,
             EntryId = entryId,
         };
+
+    public override string ToString() => $"{TransactionType.Name} '{Account.Name}' - {Amount:N}";
 }
