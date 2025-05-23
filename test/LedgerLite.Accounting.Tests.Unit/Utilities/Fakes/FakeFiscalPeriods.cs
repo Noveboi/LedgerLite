@@ -6,10 +6,16 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 public sealed class FakeFiscalPeriodConfiguration
 {
+    internal Guid? Id { get; private set; }
     internal DateOnly? StartDate { get; private set; }
     internal DateOnly? EndDate { get; private set; }
     internal Guid? OrganizationId { get; private set; }
 
+    public FakeFiscalPeriodConfiguration WithId(Guid id)
+    {
+        Id = id;
+        return this;
+    }
     public FakeFiscalPeriodConfiguration StartingAt(DateOnly start)
     {
         StartDate = start;
@@ -33,6 +39,7 @@ public static class FakeFiscalPeriods
 {
     private static Faker<FiscalPeriod> Faker(FakeFiscalPeriodConfiguration config) => new PrivateFaker<FiscalPeriod>()
         .UsePrivateConstructor()
+        .RuleFor(x => x.Id, _ => config.Id ?? Guid.NewGuid())
         .RuleFor(x => x.StartDate, f => config.StartDate ?? f.Date.PastDateOnly())
         .RuleFor(x => x.EndDate, (_, period) => config.EndDate ?? period.StartDate.AddMonths(4))
         .RuleFor(x => x.OrganizationId, _ => config.OrganizationId ?? Guid.NewGuid());

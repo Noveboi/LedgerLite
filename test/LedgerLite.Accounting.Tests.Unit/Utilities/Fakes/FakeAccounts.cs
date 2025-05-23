@@ -7,9 +7,17 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 public sealed class FakeAccountOptions
 {
+    public string? Name { get; set; }
     public bool? IsPlaceholder { get; set; }
     public AccountType? Type { get; set; }
     public Currency? Currency { get; set; }
+
+    public FakeAccountOptions WithName(string name, AccountType type)
+    {
+        Name = name;
+        Type = type;
+        return this;
+    }
 }
 public static class FakeAccounts
 {
