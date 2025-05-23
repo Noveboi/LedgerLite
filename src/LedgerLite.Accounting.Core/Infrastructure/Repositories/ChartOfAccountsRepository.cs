@@ -11,5 +11,8 @@ internal sealed class ChartOfAccountsRepository(AccountingDbContext context) : I
         context.Charts.FirstOrDefaultAsync(x => x.Id == id, token);
 
     public Task<ChartOfAccounts?> GetByOrganizationIdAsync(Guid organizationId, CancellationToken token) =>
-        context.Charts.FirstOrDefaultAsync(x => x.OrganizationId == organizationId, token);
+        context.Charts
+            .Include(x => x.Nodes)
+            .ThenInclude(x => x.Account)
+            .FirstOrDefaultAsync(x => x.OrganizationId == organizationId, token);
 }
