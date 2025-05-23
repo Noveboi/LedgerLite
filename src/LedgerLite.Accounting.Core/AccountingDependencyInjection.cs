@@ -30,7 +30,6 @@ public static class AccountingDependencyInjection
             .AddScoped<IFiscalPeriodService, FiscalPeriodService>()
             .AddScoped<IChartOfAccountsService, ChartOfAccountsService>()
             .AddScoped<IAccountService, AccountService>()
-            .AddScoped<IJournalEntryService, JournalEntryService>()
             .AddScoped<ITransactionRecordingService, TransactionRecordingService>();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using LedgerLite.Users.Application.Organizations;
 using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Contracts.Models;
 using LedgerLite.Users.Domain;

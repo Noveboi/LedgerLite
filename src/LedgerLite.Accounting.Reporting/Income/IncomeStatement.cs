@@ -5,5 +5,5 @@ namespace LedgerLite.Accounting.Reporting.Income;
 
 internal sealed class IncomeStatement : AuditableEntity
 {
-    public FiscalPeriod Period { get; private set; }
+    public FiscalPeriod Period { get; private set; } = null!;
 }

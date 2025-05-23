@@ -1,5 +1,4 @@
-﻿using System.Runtime;
-using Bogus;
+﻿using Bogus;
 using LedgerLite.Users.Domain;
 
 namespace LedgerLite.Users.Tests.Unit.Utilities;

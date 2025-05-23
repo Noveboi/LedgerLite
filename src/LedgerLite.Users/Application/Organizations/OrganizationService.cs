@@ -1,10 +1,8 @@
 ﻿using Ardalis.Result;
-using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.Users.Application.Organizations.Requests;
 using LedgerLite.Users.Application.Users;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Application.Organizations;
 
