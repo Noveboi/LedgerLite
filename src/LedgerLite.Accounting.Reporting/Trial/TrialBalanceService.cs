@@ -4,7 +4,7 @@ using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.Domain.Errors;
 using Serilog;
 
-namespace LedgerLite.Accounting.Reporting.TrialBalance;
+namespace LedgerLite.Accounting.Reporting.Trial;
 
 internal sealed class TrialBalanceService(
     IFiscalPeriodRepository fiscalPeriodRepository,

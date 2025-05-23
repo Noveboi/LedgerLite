@@ -4,7 +4,7 @@ using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.Periods;
 
-namespace LedgerLite.Accounting.Reporting.TrialBalance;
+namespace LedgerLite.Accounting.Reporting.Trial;
 
 internal sealed record TrialBalanceEntry(Account Account, TransactionType Type, decimal Amount);
 
