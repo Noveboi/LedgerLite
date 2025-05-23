@@ -7,6 +7,6 @@ namespace LedgerLite.Accounting.Core.Application.Accounts;
 public interface IAccountService
 {
     Task<Result<Account>> CreateAsync(CreateAccountRequest request, CancellationToken token);
-    Task<Result<Account>> RemoveAsync(RemoveAccountRequest request, CancellationToken token);
     Task<Result> MoveAsync(MoveAccountRequest request, CancellationToken token);
+    Task<Result<Account>> GetByIdAsync(Guid id, CancellationToken token);
 }

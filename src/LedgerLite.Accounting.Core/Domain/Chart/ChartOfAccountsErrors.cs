@@ -42,4 +42,17 @@ internal static class ChartOfAccountsErrors
         errorMessage: $"Moving to the same parent is not allowed.",
         errorCode: "COA-MOVE_SAME_PARENT",
         severity: ValidationSeverity.Error);
+    
+    public static ValidationError CannotRemoveAccountWithChildren(AccountNode node) => new(
+        identifier: ChartIdentifier,
+        errorMessage: $"Cannot remove account with children (found {node.Children.Count} children).",
+        errorCode: "COA-REMOVE_NO_CHILDREN",
+        severity: ValidationSeverity.Error);
+
+    public static ValidationError CannotRemoveAccountWithExistingLines(Account account) => new(
+        identifier: ChartIdentifier,
+        errorMessage: $"Cannot remove account with existing journal entry lines. Remove all entries associated with " +
+                      $"'{account.Name}' and try again.",
+        errorCode: "COA-REMOVE_NO_LINES",
+        severity: ValidationSeverity.Error);
 }

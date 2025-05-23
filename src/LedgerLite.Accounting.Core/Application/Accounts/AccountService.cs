@@ -24,17 +24,8 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
             .BindAsync(acc => unitOfWork.SaveChangesAsync(token).MapAsync(() => acc));
     }
 
-    // Removing an account means that JournalEntryLines connect to the account will also be removed. Since
-    // JournalEntryLines are removed, this means that JournalEntries will also need to be removed.
-    //
-    // Generally speaking, this use case is very delicate and needs to be handled with care.
-    public Task<Result<Account>> RemoveAsync(RemoveAccountRequest request, CancellationToken token)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<Result> MoveAsync(MoveAccountRequest request, CancellationToken token) =>
-        await GetAccountByIdAsync(request.AccountId, token)
+        await GetByIdAsync(request.AccountId, token)
             .BindAsync(account => PositionAccountInChart(account, request.ParentId, request.Chart))
             .BindAsync(_ => unitOfWork.SaveChangesAsync(token));
 
@@ -46,7 +37,7 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
         isPlaceholder: request.IsPlaceholder,
         description: request.Description);
 
-    private async Task<Result<Account>> GetAccountByIdAsync(Guid accountId, CancellationToken token) =>
+    public async Task<Result<Account>> GetByIdAsync(Guid accountId, CancellationToken token) =>
         await unitOfWork.AccountRepository.GetByIdAsync(accountId, token) is not { } account
             ? Result.NotFound(CommonErrors.NotFound<Account>(accountId))
             : Result.Success(account);
