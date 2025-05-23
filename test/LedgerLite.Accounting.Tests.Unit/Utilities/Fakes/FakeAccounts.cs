@@ -26,7 +26,7 @@ public static class FakeAccounts
         return new PrivateFaker<Account>()
             .UsePrivateConstructor()
             .RuleFor(x => x.Currency, options?.Currency ?? Currency.Euro)
-            .RuleFor(x => x.Name, f => f.Lorem.Word())
+            .RuleFor(x => x.Name, f => options?.Name ?? f.Lorem.Word())
             .RuleFor(x => x.Number, f => f.Random.String2(3, "0123456789"))
             .RuleFor(x => x.Type, f => options?.Type ?? f.PickRandom((IEnumerable<AccountType>)AccountType.List))
             .RuleFor(x => x.IsPlaceholder, options?.IsPlaceholder ?? false);

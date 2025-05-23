@@ -36,6 +36,7 @@ public static class FakeJournalEntryLines
     internal static Faker<JournalEntryLine> GetFakerCore(FakeJournalEntryLineOptions options) =>
         new PrivateFaker<JournalEntryLine>()
             .UsePrivateConstructor()
+            .RuleFor(x => x.TransactionType, options.TransactionType ?? TransactionType.Credit)
             .RuleFor(x => x.Amount, f => options.Amount ?? f.Random.Number(1, 1000))
             .RuleFor(x => x.AccountId, _ => options.Account?.Id ?? options.AccountId ?? Guid.NewGuid())
             .RuleFor(x => x.Account, _ => options.Account)
