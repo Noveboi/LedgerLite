@@ -6,6 +6,9 @@ using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 namespace LedgerLite.Accounting.Reporting.Tests.Unit;
 
+/// <summary>
+/// The journal entries are based on this video: <see href="https://www.youtube.com/watch?v=3_PfoTzSCQE"/>
+/// </summary>
 public class TrialBalanceSpecification1
 {
     private readonly JournalEntry _entry1 = FakeJournalEntries.Get(x => x
