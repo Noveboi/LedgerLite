@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result.AspNetCore;
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.Chart;
-using LedgerLite.Accounting.Core.Endpoints.Chart.Dto;
+using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 using LedgerLite.SharedKernel.Identity;
 
-namespace LedgerLite.Accounting.Core.Endpoints.Chart;
+namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record GetChartOfAccountsRequestDto(
     [property: FromClaim(LedgerClaims.UserId)] Guid UserId);

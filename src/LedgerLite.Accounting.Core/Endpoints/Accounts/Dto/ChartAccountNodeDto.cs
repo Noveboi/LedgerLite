@@ -1,7 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Chart;
-using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 
-namespace LedgerLite.Accounting.Core.Endpoints.Chart.Dto;
+namespace LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 
 /// <summary>
 /// DTO for when an <see cref="AccountNode"/> is part of a <see cref="ChartOfAccounts"/> DTO.
@@ -15,13 +14,4 @@ public sealed record ChartAccountNodeDto(
     public static ChartAccountNodeDto FromEntity(AccountNode node) => new(
         Account: SlimAccountDto.FromEntity(node.Account),
         ParentAccountId: node.ParentId);
-}
-
-public sealed record ChartAccountNodeWithChildrenDto(
-    SlimAccountDto Account,
-    IEnumerable<ChartAccountNodeWithChildrenDto> Children)
-{
-    public static ChartAccountNodeWithChildrenDto FromEntity(AccountNode node) => new(
-        Account: SlimAccountDto.FromEntity(node.Account),
-        Children: node.Children.Select(FromEntity));
 }

@@ -1,6 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Chart;
 
-namespace LedgerLite.Accounting.Core.Endpoints.Chart.Dto;
+namespace LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 
 public sealed record ChartOfAccountsDto(
     Guid Id,

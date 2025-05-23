@@ -2,7 +2,6 @@
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.UseCases;
 using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
-using LedgerLite.Accounting.Core.Endpoints.Chart;
 using LedgerLite.SharedKernel.Identity;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;

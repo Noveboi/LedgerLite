@@ -8,7 +8,6 @@ using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
-using LedgerLite.Accounting.Core.Endpoints.Chart;
 using LedgerLite.SharedKernel.Extensions;
 using LedgerLite.SharedKernel.Identity;
 using Serilog;
