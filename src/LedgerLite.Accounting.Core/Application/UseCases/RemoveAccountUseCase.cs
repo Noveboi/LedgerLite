@@ -2,6 +2,7 @@ using Ardalis.Result;
 using LedgerLite.Accounting.Core.Application.Chart;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
+using LedgerLite.Accounting.Core.Infrastructure;
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.UseCases;
 using LedgerLite.Users.Contracts;
@@ -15,7 +16,7 @@ namespace LedgerLite.Accounting.Core.Application.UseCases;
 
 internal sealed record RemoveAccountRequest(Guid UserId, Guid AccountId);
 internal sealed class RemoveAccountUseCase(
-    IJournalEntryLineRepository journalEntryLineRepository,
+    IAccountingUnitOfWork unitOfWork,
     IChartOfAccountsService chartService, 
     IUserRequests userRequests) : IApplicationUseCase<RemoveAccountRequest, Account>
 {
@@ -25,13 +26,21 @@ internal sealed class RemoveAccountUseCase(
                 .GetByUserIdAsync(user.Id, token)
                 .MapAsync(chart => new { Chart = chart, User = user }))
             .BindAsync(state => state.Chart.Nodes.FirstOrDefault(x => x.Account.Id == request.AccountId) is { } node 
-                ? Result.Success(new { state.Chart, state.User, Node = node  }) 
+                ? Result.Success(new { state.Chart, state.User, Node = node, Account = node.Account  }) 
                 : Result.Unauthorized())
             .BindAsync(state => state.Node.Children.Count == 0 
                 ? Result.Success(state)
                 : Result.Invalid(ChartOfAccountsErrors.CannotRemoveAccountWithChildren(state.Node)))
-            .BindAsync(async state => await journalEntryLineRepository.GetLinesForAccountAsync(state.Node.Account) is [] 
+            .BindAsync(async state => await unitOfWork.JournalEntryLineRepository.GetLinesForAccountAsync(state.Account) is [] 
                 ? Result.Success(state)
-                : Result.Invalid(ChartOfAccountsErrors.CannotRemoveAccountWithExistingLines(state.Node.Account)))
-            .MapAsync(state => state.Node.Account);
+                : Result.Invalid(ChartOfAccountsErrors.CannotRemoveAccountWithExistingLines(state.Account)))
+            .BindAsync(state =>
+            {
+                unitOfWork.AccountRepository.Remove(state.Account);
+                return Result.Success(state);
+            })
+            .BindAsync(state => unitOfWork
+                .SaveChangesAsync(token)
+                .MapAsync(() => state))
+            .MapAsync(state => state.Account);
 }
