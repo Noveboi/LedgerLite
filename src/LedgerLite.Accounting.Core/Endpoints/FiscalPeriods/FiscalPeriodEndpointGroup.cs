@@ -2,7 +2,7 @@
 
 namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
 
-internal sealed class FiscalPeriodEndpointGroup : Group
+public sealed class FiscalPeriodEndpointGroup : Group
 {
     public FiscalPeriodEndpointGroup()
     {

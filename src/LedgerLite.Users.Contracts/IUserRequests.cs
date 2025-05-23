@@ -9,4 +9,5 @@ namespace LedgerLite.Users.Contracts;
 public interface IUserRequests
 {
     Task<Result<UserDto>> GetUserByIdAsync(Guid id, CancellationToken token);
+    Task<bool> UserBelongsInOrganizationAsync(Guid userId, Guid organizationId, CancellationToken token);
 }
