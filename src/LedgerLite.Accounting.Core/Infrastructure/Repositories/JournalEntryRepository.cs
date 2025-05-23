@@ -10,4 +10,10 @@ internal sealed class JournalEntryRepository(AccountingDbContext context) : IJou
 
     public Task<JournalEntry?> GetByIdAsync(Guid id, CancellationToken token) =>
         context.JournalEntries.FirstOrDefaultAsync(x => x.Id == id, token);
+
+    public async Task<IReadOnlyList<JournalEntry>> GetByFiscalPeriodIdAsync(Guid fiscalPeriodId, CancellationToken token) =>
+        await context.JournalEntries
+            .Include(x => x.Lines)
+            .Where(x => x.FiscalPeriodId == fiscalPeriodId)
+            .ToListAsync(token);
 }
