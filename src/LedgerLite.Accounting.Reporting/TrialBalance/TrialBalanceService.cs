@@ -23,6 +23,6 @@ internal sealed class TrialBalanceService(
         var entries = await journalEntryService.GetByFiscalPeriodIdAsync(fiscalPeriod.Id, token);
         
         _log.Information("Found {entryCount} journal entries associated with period.", entries.Count);
-        return TrialBalance.Prepare(entries);
+        return TrialBalance.Prepare(fiscalPeriod, entries);
     }
 }
