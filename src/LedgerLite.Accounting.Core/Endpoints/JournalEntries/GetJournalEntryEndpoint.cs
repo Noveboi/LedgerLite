@@ -1,13 +1,15 @@
-﻿using Ardalis.Result.AspNetCore;
-using FastEndpoints;
-using LedgerLite.Accounting.Core.Application.JournalEntries;
+﻿using FastEndpoints;
+using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Endpoints.JournalEntries.Dto;
+using LedgerLite.Accounting.Core.Infrastructure.Repositories;
+using LedgerLite.SharedKernel.Domain.Errors;
+using Microsoft.AspNetCore.Http;
 
 namespace LedgerLite.Accounting.Core.Endpoints.JournalEntries;
 
 internal sealed record GetJournalEntryRequest([property: RouteParam] Guid Id);
 
-internal sealed class GetJournalEntryEndpoint(IJournalEntryService service)
+internal sealed class GetJournalEntryEndpoint(IJournalEntryRepository repository)
     : Endpoint<GetJournalEntryRequest, JournalEntryWithLinesResponseDto>
 {
     public override void Configure()
@@ -18,15 +20,12 @@ internal sealed class GetJournalEntryEndpoint(IJournalEntryService service)
 
     public override async Task HandleAsync(GetJournalEntryRequest req, CancellationToken ct)
     {
-        var result = await service.GetByIdAsync(req.Id, ct);
-        if (!result.IsSuccess)
+        if (await repository.GetByIdAsync(req.Id, ct) is not { } journalEntry)
         {
-            await SendResultAsync(result.ToMinimalApiResult());
+            await SendResultAsync(Results.NotFound(CommonErrors.NotFound<JournalEntry>(req.Id)));
             return;
         }
-
-        var entry = result.Value;
         
-        await SendAsync(JournalEntryWithLinesResponseDto.FromEntity(entry), cancellation: ct);
+        await SendAsync(JournalEntryWithLinesResponseDto.FromEntity(journalEntry), cancellation: ct);
     }
 }
