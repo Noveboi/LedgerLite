@@ -45,7 +45,7 @@ internal static class ChartOfAccountsErrors
     
     public static ValidationError CannotRemoveAccountWithChildren(AccountNode node) => new(
         identifier: ChartIdentifier,
-        errorMessage: $"Cannot remove account with children (found {node.Children.Count} children).",
+        errorMessage: $"Cannot remove account '{node.Account.Name}' with children (found {node.Children.Count} children).",
         errorCode: "COA-REMOVE_NO_CHILDREN",
         severity: ValidationSeverity.Error);
 
