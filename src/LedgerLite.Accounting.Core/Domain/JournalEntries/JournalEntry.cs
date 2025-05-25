@@ -16,7 +16,7 @@ public sealed class JournalEntry : AuditableEntity
     public Guid? LastModifiedByUserId { get; private init; }
     
     public string ReferenceNumber { get; private init; } = null!;
-    public DateTime OccursAtUtc { get; private init; }
+    public DateOnly OccursAt { get; private init; }
     public string Description { get; private init; } = null!;
     public JournalEntryType Type { get; private init; } = null!;
     public JournalEntryStatus Status { get; private set; } = null!;
@@ -32,7 +32,7 @@ public sealed class JournalEntry : AuditableEntity
         JournalEntryType type,
         string referenceNumber,
         string description,
-        DateTime occursAtUtc,
+        DateOnly occursAt,
         Guid createdByUserId)
     {
         if (string.IsNullOrWhiteSpace(referenceNumber))
@@ -46,7 +46,7 @@ public sealed class JournalEntry : AuditableEntity
             Type = type,
             ReferenceNumber = referenceNumber,
             Description = description,
-            OccursAtUtc = occursAtUtc.ToUniversalTime(),
+            OccursAt = occursAt,
             Status = JournalEntryStatus.Editable,
             CreatedByUserId = createdByUserId,
             FiscalPeriodId = fiscalPeriod.Id

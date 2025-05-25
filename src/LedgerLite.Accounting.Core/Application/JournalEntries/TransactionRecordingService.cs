@@ -29,7 +29,7 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
             type: JournalEntryType.Standard,
             referenceNumber: request.ReferenceNumber,
             description: request.Description,
-            occursAtUtc: request.OccursAtUtc,
+            occursAt: request.OccursAt,
             createdByUserId: request.RequestedByUserId,
             fiscalPeriod: period);
     

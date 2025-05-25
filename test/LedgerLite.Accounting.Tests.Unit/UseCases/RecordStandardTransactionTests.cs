@@ -108,7 +108,7 @@ public class RecordStandardTransactionTests
     {
         return new RecordStandardEntryRequest(
             ReferenceNumber: referenceNumber,
-            OccursAtUtc: DateTime.Today,
+            OccursAt: DateOnly.FromDateTime(DateTime.Today),
             Description: "",
             CreditLine: creditRequest ?? LineRequest,
             DebitLine: debitRequest ?? LineRequest,

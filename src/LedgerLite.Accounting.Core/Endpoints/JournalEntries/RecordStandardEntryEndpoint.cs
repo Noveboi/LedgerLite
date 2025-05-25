@@ -9,12 +9,12 @@ namespace LedgerLite.Accounting.Core.Endpoints.JournalEntries;
 
 internal sealed record RecordStandardEntryRequestDto(
     string ReferenceNumber,
-    DateTime OccursAtUtc,
+    DateOnly OccursAt,
     string Description,
-    decimal Money,
+    decimal Amount,
     Guid DebitAccountId,
     Guid CreditAccountId,
-    Guid FiscalPeriodId,
+    [property: RouteParam] Guid FiscalPeriodId,
     [property: FromClaim(ClaimTypes.NameIdentifier)] Guid RequestedByUserId);
 
 internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService service) 
@@ -47,18 +47,14 @@ internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService s
 
     private static RecordStandardEntryRequest MapToRequest(RecordStandardEntryRequestDto dto) => 
         new(ReferenceNumber: dto.ReferenceNumber,
-            OccursAtUtc: dto.OccursAtUtc,
+            OccursAt: dto.OccursAt,
             Description: dto.Description,
             CreditLine: new CreateJournalEntryLineRequest(
                 AccountId: dto.CreditAccountId,
-                Amount: dto.Money),
+                Amount: dto.Amount),
             DebitLine: new CreateJournalEntryLineRequest(
                 AccountId: dto.DebitAccountId,
-                Amount: dto.Money),
+                Amount: dto.Amount),
             RequestedByUserId: dto.RequestedByUserId,
             FiscalPeriodId: dto.FiscalPeriodId);
-
-    private static CreateJournalEntryLineRequest MapLineToRequest(CreateEntryLineRequestDto dto) =>
-        new(AccountId: dto.AccountId,
-            Amount: dto.Amount);
 }

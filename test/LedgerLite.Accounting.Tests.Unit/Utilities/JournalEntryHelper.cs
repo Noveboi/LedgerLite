@@ -19,7 +19,7 @@ internal static class JournalEntryHelper
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occursAtUtc: DateTime.Today,
+            occursAt: DateOnly.FromDateTime(DateTime.Today),
             createdByUserId: Guid.NewGuid(),
             fiscalPeriod: Period).Value;
 
@@ -36,7 +36,7 @@ internal static class JournalEntryHelper
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occursAtUtc: DateTime.Today,
+            occursAt: DateOnly.FromDateTime(DateTime.Today),
             createdByUserId: Guid.NewGuid(),
             fiscalPeriod: Period).Value;
 }

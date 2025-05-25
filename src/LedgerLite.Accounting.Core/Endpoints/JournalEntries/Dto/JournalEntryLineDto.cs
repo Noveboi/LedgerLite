@@ -7,6 +7,7 @@ namespace LedgerLite.Accounting.Core.Endpoints.JournalEntries.Dto;
 public sealed record JournalEntryLineDto(
     Guid Id,
     Guid EntryId,
+    DateOnly OccursAt,
     string EntryDescription,
     double Credit,
     double Debit,
@@ -15,6 +16,7 @@ public sealed record JournalEntryLineDto(
     public static JournalEntryLineDto FromEntity(JournalEntryLine line) => new(
         Id: line.Id,
         EntryId: line.EntryId,
+        OccursAt: line.Entry.OccursAt,
         EntryDescription: line.Entry.Description,
         Account: SlimAccountDto.FromEntity(line.Account),
         Credit: line.TransactionType == TransactionType.Credit ? decimal.ToDouble(line.Amount) : 0,

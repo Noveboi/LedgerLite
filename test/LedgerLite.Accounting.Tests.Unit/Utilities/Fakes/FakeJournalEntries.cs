@@ -55,7 +55,7 @@ public static class FakeJournalEntries
             .RuleFor(x => x.Id, options.Id)
             .RuleFor(x => x.FiscalPeriodId, options.FiscalPeriodId ?? FiscalPeriodId)
             .RuleFor(x => x.ReferenceNumber, f => f.Random.String2(5))
-            .RuleFor(x => x.OccursAtUtc, f => f.Date.Past())
+            .RuleFor(x => x.OccursAt, f => DateOnly.FromDateTime(f.Date.Past()))
             .RuleFor(x => x.Type, options.JournalEntryType ?? JournalEntryType.Standard)
             .RuleFor(x => x.Status, JournalEntryStatus.Editable)
             .RuleFor("_lines", _ => options.Lines ?? []);

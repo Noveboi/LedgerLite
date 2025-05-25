@@ -32,6 +32,6 @@ public class JournalEntryCreationTests
         fiscalPeriod: period,
         type: JournalEntryType.Standard, 
         description: "",
-        occursAtUtc: DateTime.UtcNow,
+        occursAt: DateOnly.FromDateTime(DateTime.UtcNow),
         createdByUserId: Guid.NewGuid());
 }
