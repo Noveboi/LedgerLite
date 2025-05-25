@@ -10,5 +10,8 @@ internal sealed class FiscalPeriodConfiguration : IEntityTypeConfiguration<Fisca
     public void Configure(EntityTypeBuilder<FiscalPeriod> builder)
     {
         builder.IsDomainEntity();
+        builder.Property(x => x.Name).HasMaxLength(64);
+
+        builder.HasIndex(x => x.OrganizationId);
     }
 }
