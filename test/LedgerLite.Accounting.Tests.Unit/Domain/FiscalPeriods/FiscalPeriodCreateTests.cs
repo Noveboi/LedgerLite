@@ -14,7 +14,7 @@ public class FiscalPeriodCreateTests
         var start = new DateOnly(2025, 1, 1);
         var end = new DateOnly(2024, 1, 1);
 
-        var result = FiscalPeriod.Create(OrganizationId, start, end);
+        var result = FiscalPeriod.Create(OrganizationId, start, end, "Test!");
         
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(FiscalPeriodErrors.StartIsAfterEnd(start, end));
