@@ -90,11 +90,25 @@ public class CreateFiscalPeriodTests
             overlap.Range,
             new DateRange(request.StartDate, request.EndDate)));
     }
+
+    [Fact]
+    public async Task Invalid_WhenPeriodWithSameName_AlreadyExists_ForOrganization()
+    {
+        var request = GetRequest(OrganizationId);
+        _repository.NameExistsForOrganizationAsync(request.OrganizationId, request.Name, Arg.Any<CancellationToken>())
+            .Returns(true);
+
+        var result = await _sut.CreateAsync(request, CancellationToken.None);
+
+        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.ShouldHaveError(FiscalPeriodErrors.PeriodWithSameName(request.Name));
+    }
     
     private static CreateFiscalPeriodRequest GetRequest(Guid orgId) => new(
         OrganizationId: orgId,
         StartDate: new DateOnly(2024, 1, 1),
-        EndDate: new DateOnly(2025, 1, 1));
+        EndDate: new DateOnly(2025, 1, 1),
+        Name: "Alright!");
 
     private FiscalPeriod ConfigureExistingPeriod(DateOnly startDate, DateOnly endDate)
     {
