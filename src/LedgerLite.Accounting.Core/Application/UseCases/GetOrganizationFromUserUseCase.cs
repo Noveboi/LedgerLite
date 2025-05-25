@@ -10,9 +10,9 @@ internal sealed class GetOrganizationFromUserUseCase(
     IOrganizationRequests organizationRequests) 
     : IApplicationUseCase<Guid, OrganizationDto>
 {
-    public async Task<Result<OrganizationDto>> HandleAsync(Guid userId, CancellationToken token)
+    public async Task<Result<OrganizationDto>> HandleAsync(Guid request, CancellationToken token)
     {
-        var userResult = await userRequests.GetUserByIdAsync(userId, token);
+        var userResult = await userRequests.GetUserByIdAsync(request, token);
         if (!userResult.IsSuccess)
         {
             return userResult.Map();
