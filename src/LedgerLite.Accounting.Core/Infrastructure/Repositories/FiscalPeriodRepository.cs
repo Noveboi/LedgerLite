@@ -10,11 +10,16 @@ internal sealed class FiscalPeriodRepository(AccountingDbContext context) : IFis
     public Task<FiscalPeriod?> GetByIdAsync(Guid id, CancellationToken token) =>
         context.FiscalPeriods.FirstOrDefaultAsync(x => x.Id == id, token);
 
+    public Task<bool> NameExistsForOrganizationAsync(Guid organizationId, string name, CancellationToken token) =>
+        context.FiscalPeriods.AnyAsync(x => x.OrganizationId == organizationId && x.Name == name, token);
+
     public Task<FiscalPeriod?> FindOverlappingPeriodAsync(Guid organizationId, DateOnly startDate, DateOnly endDate,
-        CancellationToken token) =>
-        context.FiscalPeriods
+        CancellationToken token)
+    {
+        return context.FiscalPeriods
             .Where(x => x.OrganizationId == organizationId)
             .Where(x => (x.EndDate > startDate && x.EndDate < endDate) ||
                         (x.StartDate > startDate && x.StartDate < endDate))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken: token);
+    }
 }
