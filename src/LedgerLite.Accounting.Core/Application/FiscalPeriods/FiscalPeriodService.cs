@@ -1,12 +1,14 @@
 ﻿using Ardalis.Result;
+using FastEndpoints;
 using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure;
+using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.Models;
 using LedgerLite.Users.Contracts.Models;
 
 namespace LedgerLite.Accounting.Core.Application.FiscalPeriods;
 
-internal sealed record CreateFiscalPeriodRequest(Guid OrganizationId, DateOnly StartDate, DateOnly EndDate);
+internal sealed record CreateFiscalPeriodRequest(Guid OrganizationId, DateOnly StartDate, DateOnly EndDate, string Name);
 
 internal interface IFiscalPeriodService
 {
@@ -15,15 +17,21 @@ internal interface IFiscalPeriodService
 
 internal sealed class FiscalPeriodService(IAccountingUnitOfWork unitOfWork) : IFiscalPeriodService
 {
+    private readonly IFiscalPeriodRepository _repository = unitOfWork.FiscalPeriodRepository;
+    
     public async Task<Result<FiscalPeriod>> CreateAsync(CreateFiscalPeriodRequest request, CancellationToken token) =>
         await EnsurePeriodDoesNotOverlapWithAnother(request, token)
+            .BindAsync(async org => await _repository.NameExistsForOrganizationAsync(request.OrganizationId, request.Name, token)
+                ? Result.Invalid(FiscalPeriodErrors.PeriodWithSameName(request.Name))
+                : Result.Success(org))
             .BindAsync(_ => FiscalPeriod.Create(
                 organizationId: request.OrganizationId,
                 startDate: request.StartDate,
-                endDate: request.EndDate))
+                endDate: request.EndDate,
+                name: request.Name))
             .BindAsync(period =>
             {
-                unitOfWork.FiscalPeriodRepository.Add(period);
+                _repository.Add(period);
                 return Result.Success(period);
             })
             .BindAsync(period => unitOfWork.SaveChangesAsync(token).MapAsync(() => period));
@@ -32,7 +40,7 @@ internal sealed class FiscalPeriodService(IAccountingUnitOfWork unitOfWork) : IF
         CreateFiscalPeriodRequest request,
         CancellationToken token)
     {
-        var overlappingPeriod = await unitOfWork.FiscalPeriodRepository.FindOverlappingPeriodAsync(
+        var overlappingPeriod = await _repository.FindOverlappingPeriodAsync(
             request.OrganizationId,
             request.StartDate,
             request.EndDate, 
