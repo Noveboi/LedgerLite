@@ -44,8 +44,8 @@ internal sealed class CreateFiscalPeriodEndpoint(
 
         var period = creationResult.Value;
 
-        await SendCreatedAtAsync<GetFiscalPeriodEndpoint>(
-            routeValues: new { period.Id },
+        await SendCreatedAtAsync<GetFiscalPeriodsEndpoint>(
+            routeValues: null,
             responseBody: period.ToDto(),
             cancellation: ct);
     }
