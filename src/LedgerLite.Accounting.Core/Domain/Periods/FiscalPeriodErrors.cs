@@ -24,4 +24,16 @@ public static class FiscalPeriodErrors
             errorCode: "FP-OVERLAP",
             severity: ValidationSeverity.Error);
     }
+
+    public static ValidationError NameCannotBeEmpty() =>
+        new(identifier: FiscalPeriodIdentifier,
+            errorMessage: "A period must have a non-empty name.",
+            errorCode: "FP-NAME_EMPTY",
+            severity: ValidationSeverity.Error);
+
+    public static ValidationError PeriodWithSameName(string name) =>
+        new(identifier: FiscalPeriodIdentifier,
+            errorMessage: $"A fiscal period named '{name}' already exists.",
+            errorCode: "FP-NAME_ALREADY_EXISTS",
+            severity: ValidationSeverity.Error);
 }
