@@ -11,7 +11,8 @@ namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
 internal sealed record CreateFiscalPeriodRequestDto(
     [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
     DateOnly StartDate,
-    DateOnly EndDate);
+    DateOnly EndDate,
+    string Name);
 
 internal sealed class CreateFiscalPeriodEndpoint(
     GetOrganizationFromUserUseCase getOrganizationFromUser, 
@@ -52,5 +53,6 @@ internal sealed class CreateFiscalPeriodEndpoint(
     public static CreateFiscalPeriodRequest MapRequest(CreateFiscalPeriodRequestDto dto, OrganizationDto org) =>
         new(OrganizationId: org.Id,
             StartDate: dto.StartDate,
-            EndDate: dto.EndDate);
+            EndDate: dto.EndDate,
+            Name: dto.Name);
 }
