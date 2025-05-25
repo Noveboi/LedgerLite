@@ -32,6 +32,9 @@ public sealed class FiscalPeriod : AuditableEntity
     {
         if (startDate > endDate)
             return Result.Invalid(FiscalPeriodErrors.StartIsAfterEnd(startDate, endDate));
+        
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Invalid(FiscalPeriodErrors.NameCannotBeEmpty());
 
         var period = new FiscalPeriod(
             organizationId, 
