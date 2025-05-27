@@ -19,7 +19,25 @@ public sealed class JournalEntryLine : AuditableEntity
     public Guid AccountId { get; private init; }
     public Account Account { get; private init; } = null!;
     public TransactionType TransactionType { get; private init; } = null!;
-    public decimal Amount { get; private init; } 
+    public decimal Amount { get; private init; }
+
+    public Account GetTransferAccount()
+    {
+        if (Entry is null)
+            throw new InvalidOperationException("Related JournalEntry is null.");
+
+        if (Entry.Type == JournalEntryType.Compound)
+            throw new NotSupportedException($"{nameof(GetTransferAccount)} is not supported for compound entries.");
+
+        var otherLine = Entry.Lines.FirstOrDefault(x => x.Id != Id);
+        if (otherLine is null)
+            throw new InvalidOperationException("Second entry line does not exist.");
+
+        if (otherLine.Account is null)
+            throw new InvalidOperationException("Account navigation for other entry line is null");
+
+        return otherLine.Account;
+    }
     
     public static JournalEntryLine Create(
         TransactionType type, 

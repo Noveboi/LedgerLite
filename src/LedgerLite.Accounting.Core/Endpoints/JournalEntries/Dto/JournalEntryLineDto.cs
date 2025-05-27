@@ -11,7 +11,8 @@ public sealed record JournalEntryLineDto(
     string EntryDescription,
     double Credit,
     double Debit,
-    SlimAccountDto Account)
+    SlimAccountDto Account,
+    SlimAccountDto TransferAccount)
 {
     public static JournalEntryLineDto FromEntity(JournalEntryLine line) => new(
         Id: line.Id,
@@ -19,6 +20,7 @@ public sealed record JournalEntryLineDto(
         OccursAt: line.Entry.OccursAt,
         EntryDescription: line.Entry.Description,
         Account: SlimAccountDto.FromEntity(line.Account),
+        TransferAccount: SlimAccountDto.FromEntity(line.GetTransferAccount()),
         Credit: line.TransactionType == TransactionType.Credit ? decimal.ToDouble(line.Amount) : 0,
         Debit: line.TransactionType == TransactionType.Debit ? decimal.ToDouble(line.Amount) : 0);
 }
