@@ -8,7 +8,11 @@ using LedgerLite.SharedKernel.UseCases;
 
 namespace LedgerLite.Accounting.Core.Application.UseCases;
 
-internal sealed record GetDetailedAccountRequest(Guid UserId, Guid AccountId);
+internal sealed record GetDetailedAccountRequest(
+    Guid UserId, 
+    Guid AccountId,
+    Guid? FiscalPeriodId);
+
 internal sealed class GetDetailedAccountUseCase(
     IChartOfAccountsService chartService,
     IJournalEntryLineRepository lineRepository)
@@ -28,7 +32,8 @@ internal sealed class GetDetailedAccountUseCase(
             return Result.NotFound(CommonErrors.NotFound<Account>(request.AccountId));
         }
 
-        var lines = await lineRepository.GetLinesForAccountAsync(accountNode.Account);
+        var options = new JournalEntryLineQueryOptions(FiscalPeriodId: request.FiscalPeriodId);
+        var lines = await lineRepository.GetLinesForAccountAsync(accountNode.Account, options, token);
         return new AccountWithDetails(
             Node: accountNode,
             Lines: lines);
