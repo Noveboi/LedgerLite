@@ -3,7 +3,7 @@ using LedgerLite.SharedKernel.Persistence;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 
-public interface IAccountingUnitOfWork : IUnitOfWork
+internal interface IAccountingUnitOfWork : IUnitOfWork
 {
     IAccountRepository AccountRepository { get; }
     IChartOfAccountsRepository ChartOfAccountsRepository { get; }

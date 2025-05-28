@@ -7,7 +7,7 @@ using Serilog;
 
 namespace LedgerLite.Accounting.Core.Integrations;
 
-public sealed class CreateChartOfAccountWhenOrganizationCreated(IAccountingUnitOfWork unitOfWork) 
+internal sealed class CreateChartOfAccountWhenOrganizationCreated(IAccountingUnitOfWork unitOfWork) 
     : IEventHandler<OrganizationCreatedIntegrationEvent>
 {
     private readonly ILogger _log = Log.ForContext<CreateChartOfAccountWhenOrganizationCreated>();
