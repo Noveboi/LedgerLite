@@ -7,7 +7,7 @@ using LedgerLite.Accounting.Core.Infrastructure;
 
 namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
-public static class AccountingUnitOfWorkConfiguration
+internal static class AccountingUnitOfWorkConfiguration
 {
     public static void ConfigureForTests(
         this IAccountingUnitOfWork unitOfWork,

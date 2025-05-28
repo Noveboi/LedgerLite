@@ -3,7 +3,7 @@ using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 
 namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
-public sealed class AccountingUnitOfWorkConfigurationBuilder(IAccountingUnitOfWork unitOfWork)
+internal sealed class AccountingUnitOfWorkConfigurationBuilder(IAccountingUnitOfWork unitOfWork)
 {
     public AccountingUnitOfWorkConfigurationBuilder MockFiscalPeriodRepository(IFiscalPeriodRepository repo)
     {
