@@ -25,7 +25,6 @@ internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> 
             .ConfigureEnumeration<AccountType>()
             .ConfigureEnumeration<JournalEntryType>()
             .ConfigureEnumeration<JournalEntryStatus>()
-            .ConfigureEnumeration<TransactionType>()
             .ConfigureEnumeration<Currency>();
         
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAccountingEntityConfigurationMarker).Assembly);

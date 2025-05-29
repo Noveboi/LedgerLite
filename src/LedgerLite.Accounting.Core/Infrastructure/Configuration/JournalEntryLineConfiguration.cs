@@ -10,7 +10,6 @@ internal sealed class JournalEntryLineConfiguration : IEntityTypeConfiguration<J
     public void Configure(EntityTypeBuilder<JournalEntryLine> builder)
     {
         builder.IsDomainEntity();
-        builder.HasEnumeration(x => x.TransactionType);
 
         builder
             .HasOne(x => x.Entry)

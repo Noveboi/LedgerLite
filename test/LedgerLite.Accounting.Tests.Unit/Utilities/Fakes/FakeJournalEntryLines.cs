@@ -8,7 +8,7 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 public sealed class FakeJournalEntryLineOptions
 {
-    public TransactionType? TransactionType { get; set; }
+    public TransactionType? Type { get; set; }
     public Account? Account { get; set; }
     public Guid? AccountId { get; set; }
     public Guid? EntryId { get; set; }
@@ -18,7 +18,7 @@ public sealed class FakeJournalEntryLineOptions
     {
         Account = account;
         Amount = amount;
-        TransactionType = TransactionType.Credit;
+        Type = TransactionType.Credit;
         return this;
     }
 
@@ -26,7 +26,7 @@ public sealed class FakeJournalEntryLineOptions
     {
         Account = account;
         Amount = amount;
-        TransactionType = TransactionType.Debit;
+        Type = TransactionType.Debit;
         return this;
     }
 }
@@ -36,7 +36,7 @@ public static class FakeJournalEntryLines
     internal static Faker<JournalEntryLine> GetFakerCore(FakeJournalEntryLineOptions options) =>
         new PrivateFaker<JournalEntryLine>()
             .UsePrivateConstructor()
-            .RuleFor(x => x.TransactionType, options.TransactionType ?? TransactionType.Credit)
+            .RuleFor(x => x.TransactionType, options.Type ?? TransactionType.Credit)
             .RuleFor(x => x.Amount, f => options.Amount ?? f.Random.Number(1, 1000))
             .RuleFor(x => x.AccountId, _ => options.Account?.Id ?? options.AccountId ?? Guid.NewGuid())
             .RuleFor(x => x.Account, _ => options.Account)

@@ -18,7 +18,7 @@ public sealed class JournalEntryLine : AuditableEntity
     public JournalEntry Entry { get; private init; } = null!;
     public Guid AccountId { get; private init; }
     public Account Account { get; private init; } = null!;
-    public TransactionType TransactionType { get; private init; } = null!;
+    public TransactionType TransactionType { get; private init; }
     public decimal Amount { get; private init; }
 
     public Account GetTransferAccount()
@@ -52,5 +52,5 @@ public sealed class JournalEntryLine : AuditableEntity
             EntryId = entryId,
         };
 
-    public override string ToString() => $"{TransactionType.Name} '{Account.Name}' - {Amount:N}";
+    public override string ToString() => $"{TransactionType.ToString()} '{Account.Name}' - {Amount:N}";
 }
