@@ -6,14 +6,13 @@ using LedgerLite.Accounting.Core.Domain.Periods;
 
 namespace LedgerLite.Accounting.Reporting.Trial;
 
-internal sealed record TrialBalanceEntry(Account Account, TransactionType Type, decimal Amount);
-
 internal sealed class TrialBalance
 {
     public FiscalPeriod Period { get; }
-    public IReadOnlyCollection<TrialBalanceEntry> WorkingBalance { get; }
+    public IReadOnlyCollection<AccountBalance> WorkingBalance { get; }
 
-    public decimal GetTotals(Account account) => WorkingBalance.FirstOrDefault(x => x.Account == account)?.Amount ?? 0;
+    public decimal GetTotals(Account account) => 
+        WorkingBalance.FirstOrDefault(x => x.Account == account)?.Amount ?? 0;
 
     public decimal GetTotalDebits() => WorkingBalance
         .Where(x => x.Type == TransactionType.Debit)
@@ -22,7 +21,7 @@ internal sealed class TrialBalance
         .Where(x => x.Type == TransactionType.Credit)
         .Sum(x => x.Amount);
     
-    private TrialBalance(FiscalPeriod period, IReadOnlyCollection<TrialBalanceEntry> workingBalance)
+    private TrialBalance(FiscalPeriod period, IReadOnlyCollection<AccountBalance> workingBalance)
     {
         Period = period;
         WorkingBalance = workingBalance;
@@ -38,14 +37,7 @@ internal sealed class TrialBalance
         var workingBalance = journalEntries
             .SelectMany(entry => entry.Lines)
             .GroupBy(line => line.Account)
-            .Select(accountGroup => new TrialBalanceEntry(
-                Account: accountGroup.Key,
-                Type: accountGroup.Key.Type.IsCredit() ? TransactionType.Credit : TransactionType.Debit,
-                Amount: accountGroup.Aggregate(0.0m, (runningBalance, line) => AccountingMath.CreditOrDebit(
-                    type: line.TransactionType,
-                    account: line.Account,
-                    runningBalance: runningBalance,
-                    amount: line.Amount))));
+            .Select(AccountBalance.FromGroup);
         
         return new TrialBalance(period, workingBalance.ToList());
     }
