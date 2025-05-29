@@ -8,6 +8,7 @@ internal sealed record AccountWithLinesDto
     public required string Name { get; init; }
     public required string Number { get; init; }
     public required string Type { get; init; }
+    public required string Description { get; init; }
     public required string Currency { get; init; }
     public required bool IsControl { get; init; }
 

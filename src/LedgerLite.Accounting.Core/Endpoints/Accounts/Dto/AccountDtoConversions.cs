@@ -13,7 +13,8 @@ internal static class AccountDtoConversions
         Number = account.Number,
         Type = account.Type.ToString(),
         Currency = account.Currency.ToString(),
-        IsControl = account.IsPlaceholder
+        IsControl = account.IsPlaceholder,
+        Description = account.Description
     };
     
     public static AccountWithLinesDto ToDto(this AccountWithDetails accountWithDetails)
@@ -28,7 +29,8 @@ internal static class AccountDtoConversions
             Type = account.Type.ToString(),
             Currency = account.Currency.ToString(),
             IsControl = account.IsPlaceholder,
-            Lines = accountWithDetails.Lines.Select(JournalEntryLineDto.FromEntity)
+            Description = account.Description,
+            Lines = accountWithDetails.Lines.Select(JournalEntryLineDto.FromEntity),
         };
     }
 }
