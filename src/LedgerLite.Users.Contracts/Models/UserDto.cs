@@ -3,6 +3,7 @@
 public sealed record UserDto(
     Guid Id,
     OrganizationDto? Organization,
+    string? OrganizationRole,
     string Email,
     string Username,
     string FullName);
