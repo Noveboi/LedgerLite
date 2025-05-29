@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using LedgerLite.Accounting.Core;
+using LedgerLite.Accounting.Reporting;
 using LedgerLite.Users;
 using Serilog;
 
@@ -10,7 +11,8 @@ public static class DependencyInjection
     public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration) => 
         services
             .AddUsersModule(configuration)
-            .AddAccountingModule(configuration);
+            .AddAccountingModule(configuration)
+            .AddReportingModule(configuration);
 
     public static IServiceCollection AddApiInfrastructure(this IServiceCollection services, IConfiguration configuration) => 
         services

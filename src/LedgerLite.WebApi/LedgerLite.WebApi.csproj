@@ -19,6 +19,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj" />
+      <ProjectReference Include="..\LedgerLite.Accounting.Reporting\LedgerLite.Accounting.Reporting.csproj" />
       <ProjectReference Include="..\LedgerLite.Users\LedgerLite.Users.csproj" />
     </ItemGroup>
 </Project>
