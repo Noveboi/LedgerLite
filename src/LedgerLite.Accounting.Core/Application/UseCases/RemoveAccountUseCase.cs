@@ -3,7 +3,6 @@ using LedgerLite.Accounting.Core.Application.Chart;
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Infrastructure;
-using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.UseCases;
 using LedgerLite.Users.Contracts;
 
