@@ -1,5 +1,4 @@
-﻿using LedgerLite.SharedKernel.Persistence;
-using LedgerLite.Users.Domain;
+﻿using LedgerLite.Users.Domain;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +8,15 @@ using Microsoft.EntityFrameworkCore;
 namespace LedgerLite.Users.Infrastructure;
 
 internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options) 
-    : IdentityDbContext<User, IdentityRole<Guid>, Guid>(options)
+    : IdentityDbContext<
+        User,
+        Role, 
+        Guid, 
+        IdentityUserClaim<Guid>, 
+        UserRole, 
+        IdentityUserLogin<Guid>, 
+        IdentityRoleClaim<Guid>,
+        IdentityUserToken<Guid>>(options)
 {
     public DbSet<Organization> Organizations { get; set; }
     
@@ -17,8 +24,6 @@ internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
     {
         base.OnModelCreating(builder);
         builder.HasDefaultSchema("Users");
-
-        builder.ConfigureEnumeration<OrganizationMemberRole>();
 
         builder.ApplyConfigurationsFromAssembly(typeof(IUserEntityConfigurationMarker).Assembly);
     }

@@ -13,10 +13,8 @@ internal sealed class OrganizationMemberConfiguration : IEntityTypeConfiguration
         builder.IsDomainEntity();
         builder
             .HasOne(x => x.User)
-            .WithOne()
+            .WithOne(x => x.OrganizationMember)
             .IsRequired(false)
             .HasForeignKey<User>(x => x.OrganizationMemberId);
-        
-        builder.HasEnumeration(x => x.Role);
     }
 }

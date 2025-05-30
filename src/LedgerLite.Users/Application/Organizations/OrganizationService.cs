@@ -23,7 +23,6 @@ internal sealed class OrganizationService(
                 : Result.Success(state))
             .BindAsync(state => OrganizationMember.Create(
                 user: state.User, 
-                role: OrganizationMemberRole.Owner, 
                 organizationId: state.Organization.Id).Map(member => new
                 {
                     state.Organization,

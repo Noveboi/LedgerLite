@@ -47,7 +47,7 @@ internal sealed class JoinOrganizationEndpoint(
             .BindAsync(async user => await _organizationRepository.GetByIdAsync(request.OrganizationId, token) is { } org
                 ? Result.Success(new { User = user, Organization = org })
                 : Result.NotFound(CommonErrors.NotFound<Organization>(request.OrganizationId)))
-            .BindAsync(state => OrganizationMember.Create(state.User, OrganizationMemberRole.Member, state.Organization.Id)
+            .BindAsync(state => OrganizationMember.Create(state.User, state.Organization.Id)
                 .Map(member => new { state.User, state.Organization, Member = member }))
             .BindAsync(state => state.Organization.AddMember(state.Member)
                 .Map(() => state.Member))

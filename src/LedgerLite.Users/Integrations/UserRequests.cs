@@ -2,10 +2,8 @@
 using LedgerLite.Users.Application.Users;
 using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Contracts.Models;
-using LedgerLite.Users.Domain;
 using LedgerLite.Users.Infrastructure.Repositories;
 using LedgerLite.Users.Integrations.Conversions;
-using Microsoft.AspNetCore.Identity;
 
 namespace LedgerLite.Users.Integrations;
 
