@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    [Migration("20250525180945_OccursAt_DateTimeToDateOnly")]
-    partial class OccursAt_DateTimeToDateOnly
+    [Migration("20250530161147_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -374,6 +374,11 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.Property<DateTime>("ModifiedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<Guid>("OrganizationId")
                         .HasColumnType("uuid");
 
@@ -382,36 +387,9 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrganizationId");
+
                     b.ToTable("FiscalPeriods", "Accounting");
-                });
-
-            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.TransactionType", b =>
-                {
-                    b.Property<int>("Value")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Value");
-
-                    b.ToTable("TransactionType", "Accounting");
-
-                    b.HasData(
-                        new
-                        {
-                            Value = 1,
-                            Name = "Credit"
-                        },
-                        new
-                        {
-                            Value = 2,
-                            Name = "Debit"
-                        });
                 });
 
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>

@@ -90,6 +90,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
                     ClosedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     ModifiedAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -124,20 +125,6 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JournalEntryType", x => x.Value);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TransactionType",
-                schema: "Accounting",
-                columns: table => new
-                {
-                    Value = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransactionType", x => x.Value);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,7 +172,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     CreatedByUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     LastModifiedByUserId = table.Column<Guid>(type: "uuid", nullable: true),
                     ReferenceNumber = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    OccursAtUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    OccursAt = table.Column<DateOnly>(type: "date", nullable: false),
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
@@ -245,7 +232,7 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     { 1, "Asset" },
                     { 2, "Liability" },
                     { 3, "Expense" },
-                    { 4, "Income" },
+                    { 4, "Revenue" },
                     { 5, "Equity" }
                 });
 
@@ -286,16 +273,6 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     { 7, "Closing" }
                 });
 
-            migrationBuilder.InsertData(
-                schema: "Accounting",
-                table: "TransactionType",
-                columns: new[] { "Value", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Credit" },
-                    { 2, "Debit" }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AccountNode_AccountId",
                 schema: "Accounting",
@@ -321,6 +298,12 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                 table: "Charts",
                 column: "OrganizationId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FiscalPeriods_OrganizationId",
+                schema: "Accounting",
+                table: "FiscalPeriods",
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JournalEntries_FiscalPeriodId",
@@ -366,10 +349,6 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "JournalEntryType",
-                schema: "Accounting");
-
-            migrationBuilder.DropTable(
-                name: "TransactionType",
                 schema: "Accounting");
 
             migrationBuilder.DropTable(

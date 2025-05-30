@@ -389,35 +389,6 @@ namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
                     b.ToTable("FiscalPeriods", "Accounting");
                 });
 
-            modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.TransactionType", b =>
-                {
-                    b.Property<int>("Value")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Value"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Value");
-
-                    b.ToTable("TransactionType", "Accounting");
-
-                    b.HasData(
-                        new
-                        {
-                            Value = 1,
-                            Name = "Credit"
-                        },
-                        new
-                        {
-                            Value = 2,
-                            Name = "Debit"
-                        });
-                });
-
             modelBuilder.Entity("LedgerLite.Accounting.Core.Domain.Chart.AccountNode", b =>
                 {
                     b.HasOne("LedgerLite.Accounting.Core.Domain.Accounts.Account", "Account")
