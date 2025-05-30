@@ -4,6 +4,6 @@ namespace LedgerLite.Users.Domain;
 
 public sealed class Role : IdentityRole<Guid>
 {
-    public IReadOnlyCollection<UserRole> UserRoles { get; set; } = null!;
-    public string? Description { get; set; } 
+    public IReadOnlyCollection<UserRole> UserRoles { get; init; } = null!;
+    public string? Description { get; init; }
 }
