@@ -41,6 +41,7 @@ public static class UsersDependencyInjection
             .AddUsersInfrastructure()
             .AddUsersApplication()
             .AddIdentityCore<User>()
+            .AddRoles<Role>()
             .AddEntityFrameworkStores<UsersDbContext>()
             .AddApiEndpoints()
             .Services;
