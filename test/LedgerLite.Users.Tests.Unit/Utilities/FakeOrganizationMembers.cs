@@ -11,8 +11,7 @@ public static class FakeOrganizationMembers
         new PrivateFaker<OrganizationMember>()
             .UsePrivateConstructor()
             .RuleFor(x => x.OrganizationId, _ => builder.OrganizationId ?? Guid.NewGuid())
-            .RuleFor(x => x.User, _ => builder.User ?? FakeUsers.Get())
-            .RuleFor(x => x.Role, builder.Role ?? OrganizationMemberRole.Member);
+            .RuleFor(x => x.User, _ => builder.User ?? FakeUsers.Get());
 
     public static OrganizationMember Get(Action<FakeOrganizationMemberBuilder>? configure = null)
     {
@@ -25,18 +24,11 @@ public static class FakeOrganizationMembers
 public sealed class FakeOrganizationMemberBuilder
 {
     internal User? User { get; private set; }
-    internal OrganizationMemberRole? Role { get; private set; } 
     internal Guid? OrganizationId { get; private set; }
 
     public FakeOrganizationMemberBuilder WithUser(User user)
     {
         User = user;
-        return this;
-    }
-
-    public FakeOrganizationMemberBuilder WithRole(OrganizationMemberRole role)
-    {
-        Role = role;
         return this;
     }
 

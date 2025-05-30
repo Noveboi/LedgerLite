@@ -1,7 +1,5 @@
 using Ardalis.Result;
-using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
-using LedgerLite.SharedKernel.Domain.Errors;
 using Serilog;
 
 namespace LedgerLite.Accounting.Reporting.Trial;
