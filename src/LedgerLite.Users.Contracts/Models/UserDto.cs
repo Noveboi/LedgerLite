@@ -3,7 +3,7 @@
 public sealed record UserDto(
     Guid Id,
     OrganizationDto? Organization,
-    IEnumerable<string> OrganizationRoles,
+    IEnumerable<RoleDto> OrganizationRoles,
     string Email,
     string Username,
     string FullName);
