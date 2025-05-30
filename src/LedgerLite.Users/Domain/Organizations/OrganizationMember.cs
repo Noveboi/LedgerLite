@@ -27,4 +27,30 @@ public sealed class OrganizationMember : AuditableEntity
         Result.Success(new OrganizationMember(
             user: user,
             organizationId: organizationId));
+
+    public Result AssignRole(Role role)
+    {
+        if (_roles.Any(x => x.RoleId == role.Id))
+        {
+            return Result.Conflict($"Member '{User?.Email}' already has role '{role.Name}'");
+        }
+
+        var userRole = new UserRole(role, this);
+        
+        _roles.Add(userRole);
+        return Result.Success();
+    }
+
+    public Result RevokeRole(Role role)
+    {
+        var roleToRemove = _roles.FirstOrDefault(x => x.RoleId == role.Id);
+        
+        if (roleToRemove is null)
+        {
+            return Result.NotFound($"Member '{User?.Email}' doesn't have role '{role.Name}'");
+        }
+
+        _roles.Remove(roleToRemove);
+        return Result.Success();
+    } 
 }
