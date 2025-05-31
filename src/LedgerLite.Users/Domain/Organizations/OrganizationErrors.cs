@@ -29,4 +29,16 @@ internal static class OrganizationErrors
             errorMessage: $"{user.UserName} is already in an organization.",
             errorCode: "ORG-ALREADY_IN_ONE",
             severity: ValidationSeverity.Error);
+
+    public static ValidationError MemberDoesNotHaveRole(OrganizationMember member) =>
+        new(identifier: OrganizationIdentifier,
+            errorMessage: $"Cannot add member '{member.User.UserName}' without a role.",
+            errorCode: "ORG-NO_ROLE",
+            severity: ValidationSeverity.Error);
+
+    public static ValidationError AlreadyHasOwner() =>
+        new(identifier: OrganizationIdentifier,
+            errorMessage: "Organization already has an owner.",
+            errorCode: "ORG-OWNER",
+            severity: ValidationSeverity.Error);
 }
