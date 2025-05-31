@@ -24,14 +24,22 @@ public sealed class Organization : AuditableEntity
     private readonly List<OrganizationMember> _members = [];
     public IReadOnlyCollection<OrganizationMember> Members => _members;
 
-    public static Result<Organization> Create(string name)
+    public static Result<Organization> Create(User creator, Role creatorRole, string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result.Invalid(CommonErrors.NameIsEmpty());
 
+        if (creatorRole.Name != CommonRoles.Owner)
+        {
+            throw new InvalidOperationException($"Organization creator must be '{CommonRoles.Owner}'.");
+        }
+
         var organization = new Organization(name);
-        organization.AddDomainEvent(new OrganizationCreatedEvent(organization));
+        var member = OrganizationMember.Create(creator, organization, creatorRole);
+        organization.AddMember(member);
         
+        organization.AddDomainEvent(new OrganizationCreatedEvent(organization));
+
         return Result.Success(organization);
     }
 
