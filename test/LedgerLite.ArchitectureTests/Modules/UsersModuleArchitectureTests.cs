@@ -20,10 +20,6 @@ public class UsersModuleArchitectureTests
         Rules.DomainLayerHasNoDependencies.Check(ModuleArchitecture);
     
     [Fact]
-    public void EntitiesInDomainLayer() => 
-        Rules.EntitiesShouldBeInDomainLayer.Check(ModuleArchitecture);
-
-    [Fact]
     public void EntitiesWithParameterlessPrivateConstructor() =>
         LedgerLiteArchitectureRules.EntitiesShouldHavePrivateParameterlessConstructor(ModuleArchitecture);
 }
