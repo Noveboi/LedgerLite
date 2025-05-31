@@ -1,14 +1,20 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.Users.Domain;
-using Microsoft.AspNetCore.Identity;
+using LedgerLite.Users.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace LedgerLite.Users.Application.Users;
 
-internal sealed class UserService(UserManager<User> userManager) : IUserService
+internal sealed class UserService(UsersDbContext context) : IUserService
 {
     public async Task<Result<User>> GetByIdAsync(Guid id, CancellationToken token) =>
-        await userManager.FindByIdAsync(id.ToString()) is { } user
+        await GetUserAsync(id, token) is { } user
             ? Result.Success(user)
             : Result.NotFound(CommonErrors.NotFound<User>(id));
+
+    private Task<User?> GetUserAsync(Guid id, CancellationToken token) =>
+        context.Users
+            .Include(x => x.OrganizationMember)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
 }
