@@ -8,16 +8,16 @@ public static class ResultAssertionExtensions
     {
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(error);
+            .ShouldBeEquivalentTo(expected: error);
     }
 
     public static void ShouldHaveError<TValue>(this Result<TValue> result, ValidationError error)
     {
-        result.Map().ShouldHaveError(error);
+        result.Map().ShouldHaveError(error: error);
     }
 
     public static void ShouldBeInvalid(this Result result)
     {
-        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
     }
 }

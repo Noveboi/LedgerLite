@@ -16,6 +16,6 @@ public static class DbContextConfigurationExtensions
         this DbContextOptionsBuilder options,
         IServiceProvider sp)
     {
-        return options.AddInterceptors(new DomainEventInterceptor(sp.GetRequiredService<IPublisher>()));
+        return options.AddInterceptors(new DomainEventInterceptor(publisher: sp.GetRequiredService<IPublisher>()));
     }
 }

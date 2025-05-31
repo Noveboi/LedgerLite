@@ -13,18 +13,18 @@ public class JournalEntryCreationTests
     [InlineData("    ")]
     public void Invalid_WhenReferenceNumberIsEmptyOrWhitespace(string refNumber)
     {
-        var result = HelpCreateEntry(refNumber, FakeFiscalPeriods.Get());
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ShouldHaveError(JournalEntryErrors.EmptyReferenceNumber());
+        var result = HelpCreateEntry(referenceNumber: refNumber, period: FakeFiscalPeriods.Get());
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
+        result.ShouldHaveError(error: JournalEntryErrors.EmptyReferenceNumber());
     }
 
     [Fact]
     public void Invalid_WhenFiscalPeriod_IsClosed()
     {
         var period = FakeFiscalPeriods.GetClosed();
-        var result = HelpCreateEntry("abc123", period);
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ShouldHaveError(JournalEntryErrors.CannotEditBecausePeriodIsClosed(period));
+        var result = HelpCreateEntry(referenceNumber: "abc123", period: period);
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
+        result.ShouldHaveError(error: JournalEntryErrors.CannotEditBecausePeriodIsClosed(period: period));
     }
 
     private static Result<JournalEntry> HelpCreateEntry(string referenceNumber, FiscalPeriod period)
@@ -34,7 +34,7 @@ public class JournalEntryCreationTests
             fiscalPeriod: period,
             type: JournalEntryType.Standard,
             description: "",
-            occursAt: DateOnly.FromDateTime(DateTime.UtcNow),
+            occursAt: DateOnly.FromDateTime(dateTime: DateTime.UtcNow),
             createdByUserId: Guid.NewGuid());
     }
 }

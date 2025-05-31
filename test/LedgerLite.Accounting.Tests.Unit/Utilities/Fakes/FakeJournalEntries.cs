@@ -20,7 +20,7 @@ public sealed class FakeJournalEntryOptions
     public FakeJournalEntryOptions AddLine(JournalEntryLine line)
     {
         Lines ??= [];
-        Lines.Add(line);
+        Lines.Add(item: line);
         return this;
     }
 
@@ -32,10 +32,10 @@ public sealed class FakeJournalEntryOptions
             EntryId = Id
         };
 
-        configureLine(options);
-        var line = FakeJournalEntryLines.GetFakerCore(options).Generate();
+        configureLine(obj: options);
+        var line = FakeJournalEntryLines.GetFakerCore(options: options).Generate();
 
-        Lines.Add(line);
+        Lines.Add(item: line);
         return this;
     }
 
@@ -52,21 +52,21 @@ public static class FakeJournalEntries
 
     private static Faker<JournalEntry> GetFaker(FakeJournalEntryOptions options)
     {
-        return new PrivateFaker<JournalEntry>(new PrivateBinder())
+        return new PrivateFaker<JournalEntry>(binder: new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(x => x.Id, options.Id)
-            .RuleFor(x => x.FiscalPeriodId, options.FiscalPeriodId ?? FiscalPeriodId)
-            .RuleFor(x => x.ReferenceNumber, f => f.Random.String2(5))
-            .RuleFor(x => x.OccursAt, f => DateOnly.FromDateTime(f.Date.Past()))
-            .RuleFor(x => x.Type, options.JournalEntryType ?? JournalEntryType.Standard)
-            .RuleFor(x => x.Status, JournalEntryStatus.Editable)
-            .RuleFor("_lines", _ => options.Lines ?? []);
+            .RuleFor(property: x => x.Id, value: options.Id)
+            .RuleFor(property: x => x.FiscalPeriodId, value: options.FiscalPeriodId ?? FiscalPeriodId)
+            .RuleFor(property: x => x.ReferenceNumber, setter: f => f.Random.String2(length: 5))
+            .RuleFor(property: x => x.OccursAt, setter: f => DateOnly.FromDateTime(dateTime: f.Date.Past()))
+            .RuleFor(property: x => x.Type, value: options.JournalEntryType ?? JournalEntryType.Standard)
+            .RuleFor(property: x => x.Status, value: JournalEntryStatus.Editable)
+            .RuleFor(propertyOrFieldName: "_lines", setter: _ => options.Lines ?? []);
     }
 
     public static JournalEntry Get(Action<FakeJournalEntryOptions>? configure = null)
     {
         var options = new FakeJournalEntryOptions();
-        configure?.Invoke(options);
-        return GetFaker(options).Generate();
+        configure?.Invoke(obj: options);
+        return GetFaker(options: options).Generate();
     }
 }

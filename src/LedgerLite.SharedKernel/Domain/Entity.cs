@@ -16,7 +16,7 @@ public abstract class Entity : IHaveDomainEvents
 
     public void AddDomainEvent<T>(T domainEvent) where T : DomainEvent
     {
-        (_domainEvents ??= []).Add(domainEvent);
+        (_domainEvents ??= []).Add(item: domainEvent);
     }
 
     public override bool Equals(object? obj)
@@ -35,7 +35,7 @@ public abstract class Entity : IHaveDomainEvents
         if (a is null || b is null)
             return false;
 
-        return a.Equals(b);
+        return a.Equals(obj: b);
     }
 
     public static bool operator !=(Entity? a, Entity? b)

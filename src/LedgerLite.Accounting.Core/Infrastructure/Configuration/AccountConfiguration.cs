@@ -10,20 +10,20 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
     public void Configure(EntityTypeBuilder<Account> builder)
     {
         builder.IsDomainEntity();
-        builder.Property(x => x.Number)
-            .HasMaxLength(6)
-            .IsUnicode(false)
+        builder.Property(propertyExpression: x => x.Number)
+            .HasMaxLength(maxLength: 6)
+            .IsUnicode(unicode: false)
             .IsRequired();
 
-        builder.Property(x => x.Name)
-            .HasMaxLength(100)
+        builder.Property(propertyExpression: x => x.Name)
+            .HasMaxLength(maxLength: 100)
             .IsRequired();
 
-        builder.Property(x => x.Description)
-            .HasMaxLength(150)
-            .IsRequired(false);
+        builder.Property(propertyExpression: x => x.Description)
+            .HasMaxLength(maxLength: 150)
+            .IsRequired(required: false);
 
-        builder.HasEnumeration(x => x.Type);
-        builder.HasEnumeration(x => x.Currency);
+        builder.HasEnumeration(propertyExpression: x => x.Type);
+        builder.HasEnumeration(propertyExpression: x => x.Currency);
     }
 }

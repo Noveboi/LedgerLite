@@ -11,16 +11,16 @@ public class PublisherTests
 
     public PublisherTests()
     {
-        _sut = new Publisher(_eventPublisher, _serviceProvider);
+        _sut = new Publisher(eventPublisher: _eventPublisher, serviceProvider: _serviceProvider);
     }
 
     [Fact]
     public async Task RegisterEventHandler()
     {
         ConfigureEventHandlers(Substitute.For<IEventHandler<ExampleEvent>>());
-        var @event = new ExampleEvent("Hello!");
+        var @event = new ExampleEvent(Message: "Hello!");
 
-        var publishAction = () => _sut.PublishAsync(@event, CancellationToken.None);
+        var publishAction = () => _sut.PublishAsync(e: @event, token: CancellationToken.None);
 
         await publishAction.ShouldNotThrow();
     }
@@ -29,14 +29,14 @@ public class PublisherTests
     public async Task PublishEvents()
     {
         ConfigureEventHandlers(Substitute.For<IEventHandler<ExampleEvent>>());
-        var @event = new ExampleEvent("Hello!");
+        var @event = new ExampleEvent(Message: "Hello!");
 
-        await _sut.PublishAsync(@event, CancellationToken.None);
+        await _sut.PublishAsync(e: @event, token: CancellationToken.None);
 
-        await _eventPublisher.Received(1).PublishAsync(
-            Arg.Is<IEnumerable<EventExecutor>>(executors => executors.Count() == 1),
-            @event,
-            Arg.Any<CancellationToken>());
+        await _eventPublisher.Received(requiredNumberOfCalls: 1).PublishAsync(
+            eventExecutors: Arg.Is<IEnumerable<EventExecutor>>(predicate: executors => executors.Count() == 1),
+            e: @event,
+            token: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -44,23 +44,23 @@ public class PublisherTests
     {
         ConfigureRealEventPublisher();
         var handler = Substitute.For<IEventHandler<ExampleEvent>>();
-        var @event = new ExampleEvent("Alright!");
+        var @event = new ExampleEvent(Message: "Alright!");
         ConfigureEventHandlers(handler);
 
-        await _sut.PublishAsync(@event, CancellationToken.None);
+        await _sut.PublishAsync(e: @event, token: CancellationToken.None);
 
-        await handler.Received(1).HandleAsync(@event, Arg.Any<CancellationToken>());
+        await handler.Received(requiredNumberOfCalls: 1).HandleAsync(e: @event, token: Arg.Any<CancellationToken>());
     }
 
 
     private void ConfigureRealEventPublisher()
     {
-        _sut = new Publisher(new SequentialEventPublisher(), _serviceProvider);
+        _sut = new Publisher(eventPublisher: new SequentialEventPublisher(), serviceProvider: _serviceProvider);
     }
 
     private void ConfigureEventHandlers<TEvent>(params IList<IEventHandler<TEvent>> handlers) where TEvent : IEvent
     {
         var handlerType = typeof(IEnumerable<IEventHandler<TEvent>>);
-        _serviceProvider.GetService(handlerType).Returns(handlers);
+        _serviceProvider.GetService(serviceType: handlerType).Returns(returnThis: handlers);
     }
 }

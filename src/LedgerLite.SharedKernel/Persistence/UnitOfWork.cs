@@ -12,18 +12,18 @@ public abstract class UnitOfWork<TContext>(TContext context) : IUnitOfWork where
     {
         try
         {
-            await context.SaveChangesAsync(token);
+            await context.SaveChangesAsync(cancellationToken: token);
             return Result.Success();
         }
         catch (DbUpdateException exception)
         {
-            Logger.Error(exception, "Save Changes ERROR");
-            return Result.Error("Something went wrong.");
+            Logger.Error(exception: exception, messageTemplate: "Save Changes ERROR");
+            return Result.Error(errorMessage: "Something went wrong.");
         }
         catch (Exception exception)
         {
-            Logger.Error(exception, "Save Changes UNKNOWN ERROR!");
-            return Result.Error("Something went wrong.");
+            Logger.Error(exception: exception, messageTemplate: "Save Changes UNKNOWN ERROR!");
+            return Result.Error(errorMessage: "Something went wrong.");
         }
     }
 }

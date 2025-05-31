@@ -19,11 +19,12 @@ internal static class JournalEntryHelper
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occursAt: DateOnly.FromDateTime(DateTime.Today),
+            occursAt: DateOnly.FromDateTime(dateTime: DateTime.Today),
             createdByUserId: Guid.NewGuid(),
             fiscalPeriod: Period).Value;
 
-        foreach (var line in lines) entry.AddLine(line.AccountId, line.TransactionType, line.Amount);
+        foreach (var line in lines)
+            entry.AddLine(accountId: line.AccountId, type: line.TransactionType, amount: line.Amount);
 
         return entry;
     }
@@ -34,7 +35,7 @@ internal static class JournalEntryHelper
             type: type,
             referenceNumber: "abc123",
             description: "Testing!",
-            occursAt: DateOnly.FromDateTime(DateTime.Today),
+            occursAt: DateOnly.FromDateTime(dateTime: DateTime.Today),
             createdByUserId: Guid.NewGuid(),
             fiscalPeriod: Period).Value;
     }

@@ -13,7 +13,7 @@ using LedgerLite.Users.Integrations.Conversions;
 namespace LedgerLite.Users.Endpoints.Organizations;
 
 internal sealed record CreateOrganizationRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId,
     string Name);
 
@@ -31,43 +31,43 @@ internal sealed class CreateOrganizationEndpoint(
 
     public override async Task HandleAsync(CreateOrganizationRequestDto req, CancellationToken ct)
     {
-        var createResult = await HandleUseCaseAsync(req, ct);
+        var createResult = await HandleUseCaseAsync(req: req, ct: ct);
         if (!createResult.IsSuccess)
         {
-            await SendResultAsync(createResult.ToMinimalApiResult());
+            await SendResultAsync(result: createResult.ToMinimalApiResult());
             return;
         }
 
         var organization = createResult.Value;
 
         await SendCreatedAtAsync<GetOrganizationEndpoint>(
-            new { organization.Id },
-            organization.ToDto(),
+            routeValues: new { organization.Id },
+            responseBody: organization.ToDto(),
             cancellation: ct);
     }
 
     public async Task<Result<Organization>> HandleUseCaseAsync(CreateOrganizationRequestDto req, CancellationToken ct)
     {
-        if (await unitOfWork.OrganizationRepository.NameExistsAsync(req.Name, ct))
+        if (await unitOfWork.OrganizationRepository.NameExistsAsync(name: req.Name, token: ct))
             return Result.Conflict($"Organization with name '{req.Name}' already exists.");
 
-        return await userService.GetByIdAsync(req.UserId, ct)
-            .BindAsync(user => user.OrganizationMemberId is not null
-                ? Result.Invalid(OrganizationErrors.CannotBeInTwoOrganizations(user))
-                : Result.Success(user))
-            .BindAsync(async user => await roles.GetByNameAsync(CommonRoles.Owner, ct)
-                .MapAsync(role => new { User = user, Role = role }))
-            .BindAsync(state => Organization.Create(
-                    state.User,
-                    state.Role,
-                    req.Name)
-                .Map(org => new { state.User, state.Role, Organization = org }))
-            .BindAsync(state =>
+        return await userService.GetByIdAsync(id: req.UserId, token: ct)
+            .BindAsync(bindFunc: user => user.OrganizationMemberId is not null
+                ? Result.Invalid(validationError: OrganizationErrors.CannotBeInTwoOrganizations(user: user))
+                : Result.Success(value: user))
+            .BindAsync(bindFunc: async user => await roles.GetByNameAsync(name: CommonRoles.Owner, ct: ct)
+                .MapAsync(func: role => new { User = user, Role = role }))
+            .BindAsync(bindFunc: state => Organization.Create(
+                    creator: state.User,
+                    creatorRole: state.Role,
+                    name: req.Name)
+                .Map(func: org => new { state.User, state.Role, Organization = org }))
+            .BindAsync(bindFunc: state =>
             {
-                unitOfWork.OrganizationRepository.Add(state.Organization);
-                return Result.Success(state);
+                unitOfWork.OrganizationRepository.Add(organization: state.Organization);
+                return Result.Success(value: state);
             })
-            .BindAsync(state => unitOfWork.SaveChangesAsync(ct)
-                .MapAsync(() => state.Organization));
+            .BindAsync(bindFunc: state => unitOfWork.SaveChangesAsync(token: ct)
+                .MapAsync(func: () => state.Organization));
     }
 }

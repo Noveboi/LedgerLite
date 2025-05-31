@@ -11,11 +11,11 @@ public class OrganizationRemoveMemberTests
     public void RemoveMember_FromList()
     {
         var member = FakeOrganizationMembers.Get();
-        var organization = FakeOrganizations.Get(x => x.WithMember(member));
+        var organization = FakeOrganizations.Get(configure: x => x.WithMember(member: member));
 
-        var result = organization.RemoveMember(member);
+        var result = organization.RemoveMember(member: member);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
         organization.Members.ShouldBeEmpty();
     }
 
@@ -25,9 +25,9 @@ public class OrganizationRemoveMemberTests
         var member = FakeOrganizationMembers.Get();
         var organization = FakeOrganizations.Get();
 
-        var result = organization.RemoveMember(member);
+        var result = organization.RemoveMember(member: member);
 
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ShouldHaveError(OrganizationErrors.MemberNotInOrganization(member));
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
+        result.ShouldHaveError(error: OrganizationErrors.MemberNotInOrganization(member: member));
     }
 }

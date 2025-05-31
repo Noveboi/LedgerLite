@@ -13,18 +13,18 @@ internal static class AccountingUnitOfWorkConfiguration
         this IAccountingUnitOfWork unitOfWork,
         Action<AccountingUnitOfWorkConfigurationBuilder>? configure = null)
     {
-        var builder = new AccountingUnitOfWorkConfigurationBuilder(unitOfWork);
-        configure?.Invoke(builder);
+        var builder = new AccountingUnitOfWorkConfigurationBuilder(unitOfWork: unitOfWork);
+        configure?.Invoke(obj: builder);
 
-        unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
+        unitOfWork.SaveChangesAsync(token: Arg.Any<CancellationToken>()).Returns(returnThis: Result.Success());
     }
 
     public static async Task AssertThatNoActionWasTaken(this IAccountingUnitOfWork unitOfWork)
     {
-        await unitOfWork.DidNotReceive().SaveChangesAsync(Arg.Any<CancellationToken>());
-        unitOfWork.FiscalPeriodRepository.DidNotReceive().Add(Arg.Any<FiscalPeriod>());
-        unitOfWork.ChartOfAccountsRepository.DidNotReceive().Add(Arg.Any<ChartOfAccounts>());
-        unitOfWork.JournalEntryRepository.DidNotReceive().Add(Arg.Any<JournalEntry>());
-        unitOfWork.AccountRepository.DidNotReceive().Add(Arg.Any<Account>());
+        await unitOfWork.DidNotReceive().SaveChangesAsync(token: Arg.Any<CancellationToken>());
+        unitOfWork.FiscalPeriodRepository.DidNotReceive().Add(period: Arg.Any<FiscalPeriod>());
+        unitOfWork.ChartOfAccountsRepository.DidNotReceive().Add(chart: Arg.Any<ChartOfAccounts>());
+        unitOfWork.JournalEntryRepository.DidNotReceive().Add(entry: Arg.Any<JournalEntry>());
+        unitOfWork.AccountRepository.DidNotReceive().Add(account: Arg.Any<Account>());
     }
 }

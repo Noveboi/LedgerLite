@@ -12,10 +12,10 @@ public sealed record FiscalPeriodDto(
     public static FiscalPeriodDto FromEntity(FiscalPeriod fiscalPeriod)
     {
         return new FiscalPeriodDto(
-            fiscalPeriod.Id,
-            fiscalPeriod.StartDate,
-            fiscalPeriod.EndDate,
-            fiscalPeriod.ClosedAtUtc,
-            fiscalPeriod.Name);
+            Id: fiscalPeriod.Id,
+            StartDate: fiscalPeriod.StartDate,
+            EndDate: fiscalPeriod.EndDate,
+            ClosedAtUtc: fiscalPeriod.ClosedAtUtc,
+            Name: fiscalPeriod.Name);
     }
 }

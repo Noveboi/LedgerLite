@@ -27,37 +27,38 @@ internal sealed class RegisterEndpoint(IServiceProvider sp) : Endpoint<LedgerLit
         var userManager = sp.GetRequiredService<UserManager<User>>();
 
         if (!userManager.SupportsUserEmail)
-            throw new NotSupportedException("LedgerLite requires a user store with email support.");
+            throw new NotSupportedException(message: "LedgerLite requires a user store with email support.");
 
         var userStore = sp.GetRequiredService<IUserStore<User>>();
         var emailStore = (IUserEmailStore<User>)userStore;
 
         var email = req.Email;
 
-        if (string.IsNullOrEmpty(email))
-            await SendResultAsync(IdentityEndpointGroup
+        if (string.IsNullOrEmpty(value: email))
+            await SendResultAsync(result: IdentityEndpointGroup
                 .CreateValidationProblem(
-                    IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email))));
+                    result: IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email: email))));
 
         var user = new User();
         var username = req.Username ?? req.Email;
         user.FirstName = req.FirstName;
         user.LastName = req.LastName;
 
-        await userStore.SetUserNameAsync(user, username, CancellationToken.None);
-        await emailStore.SetEmailAsync(user, email, CancellationToken.None);
-        var result = await userManager.CreateAsync(user, req.Password);
+        await userStore.SetUserNameAsync(user: user, userName: username, cancellationToken: CancellationToken.None);
+        await emailStore.SetEmailAsync(user: user, email: email, cancellationToken: CancellationToken.None);
+        var result = await userManager.CreateAsync(user: user, password: req.Password);
 
-        if (!result.Succeeded) await SendResultAsync(IdentityEndpointGroup.CreateValidationProblem(result));
+        if (!result.Succeeded)
+            await SendResultAsync(result: IdentityEndpointGroup.CreateValidationProblem(result: result));
 
         await IdentityEndpointGroup.SendConfirmationEmailAsync(
-            user,
-            userManager,
-            sp.GetRequiredService<IEmailSender<User>>(),
-            sp.GetRequiredService<LinkGenerator>(),
-            HttpContext,
-            email);
+            user: user,
+            userManager: userManager,
+            emailSender: sp.GetRequiredService<IEmailSender<User>>(),
+            linkGenerator: sp.GetRequiredService<LinkGenerator>(),
+            context: HttpContext,
+            email: email);
 
-        await SendOkAsync(ct);
+        await SendOkAsync(cancellation: ct);
     }
 }

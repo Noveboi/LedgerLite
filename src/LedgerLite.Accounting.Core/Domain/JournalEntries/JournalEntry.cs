@@ -37,13 +37,14 @@ public sealed class JournalEntry : AuditableEntity
         DateOnly occursAt,
         Guid createdByUserId)
     {
-        if (string.IsNullOrWhiteSpace(referenceNumber))
-            return Result.Invalid(JournalEntryErrors.EmptyReferenceNumber());
+        if (string.IsNullOrWhiteSpace(value: referenceNumber))
+            return Result.Invalid(validationError: JournalEntryErrors.EmptyReferenceNumber());
 
         if (fiscalPeriod.IsClosed)
-            return Result.Invalid(JournalEntryErrors.CannotEditBecausePeriodIsClosed(fiscalPeriod));
+            return Result.Invalid(
+                validationError: JournalEntryErrors.CannotEditBecausePeriodIsClosed(period: fiscalPeriod));
 
-        return Result.Success(new JournalEntry
+        return Result.Success(value: new JournalEntry
         {
             Type = type,
             ReferenceNumber = referenceNumber,
@@ -58,12 +59,12 @@ public sealed class JournalEntry : AuditableEntity
     public bool IsBalanced()
     {
         var debitAmount = _lines
-            .Where(x => x.TransactionType == TransactionType.Debit)
-            .Sum(x => x.Amount);
+            .Where(predicate: x => x.TransactionType == TransactionType.Debit)
+            .Sum(selector: x => x.Amount);
 
         var creditAmount = _lines
-            .Where(x => x.TransactionType == TransactionType.Credit)
-            .Sum(x => x.Amount);
+            .Where(predicate: x => x.TransactionType == TransactionType.Credit)
+            .Sum(selector: x => x.Amount);
 
         return creditAmount == debitAmount;
     }
@@ -71,16 +72,16 @@ public sealed class JournalEntry : AuditableEntity
     public Result<JournalEntry> AddLine(Guid accountId, TransactionType type, decimal amount)
     {
         if (Status != JournalEntryStatus.Editable)
-            return Result.Invalid(JournalEntryErrors.CannotEdit(Status));
+            return Result.Invalid(validationError: JournalEntryErrors.CannotEdit(status: Status));
 
         var line = JournalEntryLine.Create(
-            type,
-            amount,
-            accountId,
-            Id);
+            type: type,
+            amount: amount,
+            accountId: accountId,
+            entryId: Id);
 
-        _lines.Add(line);
-        return Result.Success(this);
+        _lines.Add(item: line);
+        return Result.Success(value: this);
     }
 
     /// <summary>
@@ -90,27 +91,30 @@ public sealed class JournalEntry : AuditableEntity
     public Result Post()
     {
         if (Status == JournalEntryStatus.Posted)
-            return Result.Invalid(JournalEntryErrors.AlreadyPosted());
+            return Result.Invalid(validationError: JournalEntryErrors.AlreadyPosted());
 
         if (Status == JournalEntryStatus.Reversed)
-            return Result.Invalid(JournalEntryErrors.CantPostBecauseIsReversed());
+            return Result.Invalid(validationError: JournalEntryErrors.CantPostBecauseIsReversed());
 
         var lineCount = _lines.Count;
 
         switch (lineCount)
         {
             case < 2:
-                return Result.Invalid(JournalEntryErrors.LessThanTwoLines(lineCount));
+                return Result.Invalid(validationError: JournalEntryErrors.LessThanTwoLines(lineCount: lineCount));
 
             case > 2 when Type != JournalEntryType.Compound:
-                return Result.Invalid(JournalEntryErrors.MoreThanTwoLinesWhenTypeIsNotCompound(lineCount));
+                return Result.Invalid(
+                    validationError: JournalEntryErrors.MoreThanTwoLinesWhenTypeIsNotCompound(lineCount: lineCount));
 
-            case 2 when _lines[0].TransactionType == _lines[1].TransactionType:
-                return Result.Invalid(JournalEntryErrors.SameTransactionTypeOnBothLines(_lines[0].TransactionType));
+            case 2 when _lines[index: 0].TransactionType == _lines[index: 1].TransactionType:
+                return Result.Invalid(
+                    validationError: JournalEntryErrors.SameTransactionTypeOnBothLines(
+                        type: _lines[index: 0].TransactionType));
         }
 
         if (!IsBalanced())
-            return Result.Invalid(JournalEntryErrors.Imbalanced());
+            return Result.Invalid(validationError: JournalEntryErrors.Imbalanced());
 
         Status = JournalEntryStatus.Posted;
         return Result.Success();

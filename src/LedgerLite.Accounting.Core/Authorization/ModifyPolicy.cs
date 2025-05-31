@@ -14,6 +14,6 @@ internal static class ModifyPolicy
 
     public static AuthorizationPolicyBuilder RequireModificationPermissions(this AuthorizationPolicyBuilder builder)
     {
-        return builder.RequireRole(AllowedRoles);
+        return builder.RequireRole(roles: AllowedRoles);
     }
 }

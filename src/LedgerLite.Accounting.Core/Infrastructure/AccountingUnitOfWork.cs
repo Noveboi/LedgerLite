@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LedgerLite.Accounting.Core.Infrastructure;
 
 internal sealed class AccountingUnitOfWork(IServiceProvider serviceProvider, AccountingDbContext context)
-    : UnitOfWork<AccountingDbContext>(context), IAccountingUnitOfWork
+    : UnitOfWork<AccountingDbContext>(context: context), IAccountingUnitOfWork
 {
     [field: AllowNull]
     [field: MaybeNull]

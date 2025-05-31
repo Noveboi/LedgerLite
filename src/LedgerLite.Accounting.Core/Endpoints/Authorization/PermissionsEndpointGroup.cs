@@ -7,6 +7,10 @@ internal sealed class PermissionsEndpointGroup : Group
 {
     public PermissionsEndpointGroup()
     {
-        Configure("/permissions", ep => { ep.Description(x => x.WithGroupName("Permissions Documentation")); });
+        Configure(routePrefix: "/permissions",
+            ep: ep =>
+            {
+                ep.Description(builder: x => x.WithGroupName(endpointGroupName: "Permissions Documentation"));
+            });
     }
 }

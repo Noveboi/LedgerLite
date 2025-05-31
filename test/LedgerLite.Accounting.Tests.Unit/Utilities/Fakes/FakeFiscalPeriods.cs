@@ -42,27 +42,28 @@ public static class FakeFiscalPeriods
     {
         return new PrivateFaker<FiscalPeriod>()
             .UsePrivateConstructor()
-            .RuleFor(x => x.Id, _ => config.Id ?? Guid.NewGuid())
-            .RuleFor(x => x.StartDate, f => config.StartDate ?? f.Date.PastDateOnly())
-            .RuleFor(x => x.EndDate, (_, period) => config.EndDate ?? period.StartDate.AddMonths(4))
-            .RuleFor(x => x.OrganizationId, _ => config.OrganizationId ?? Guid.NewGuid());
+            .RuleFor(property: x => x.Id, setter: _ => config.Id ?? Guid.NewGuid())
+            .RuleFor(property: x => x.StartDate, setter: f => config.StartDate ?? f.Date.PastDateOnly())
+            .RuleFor(property: x => x.EndDate,
+                setter: (_, period) => config.EndDate ?? period.StartDate.AddMonths(value: 4))
+            .RuleFor(property: x => x.OrganizationId, setter: _ => config.OrganizationId ?? Guid.NewGuid());
     }
 
     public static FiscalPeriod Get(Action<FakeFiscalPeriodConfiguration>? configure = null)
     {
         var config = new FakeFiscalPeriodConfiguration();
-        configure?.Invoke(config);
+        configure?.Invoke(obj: config);
 
-        return Faker(config).Generate();
+        return Faker(config: config).Generate();
     }
 
     public static FiscalPeriod GetClosed(Action<FakeFiscalPeriodConfiguration>? configure = null)
     {
         var config = new FakeFiscalPeriodConfiguration();
-        configure?.Invoke(config);
+        configure?.Invoke(obj: config);
 
-        return Faker(config)
-            .RuleFor(x => x.ClosedAtUtc, f => f.Date.Past())
+        return Faker(config: config)
+            .RuleFor(property: x => x.ClosedAtUtc, setter: f => f.Date.Past())
             .Generate();
     }
 }

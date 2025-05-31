@@ -15,9 +15,9 @@ internal sealed class ModifyPermissionsEndpoint : EndpointWithoutRequest<Permiss
     public override Task HandleAsync(CancellationToken ct)
     {
         var response = new PermissionsDocumentationResponse(
-            "Modify",
-            ModifyPolicy.AllowedRoles);
+            Policy: "Modify",
+            AllowedRoles: ModifyPolicy.AllowedRoles);
 
-        return SendAsync(response, cancellation: ct);
+        return SendAsync(response: response, cancellation: ct);
     }
 }

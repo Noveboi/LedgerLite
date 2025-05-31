@@ -10,7 +10,7 @@ using LedgerLite.Users.Contracts.Models;
 namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
 
 internal sealed record CreateFiscalPeriodRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId,
     DateOnly StartDate,
     DateOnly EndDate,
@@ -29,31 +29,31 @@ internal sealed class CreateFiscalPeriodEndpoint(
 
     public override async Task HandleAsync(CreateFiscalPeriodRequestDto req, CancellationToken ct)
     {
-        var organizationResult = await getOrganizationFromUser.HandleAsync(req.UserId, ct);
+        var organizationResult = await getOrganizationFromUser.HandleAsync(request: req.UserId, token: ct);
         if (!organizationResult.IsSuccess)
         {
-            await SendResultAsync(organizationResult.ToMinimalApiResult());
+            await SendResultAsync(result: organizationResult.ToMinimalApiResult());
             return;
         }
 
-        var request = MapRequest(req, organizationResult.Value);
-        var creationResult = await service.CreateAsync(request, ct);
+        var request = MapRequest(dto: req, org: organizationResult.Value);
+        var creationResult = await service.CreateAsync(request: request, token: ct);
 
-        if (!creationResult.IsSuccess) await SendResultAsync(creationResult.ToMinimalApiResult());
+        if (!creationResult.IsSuccess) await SendResultAsync(result: creationResult.ToMinimalApiResult());
 
         var period = creationResult.Value;
 
         await SendCreatedAtAsync<GetFiscalPeriodsEndpoint>(
-            null,
-            period.ToDto(),
+            routeValues: null,
+            responseBody: period.ToDto(),
             cancellation: ct);
     }
 
     public static CreateFiscalPeriodRequest MapRequest(CreateFiscalPeriodRequestDto dto, OrganizationDto org)
     {
-        return new CreateFiscalPeriodRequest(org.Id,
-            dto.StartDate,
-            dto.EndDate,
-            dto.Name);
+        return new CreateFiscalPeriodRequest(OrganizationId: org.Id,
+            StartDate: dto.StartDate,
+            EndDate: dto.EndDate,
+            Name: dto.Name);
     }
 }

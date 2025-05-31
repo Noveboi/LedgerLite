@@ -14,27 +14,28 @@ public class JournalEntryAddLineTests
     public void Invalid_WhenNotEditable()
     {
         var lines = FakeJournalEntryLines.GenerateStandardLines();
-        var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, lines);
+        var entry = JournalEntryHelper.CreateWithLines(type: JournalEntryType.Standard, lines: lines);
         entry.Post();
 
-        var result = entry.AddLine(Id, TransactionType.Credit, 10);
+        var result = entry.AddLine(accountId: Id, type: TransactionType.Credit, amount: 10);
 
-        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(JournalEntryErrors.CannotEdit(entry.Status));
+            .ShouldBeEquivalentTo(expected: JournalEntryErrors.CannotEdit(status: entry.Status));
     }
 
     [Fact]
     public void AddsToList_WhenValid()
     {
-        var entry = JournalEntryHelper.Create(JournalEntryType.Standard);
-        var expected = JournalEntryLine.Create(TransactionType.Credit, 10, Id, entry.Id);
+        var entry = JournalEntryHelper.Create(type: JournalEntryType.Standard);
+        var expected =
+            JournalEntryLine.Create(type: TransactionType.Credit, amount: 10, accountId: Id, entryId: entry.Id);
 
-        var result = entry.AddLine(Id, TransactionType.Credit, 10);
+        var result = entry.AddLine(accountId: Id, type: TransactionType.Credit, amount: 10);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
         var line = entry.Lines.ShouldHaveSingleItem();
-        line.Amount.ShouldBe(expected.Amount);
+        line.Amount.ShouldBe(expected: expected.Amount);
     }
 }

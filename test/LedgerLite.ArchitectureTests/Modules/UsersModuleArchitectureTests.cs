@@ -14,17 +14,17 @@ public class UsersModuleArchitectureTests
         .LoadAssemblies(Assembly)
         .Build();
 
-    private static readonly LedgerLiteArchitectureRules Rules = new(Assembly);
+    private static readonly LedgerLiteArchitectureRules Rules = new(assembly: Assembly);
 
     [Fact]
     public void DomainDependencies()
     {
-        Rules.DomainLayerHasNoDependencies.Check(ModuleArchitecture);
+        Rules.DomainLayerHasNoDependencies.Check(architecture: ModuleArchitecture);
     }
 
     [Fact]
     public void EntitiesWithParameterlessPrivateConstructor()
     {
-        LedgerLiteArchitectureRules.EntitiesShouldHavePrivateParameterlessConstructor(ModuleArchitecture);
+        LedgerLiteArchitectureRules.EntitiesShouldHavePrivateParameterlessConstructor(arch: ModuleArchitecture);
     }
 }

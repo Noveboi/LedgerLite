@@ -7,6 +7,6 @@ internal sealed class TrialBalanceEndpointGroup : SubGroup<FiscalPeriodEndpointG
 {
     public TrialBalanceEndpointGroup()
     {
-        Configure("{periodId:guid}/trial-balance", _ => { });
+        Configure(routePrefix: "{periodId:guid}/trial-balance", ep: _ => { });
     }
 }

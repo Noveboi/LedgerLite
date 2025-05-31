@@ -4,8 +4,8 @@ internal sealed class StandardTypeSearchStrategy(Type searchTarget) : ITypeSearc
 {
     public IEnumerable<Type> Filter(Type[] types)
     {
-        return types.Where(t => t is { IsAbstract: false, IsClass: true } &&
-                                searchTarget.IsAssignableFrom(t));
+        return types.Where(predicate: t => t is { IsAbstract: false, IsClass: true } &&
+                                           searchTarget.IsAssignableFrom(c: t));
     }
 
     public IEnumerable<Type> GetInterfaces(Type type)

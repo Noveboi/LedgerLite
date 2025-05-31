@@ -10,15 +10,15 @@ public static class CommonErrors
     public static ValidationError NameIsEmpty()
     {
         return new ValidationError(
-            CommonIdentifier,
-            "Name is empty.",
-            "NAME_EMPTY",
-            ValidationSeverity.Error);
+            identifier: CommonIdentifier,
+            errorMessage: "Name is empty.",
+            errorCode: "NAME_EMPTY",
+            severity: ValidationSeverity.Error);
     }
 
     public static string NotFound<T>(Guid id) where T : class
     {
         var name = typeof(T).Name;
-        return $"{name.Humanize(LetterCasing.Title)} with ID '{id}' does not exist";
+        return $"{name.Humanize(casing: LetterCasing.Title)} with ID '{id}' does not exist";
     }
 }

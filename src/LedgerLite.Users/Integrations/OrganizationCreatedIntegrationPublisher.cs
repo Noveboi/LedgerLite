@@ -6,10 +6,11 @@ using LedgerLite.Users.Domain.Organizations.Events;
 namespace LedgerLite.Users.Integrations;
 
 internal sealed class OrganizationCreatedIntegrationPublisher(IPublisher publisher) :
-    IntegrationEventPropagator<OrganizationCreatedEvent, OrganizationCreatedIntegrationEvent>(publisher)
+    IntegrationEventPropagator<OrganizationCreatedEvent, OrganizationCreatedIntegrationEvent>(publisher: publisher)
 {
     protected override OrganizationCreatedIntegrationEvent MapToIntegrationEvent(OrganizationCreatedEvent domainEvent)
     {
-        return new OrganizationCreatedIntegrationEvent(domainEvent.Organization.Id, domainEvent.Organization.Name);
+        return new OrganizationCreatedIntegrationEvent(Id: domainEvent.Organization.Id,
+            Name: domainEvent.Organization.Name);
     }
 }

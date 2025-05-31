@@ -15,12 +15,12 @@ internal sealed class IdentityEndpointGroup : Group
 {
     public IdentityEndpointGroup()
     {
-        Configure("", _ => { });
+        Configure(routePrefix: "", ep: _ => { });
     }
 
     public static ValidationProblem CreateValidationProblem(string errorCode, string errorDescription)
     {
-        return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+        return TypedResults.ValidationProblem(errors: new Dictionary<string, string[]>
         {
             { errorCode, [errorDescription] }
         });
@@ -30,17 +30,17 @@ internal sealed class IdentityEndpointGroup : Group
     {
         // We expect a single error code and description in the normal case.
         // This could be golfed with GroupBy and ToDictionary, but perf! :P
-        Debug.Assert(!result.Succeeded);
-        var errorDictionary = new Dictionary<string, string[]>(1);
+        Debug.Assert(condition: !result.Succeeded);
+        var errorDictionary = new Dictionary<string, string[]>(capacity: 1);
 
         foreach (var error in result.Errors)
         {
             string[] newDescriptions;
 
-            if (errorDictionary.TryGetValue(error.Code, out var descriptions))
+            if (errorDictionary.TryGetValue(key: error.Code, value: out var descriptions))
             {
                 newDescriptions = new string[descriptions.Length + 1];
-                Array.Copy(descriptions, newDescriptions, descriptions.Length);
+                Array.Copy(sourceArray: descriptions, destinationArray: newDescriptions, length: descriptions.Length);
                 newDescriptions[descriptions.Length] = error.Description;
             }
             else
@@ -48,10 +48,10 @@ internal sealed class IdentityEndpointGroup : Group
                 newDescriptions = [error.Description];
             }
 
-            errorDictionary[error.Code] = newDescriptions;
+            errorDictionary[key: error.Code] = newDescriptions;
         }
 
-        return TypedResults.ValidationProblem(errorDictionary);
+        return TypedResults.ValidationProblem(errors: errorDictionary);
     }
 
     public static async Task SendConfirmationEmailAsync(
@@ -64,26 +64,28 @@ internal sealed class IdentityEndpointGroup : Group
         bool isChange = false)
     {
         var code = isChange
-            ? await userManager.GenerateChangeEmailTokenAsync(user, email)
-            : await userManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            ? await userManager.GenerateChangeEmailTokenAsync(user: user, newEmail: email)
+            : await userManager.GenerateEmailConfirmationTokenAsync(user: user);
+        code = WebEncoders.Base64UrlEncode(input: Encoding.UTF8.GetBytes(s: code));
 
-        var userId = await userManager.GetUserIdAsync(user);
+        var userId = await userManager.GetUserIdAsync(user: user);
         var routeValues = new RouteValueDictionary
         {
-            ["userId"] = userId,
-            ["code"] = code
+            [key: "userId"] = userId,
+            [key: "code"] = code
         };
 
         if (isChange)
             // This is validated by the /confirmEmail endpoint on change.
-            routeValues.Add("changedEmail", email);
+            routeValues.Add(key: "changedEmail", value: email);
 
         const string confirmEmailEndpointName = "confirmEmail";
-        var confirmEmailUrl = linkGenerator.GetUriByName(context, confirmEmailEndpointName, routeValues)
+        var confirmEmailUrl = linkGenerator.GetUriByName(httpContext: context, endpointName: confirmEmailEndpointName,
+                                  values: routeValues)
                               ?? throw new NotSupportedException(
-                                  $"Could not find endpoint named '{confirmEmailEndpointName}'.");
+                                  message: $"Could not find endpoint named '{confirmEmailEndpointName}'.");
 
-        await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
+        await emailSender.SendConfirmationLinkAsync(user: user, email: email,
+            confirmationLink: HtmlEncoder.Default.Encode(value: confirmEmailUrl));
     }
 }

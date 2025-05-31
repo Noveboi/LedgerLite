@@ -7,7 +7,7 @@ namespace LedgerLite.Users.Infrastructure;
 
 internal sealed class UsersUnitOfWork(
     IServiceProvider serviceProvider,
-    UsersDbContext context) : UnitOfWork<UsersDbContext>(context), IUsersUnitOfWork
+    UsersDbContext context) : UnitOfWork<UsersDbContext>(context: context), IUsersUnitOfWork
 {
     [field: AllowNull]
     [field: MaybeNull]

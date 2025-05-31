@@ -8,7 +8,7 @@ using LedgerLite.SharedKernel.Identity;
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record RemoveAccountRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId,
     [property: RouteParam] Guid AccountId);
 
@@ -23,15 +23,15 @@ internal sealed class RemoveAccountEndpoint(RemoveAccountUseCase removeAccount)
 
     public override async Task HandleAsync(RemoveAccountRequestDto req, CancellationToken ct)
     {
-        var request = new RemoveAccountRequest(req.UserId, req.AccountId);
-        var result = await removeAccount.HandleAsync(request, ct);
+        var request = new RemoveAccountRequest(UserId: req.UserId, AccountId: req.AccountId);
+        var result = await removeAccount.HandleAsync(request: request, token: ct);
 
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result.ToMinimalApiResult());
+            await SendResultAsync(result: result.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(result.Value.ToDto(), cancellation: ct);
+        await SendAsync(response: result.Value.ToDto(), cancellation: ct);
     }
 }

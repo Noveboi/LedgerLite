@@ -17,13 +17,13 @@ public sealed record JournalEntryLineDto(
     public static JournalEntryLineDto FromEntity(JournalEntryLine line)
     {
         return new JournalEntryLineDto(
-            line.Id,
-            line.EntryId,
-            line.Entry.OccursAt,
-            line.Entry.Description,
-            Account: SlimAccountDto.FromEntity(line.Account),
-            TransferAccount: SlimAccountDto.FromEntity(line.GetTransferAccount()),
-            Credit: line.TransactionType == TransactionType.Credit ? decimal.ToDouble(line.Amount) : 0,
-            Debit: line.TransactionType == TransactionType.Debit ? decimal.ToDouble(line.Amount) : 0);
+            Id: line.Id,
+            EntryId: line.EntryId,
+            OccursAt: line.Entry.OccursAt,
+            EntryDescription: line.Entry.Description,
+            Account: SlimAccountDto.FromEntity(account: line.Account),
+            TransferAccount: SlimAccountDto.FromEntity(account: line.GetTransferAccount()),
+            Credit: line.TransactionType == TransactionType.Credit ? decimal.ToDouble(d: line.Amount) : 0,
+            Debit: line.TransactionType == TransactionType.Debit ? decimal.ToDouble(d: line.Amount) : 0);
     }
 }

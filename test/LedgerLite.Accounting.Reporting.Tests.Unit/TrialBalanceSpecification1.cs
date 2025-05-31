@@ -11,51 +11,51 @@ namespace LedgerLite.Accounting.Reporting.Tests.Unit;
 /// </summary>
 public class TrialBalanceSpecification1
 {
-    private readonly JournalEntry _entry1 = FakeJournalEntries.Get(x => x
-        .AddLine(o => o.Debit(CommonAccounts.Cash, 100))
-        .AddLine(o => o.Credit(CommonAccounts.OwnerEquity, 100)));
+    private readonly JournalEntry _entry1 = FakeJournalEntries.Get(configure: x => x
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Cash, amount: 100))
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.OwnerEquity, amount: 100)));
 
-    private readonly JournalEntry _entry2 = FakeJournalEntries.Get(x => x
-        .AddLine(o => o.Debit(CommonAccounts.Cash, 200))
-        .AddLine(o => o.Credit(CommonAccounts.LoansPayable, 200)));
+    private readonly JournalEntry _entry2 = FakeJournalEntries.Get(configure: x => x
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Cash, amount: 200))
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.LoansPayable, amount: 200)));
 
-    private readonly JournalEntry _entry3 = FakeJournalEntries.Get(x => x
-        .AddLine(o => o.Credit(CommonAccounts.Cash, 30))
-        .AddLine(o => o.Debit(CommonAccounts.Equipment, 30)));
+    private readonly JournalEntry _entry3 = FakeJournalEntries.Get(configure: x => x
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Cash, amount: 30))
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Equipment, amount: 30)));
 
-    private readonly JournalEntry _entry4 = FakeJournalEntries.Get(x => x
-        .AddLine(o => o.Debit(CommonAccounts.Supplies, 50))
-        .AddLine(o => o.Credit(CommonAccounts.AccountsPayable, 50)));
+    private readonly JournalEntry _entry4 = FakeJournalEntries.Get(configure: x => x
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Supplies, amount: 50))
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.AccountsPayable, amount: 50)));
 
-    private readonly JournalEntry _entry5 = FakeJournalEntries.Get(x => x
-        .WithType(JournalEntryType.Compound)
-        .AddLine(o => o.Debit(CommonAccounts.Cash, 150))
-        .AddLine(o => o.Credit(CommonAccounts.Revenue, 150))
-        .AddLine(o => o.Credit(CommonAccounts.Supplies, 25))
-        .AddLine(o => o.Debit(CommonAccounts.CostOfSales, 25)));
+    private readonly JournalEntry _entry5 = FakeJournalEntries.Get(configure: x => x
+        .WithType(journalEntryType: JournalEntryType.Compound)
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Cash, amount: 150))
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Revenue, amount: 150))
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Supplies, amount: 25))
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.CostOfSales, amount: 25)));
 
-    private readonly JournalEntry _entry6 = FakeJournalEntries.Get(x => x
-        .AddLine(o => o.Credit(CommonAccounts.Cash, 20))
-        .AddLine(o => o.Debit(CommonAccounts.LaundryCosts, 20)));
+    private readonly JournalEntry _entry6 = FakeJournalEntries.Get(configure: x => x
+        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Cash, amount: 20))
+        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.LaundryCosts, amount: 20)));
 
     [Fact]
     public void AccurateTotals_PerAccount()
     {
         var (period, entries) = Setup();
 
-        var result = TrialBalance.Prepare(period, entries);
+        var result = TrialBalance.Prepare(period: period, journalEntries: entries);
         var trialBalance = result.Value;
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        trialBalance.GetTotals(CommonAccounts.Cash).ShouldBe(400);
-        trialBalance.GetTotals(CommonAccounts.OwnerEquity).ShouldBe(100);
-        trialBalance.GetTotals(CommonAccounts.LoansPayable).ShouldBe(200);
-        trialBalance.GetTotals(CommonAccounts.Revenue).ShouldBe(150);
-        trialBalance.GetTotals(CommonAccounts.Supplies).ShouldBe(25);
-        trialBalance.GetTotals(CommonAccounts.CostOfSales).ShouldBe(25);
-        trialBalance.GetTotals(CommonAccounts.LaundryCosts).ShouldBe(20);
-        trialBalance.GetTotals(CommonAccounts.Equipment).ShouldBe(30);
-        trialBalance.GetTotals(CommonAccounts.AccountsPayable).ShouldBe(50);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        trialBalance.GetTotals(account: CommonAccounts.Cash).ShouldBe(expected: 400);
+        trialBalance.GetTotals(account: CommonAccounts.OwnerEquity).ShouldBe(expected: 100);
+        trialBalance.GetTotals(account: CommonAccounts.LoansPayable).ShouldBe(expected: 200);
+        trialBalance.GetTotals(account: CommonAccounts.Revenue).ShouldBe(expected: 150);
+        trialBalance.GetTotals(account: CommonAccounts.Supplies).ShouldBe(expected: 25);
+        trialBalance.GetTotals(account: CommonAccounts.CostOfSales).ShouldBe(expected: 25);
+        trialBalance.GetTotals(account: CommonAccounts.LaundryCosts).ShouldBe(expected: 20);
+        trialBalance.GetTotals(account: CommonAccounts.Equipment).ShouldBe(expected: 30);
+        trialBalance.GetTotals(account: CommonAccounts.AccountsPayable).ShouldBe(expected: 50);
     }
 
     [Fact]
@@ -63,18 +63,18 @@ public class TrialBalanceSpecification1
     {
         var (period, entries) = Setup();
 
-        var result = TrialBalance.Prepare(period, entries);
+        var result = TrialBalance.Prepare(period: period, journalEntries: entries);
         var trialBalance = result.Value;
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        trialBalance.GetTotalCredits().ShouldBe(500);
-        trialBalance.GetTotalDebits().ShouldBe(500);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        trialBalance.GetTotalCredits().ShouldBe(expected: 500);
+        trialBalance.GetTotalDebits().ShouldBe(expected: 500);
     }
 
     private (FiscalPeriod, IReadOnlyList<JournalEntry>) Setup()
     {
         var entries = new[] { _entry1, _entry2, _entry3, _entry4, _entry5, _entry6 };
-        var period = FakeFiscalPeriods.Get(x => x.WithId(_entry1.FiscalPeriodId));
+        var period = FakeFiscalPeriods.Get(configure: x => x.WithId(id: _entry1.FiscalPeriodId));
 
         return (period, entries);
     }

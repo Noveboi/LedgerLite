@@ -13,22 +13,22 @@ namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
 public class RecordStandardTransactionTests
 {
-    private static readonly CreateJournalEntryLineRequest LineRequest = new(Guid.NewGuid(), 10);
+    private static readonly CreateJournalEntryLineRequest LineRequest = new(AccountId: Guid.NewGuid(), Amount: 10);
     private readonly IJournalEntryRepository _repository = Substitute.For<IJournalEntryRepository>();
     private readonly TransactionRecordingService _sut;
     private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
 
     public RecordStandardTransactionTests()
     {
-        _unitOfWork.ConfigureForTests(o => o.MockJournalEntryRepository(_repository));
-        _sut = new TransactionRecordingService(_unitOfWork);
+        _unitOfWork.ConfigureForTests(configure: o => o.MockJournalEntryRepository(repo: _repository));
+        _sut = new TransactionRecordingService(unitOfWork: _unitOfWork);
     }
 
     [Fact]
     public async Task DoNotSaveChanges_WhenJournalEntryCreationIsInvalid()
     {
-        var invalidRequest = Request("");
-        await _sut.RecordStandardEntryAsync(invalidRequest, CancellationToken.None);
+        var invalidRequest = Request(referenceNumber: "");
+        await _sut.RecordStandardEntryAsync(req: invalidRequest, ct: CancellationToken.None);
         await _unitOfWork.AssertThatNoActionWasTaken();
     }
 
@@ -36,16 +36,16 @@ public class RecordStandardTransactionTests
     public async Task AddToRepository_WhenCreationSuccessful()
     {
         var request = SuccessfulRequest();
-        await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
-        _repository.Received(1).Add(Arg.Any<JournalEntry>());
+        await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
+        _repository.Received(requiredNumberOfCalls: 1).Add(entry: Arg.Any<JournalEntry>());
     }
 
     [Fact]
     public async Task SaveChanges_WhenCreationSuccessful()
     {
         var request = SuccessfulRequest();
-        await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
-        await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
+        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(token: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -53,29 +53,29 @@ public class RecordStandardTransactionTests
     {
         var request = SuccessfulRequest();
 
-        var result = await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
+        var result = await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        result.Value.Status.ShouldBe(JournalEntryStatus.Editable);
-        result.Value.Lines.Count.ShouldBe(2);
-        result.Value.Type.ShouldBe(JournalEntryType.Standard);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        result.Value.Status.ShouldBe(expected: JournalEntryStatus.Editable);
+        result.Value.Lines.Count.ShouldBe(expected: 2);
+        result.Value.Type.ShouldBe(expected: JournalEntryType.Standard);
     }
 
     [Fact]
     public async Task ReturnInvalid_WhenCreationNotSuccessful()
     {
-        var invalidRequest = Request("");
-        var result = await _sut.RecordStandardEntryAsync(invalidRequest, CancellationToken.None);
-        result.Status.ShouldBe(ResultStatus.Invalid);
+        var invalidRequest = Request(referenceNumber: "");
+        var result = await _sut.RecordStandardEntryAsync(req: invalidRequest, ct: CancellationToken.None);
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
     }
 
     [Fact]
     public async Task ReturnInvalid_WhenFiscalPeriodDoesNotExist()
     {
-        var request = Request("123");
-        var result = await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ShouldHaveError(TransactionRecordingErrors.FiscalPeriodNotFound(Guid.Empty));
+        var request = Request(referenceNumber: "123");
+        var result = await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
+        result.ShouldHaveError(error: TransactionRecordingErrors.FiscalPeriodNotFound(periodId: Guid.Empty));
     }
 
     private FiscalPeriod ConfigureFiscalPeriod(FiscalPeriod? period = null)
@@ -83,8 +83,8 @@ public class RecordStandardTransactionTests
         period ??= FakeFiscalPeriods.Get();
 
         _unitOfWork.FiscalPeriodRepository
-            .GetByIdAsync(period.Id, Arg.Any<CancellationToken>())
-            .Returns(period);
+            .GetByIdAsync(id: period.Id, token: Arg.Any<CancellationToken>())
+            .Returns(returnThis: period);
 
         return period;
     }
@@ -93,7 +93,7 @@ public class RecordStandardTransactionTests
     {
         var period = ConfigureFiscalPeriod();
         return Request(
-            "Cool!",
+            referenceNumber: "Cool!",
             userId: Guid.NewGuid(),
             periodId: period.Id);
     }
@@ -106,12 +106,12 @@ public class RecordStandardTransactionTests
         Guid? periodId = null)
     {
         return new RecordStandardEntryRequest(
-            referenceNumber,
-            DateOnly.FromDateTime(DateTime.Today),
-            "",
-            creditRequest ?? LineRequest,
-            debitRequest ?? LineRequest,
-            userId.GetValueOrDefault(),
-            periodId.GetValueOrDefault());
+            ReferenceNumber: referenceNumber,
+            OccursAt: DateOnly.FromDateTime(dateTime: DateTime.Today),
+            Description: "",
+            CreditLine: creditRequest ?? LineRequest,
+            DebitLine: debitRequest ?? LineRequest,
+            RequestedByUserId: userId.GetValueOrDefault(),
+            FiscalPeriodId: periodId.GetValueOrDefault());
     }
 }

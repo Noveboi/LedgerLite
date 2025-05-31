@@ -14,7 +14,7 @@ namespace LedgerLite.Users.Tests.Unit.Application;
 
 public class CreateOrganizationUseCaseTests
 {
-    private static readonly Role Role = new(CommonRoles.Owner);
+    private static readonly Role Role = new(name: CommonRoles.Owner);
     private readonly IOrganizationRepository _organizationRepository = Substitute.For<IOrganizationRepository>();
     private readonly IRoleService _roleService = Substitute.For<IRoleService>();
     private readonly CreateOrganizationEndpoint _sut;
@@ -23,72 +23,75 @@ public class CreateOrganizationUseCaseTests
 
     public CreateOrganizationUseCaseTests()
     {
-        _roleService.GetByNameAsync(CommonRoles.Owner, Arg.Any<CancellationToken>()).Returns(Role);
+        _roleService.GetByNameAsync(name: CommonRoles.Owner, ct: Arg.Any<CancellationToken>())
+            .Returns(returnThis: Role);
 
-        _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
-        _unitOfWork.OrganizationRepository.Returns(_organizationRepository);
-        _sut = new CreateOrganizationEndpoint(_unitOfWork, _roleService, _userService);
+        _unitOfWork.SaveChangesAsync(token: Arg.Any<CancellationToken>()).Returns(returnThis: Result.Success());
+        _unitOfWork.OrganizationRepository.Returns(returnThis: _organizationRepository);
+        _sut = new CreateOrganizationEndpoint(unitOfWork: _unitOfWork, roles: _roleService, userService: _userService);
     }
 
     [Fact]
     public async Task Conflict_WhenNameAlreadyExists()
     {
-        _organizationRepository.NameExistsAsync("Oh no!", Arg.Any<CancellationToken>()).Returns(true);
-        var request = new CreateOrganizationRequestDto(Guid.NewGuid(), "Oh no!");
+        _organizationRepository.NameExistsAsync(name: "Oh no!", token: Arg.Any<CancellationToken>())
+            .Returns(returnThis: true);
+        var request = new CreateOrganizationRequestDto(UserId: Guid.NewGuid(), Name: "Oh no!");
 
-        var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
+        var result = await _sut.HandleUseCaseAsync(req: request, ct: CancellationToken.None);
 
-        result.Status.ShouldBe(ResultStatus.Conflict);
-        result.Errors.ShouldHaveSingleItem().ShouldMatch("Oh no!");
+        result.Status.ShouldBe(expected: ResultStatus.Conflict);
+        result.Errors.ShouldHaveSingleItem().ShouldMatch(regexPattern: "Oh no!");
     }
 
     [Fact]
     public async Task AddToRepository_WhenCreationSuccessful()
     {
         var user = ConfigureUser();
-        var request = GetRequest(user, "Ok!");
-        var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
+        var request = GetRequest(user: user, name: "Ok!");
+        var result = await _sut.HandleUseCaseAsync(req: request, ct: CancellationToken.None);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        _organizationRepository.Received(1).Add(Arg.Is<Organization>(o => o.Name == request.Name));
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        _organizationRepository.Received(requiredNumberOfCalls: 1)
+            .Add(organization: Arg.Is<Organization>(predicate: o => o.Name == request.Name));
     }
 
     [Fact]
     public async Task SaveChanges_WhenCreationSuccessful()
     {
         var user = ConfigureUser();
-        var request = GetRequest(user, "Ok!");
+        var request = GetRequest(user: user, name: "Ok!");
 
-        var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
+        var result = await _sut.HandleUseCaseAsync(req: request, ct: CancellationToken.None);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(token: Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Invalid_WhenUserAlreadyInOrganization()
     {
-        var user = ConfigureUser(FakeUsers.Get(x => x.WithOrganizationMemberId()));
-        var request = GetRequest(user, "No no!");
+        var user = ConfigureUser(user: FakeUsers.Get(configure: x => x.WithOrganizationMemberId()));
+        var request = GetRequest(user: user, name: "No no!");
 
-        var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
+        var result = await _sut.HandleUseCaseAsync(req: request, ct: CancellationToken.None);
 
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ShouldHaveError(OrganizationErrors.CannotBeInTwoOrganizations(user));
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
+        result.ShouldHaveError(error: OrganizationErrors.CannotBeInTwoOrganizations(user: user));
         ;
     }
 
     private static CreateOrganizationRequestDto GetRequest(User user, string name)
     {
-        return new CreateOrganizationRequestDto(user.Id, name);
+        return new CreateOrganizationRequestDto(UserId: user.Id, Name: name);
     }
 
     private User ConfigureUser(User? user = null)
     {
         user ??= FakeUsers.Get();
         _userService
-            .GetByIdAsync(user.Id, Arg.Any<CancellationToken>())
-            .Returns(user);
+            .GetByIdAsync(id: user.Id, token: Arg.Any<CancellationToken>())
+            .Returns(returnThis: user);
 
         return user;
     }

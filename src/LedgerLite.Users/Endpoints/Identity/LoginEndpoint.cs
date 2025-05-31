@@ -19,8 +19,8 @@ internal sealed class LoginEndpoint(SignInManager<User> signInManager)
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        var useCookies = Query<bool?>("useCookies", false);
-        var useSessionCookies = Query<bool?>("useSessionCookies", false);
+        var useCookies = Query<bool?>(paramName: "useCookies", isRequired: false);
+        var useSessionCookies = Query<bool?>(paramName: "useSessionCookies", isRequired: false);
 
         var useCookieScheme = useCookies == true || useSessionCookies == true;
         var isPersistent = useCookies == true && useSessionCookies != true;
@@ -28,19 +28,21 @@ internal sealed class LoginEndpoint(SignInManager<User> signInManager)
             ? IdentityConstants.ApplicationScheme
             : IdentityConstants.BearerScheme;
 
-        var result = await signInManager.PasswordSignInAsync(req.Email, req.Password, isPersistent, true);
+        var result = await signInManager.PasswordSignInAsync(userName: req.Email, password: req.Password,
+            isPersistent: isPersistent, lockoutOnFailure: true);
 
         if (result.RequiresTwoFactor)
         {
-            if (!string.IsNullOrEmpty(req.TwoFactorCode))
-                result = await signInManager.TwoFactorAuthenticatorSignInAsync(req.TwoFactorCode, isPersistent,
-                    isPersistent);
-            else if (!string.IsNullOrEmpty(req.TwoFactorRecoveryCode))
-                result = await signInManager.TwoFactorRecoveryCodeSignInAsync(req.TwoFactorRecoveryCode);
+            if (!string.IsNullOrEmpty(value: req.TwoFactorCode))
+                result = await signInManager.TwoFactorAuthenticatorSignInAsync(code: req.TwoFactorCode,
+                    isPersistent: isPersistent,
+                    rememberClient: isPersistent);
+            else if (!string.IsNullOrEmpty(value: req.TwoFactorRecoveryCode))
+                result = await signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode: req.TwoFactorRecoveryCode);
         }
 
         if (!result.Succeeded)
             await SendResultAsync(
-                TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized));
+                result: TypedResults.Problem(detail: result.ToString(), statusCode: StatusCodes.Status401Unauthorized));
     }
 }

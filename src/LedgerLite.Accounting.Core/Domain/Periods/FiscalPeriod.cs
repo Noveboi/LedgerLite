@@ -30,21 +30,21 @@ public sealed class FiscalPeriod : AuditableEntity
     public string Name { get; private set; } = null!;
 
     public bool IsClosed => ClosedAtUtc.HasValue;
-    [NotMapped] public DateRange Range => new(StartDate, EndDate);
+    [NotMapped] public DateRange Range => new(Start: StartDate, End: EndDate);
 
     public static Result<FiscalPeriod> Create(Guid organizationId, DateOnly startDate, DateOnly endDate, string name)
     {
         if (startDate > endDate)
-            return Result.Invalid(FiscalPeriodErrors.StartIsAfterEnd(startDate, endDate));
+            return Result.Invalid(validationError: FiscalPeriodErrors.StartIsAfterEnd(start: startDate, end: endDate));
 
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Invalid(FiscalPeriodErrors.NameCannotBeEmpty());
+        if (string.IsNullOrWhiteSpace(value: name))
+            return Result.Invalid(validationError: FiscalPeriodErrors.NameCannotBeEmpty());
 
         var period = new FiscalPeriod(
-            organizationId,
-            startDate,
-            endDate,
-            name);
+            organizationId: organizationId,
+            startDate: startDate,
+            endDate: endDate,
+            name: name);
 
         return period;
     }

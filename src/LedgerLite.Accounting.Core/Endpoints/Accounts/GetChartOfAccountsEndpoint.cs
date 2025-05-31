@@ -8,7 +8,7 @@ using LedgerLite.SharedKernel.Identity;
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record GetChartOfAccountsRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId);
 
 internal sealed class GetChartOfAccountsEndpoint(IChartOfAccountsService chartService)
@@ -22,13 +22,13 @@ internal sealed class GetChartOfAccountsEndpoint(IChartOfAccountsService chartSe
 
     public override async Task HandleAsync(GetChartOfAccountsRequestDto req, CancellationToken ct)
     {
-        var result = await chartService.GetByUserIdAsync(req.UserId, ct);
+        var result = await chartService.GetByUserIdAsync(userId: req.UserId, token: ct);
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result.ToMinimalApiResult());
+            await SendResultAsync(result: result.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(ChartOfAccountsDto.FromEntity(result.Value), cancellation: ct);
+        await SendAsync(response: ChartOfAccountsDto.FromEntity(chart: result.Value), cancellation: ct);
     }
 }

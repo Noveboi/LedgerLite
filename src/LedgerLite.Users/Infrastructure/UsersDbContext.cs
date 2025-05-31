@@ -16,15 +16,15 @@ internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
         UserRole,
         IdentityUserLogin<Guid>,
         IdentityRoleClaim<Guid>,
-        IdentityUserToken<Guid>>(options)
+        IdentityUserToken<Guid>>(options: options)
 {
     public DbSet<Organization> Organizations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
-        builder.HasDefaultSchema("Users");
+        base.OnModelCreating(builder: builder);
+        builder.HasDefaultSchema(schema: "Users");
 
-        builder.ApplyConfigurationsFromAssembly(typeof(IUserEntityConfigurationMarker).Assembly);
+        builder.ApplyConfigurationsFromAssembly(assembly: typeof(IUserEntityConfigurationMarker).Assembly);
     }
 }

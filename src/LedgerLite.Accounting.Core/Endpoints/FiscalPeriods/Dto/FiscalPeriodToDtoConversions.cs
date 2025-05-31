@@ -6,6 +6,6 @@ internal static class FiscalPeriodToDtoConversions
 {
     public static FiscalPeriodDto ToDto(this FiscalPeriod period)
     {
-        return FiscalPeriodDto.FromEntity(period);
+        return FiscalPeriodDto.FromEntity(fiscalPeriod: period);
     }
 }

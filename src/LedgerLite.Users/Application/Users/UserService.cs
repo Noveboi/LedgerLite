@@ -10,18 +10,18 @@ internal sealed class UserService(UsersDbContext context) : IUserService
 {
     public async Task<Result<User>> GetByIdAsync(Guid id, CancellationToken token)
     {
-        return await GetUserAsync(id, token) is { } user
-            ? Result.Success(user)
-            : Result.NotFound(CommonErrors.NotFound<User>(id));
+        return await GetUserAsync(id: id, token: token) is { } user
+            ? Result.Success(value: user)
+            : Result.NotFound(CommonErrors.NotFound<User>(id: id));
     }
 
     private Task<User?> GetUserAsync(Guid id, CancellationToken token)
     {
         return context.Users
             .AsSplitQuery()
-            .Include(x => x.OrganizationMember)
-            .ThenInclude(x => x!.Roles)
-            .ThenInclude(x => x.Role)
-            .FirstOrDefaultAsync(x => x.Id == id, token);
+            .Include(navigationPropertyPath: x => x.OrganizationMember)
+            .ThenInclude(navigationPropertyPath: x => x!.Roles)
+            .ThenInclude(navigationPropertyPath: x => x.Role)
+            .FirstOrDefaultAsync(predicate: x => x.Id == id, cancellationToken: token);
     }
 }

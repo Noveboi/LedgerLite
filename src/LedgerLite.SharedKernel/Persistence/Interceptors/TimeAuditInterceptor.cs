@@ -15,7 +15,8 @@ internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
         CancellationToken cancellationToken = new())
     {
         if (eventData.Context is null)
-            return await base.SavingChangesAsync(eventData, result, cancellationToken);
+            return await base.SavingChangesAsync(eventData: eventData, result: result,
+                cancellationToken: cancellationToken);
 
         var utcNow = DateTime.UtcNow;
         var entries = eventData.Context.ChangeTracker.Entries<IAuditable>().ToList();
@@ -36,10 +37,11 @@ internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
                     break;
             }
 
-        LogAuditCount("CREATED", createCount);
-        LogAuditCount("UPDATED", updateCount);
+        LogAuditCount(verb: "CREATED", count: createCount);
+        LogAuditCount(verb: "UPDATED", count: updateCount);
 
-        return await base.SavingChangesAsync(eventData, result, cancellationToken);
+        return await base.SavingChangesAsync(eventData: eventData, result: result,
+            cancellationToken: cancellationToken);
     }
 
     private void LogAuditCount(string verb, int count)
@@ -47,6 +49,6 @@ internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
         if (count == 0)
             return;
 
-        _log.Information("Audit {count} entities {verb}", count, verb);
+        _log.Information(messageTemplate: "Audit {count} entities {verb}", propertyValue0: count, propertyValue1: verb);
     }
 }

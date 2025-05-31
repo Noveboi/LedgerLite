@@ -10,7 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddSharedKernelServices(this IServiceCollection services)
     {
-        Log.Logger.RegisteringModule("Shared Kernel");
+        Log.Logger.RegisteringModule(moduleName: "Shared Kernel");
         return services
             .AddApplicationUseCases()
             .AddEventInfrastructure();

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 
-internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> options) : DbContext(options)
+internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> options) : DbContext(options: options)
 {
     public DbSet<Account> Accounts { get; private set; }
     public DbSet<ChartOfAccounts> Charts { get; private set; }
@@ -19,7 +19,7 @@ internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("Accounting");
+        modelBuilder.HasDefaultSchema(schema: "Accounting");
 
         modelBuilder
             .ConfigureEnumeration<AccountType>()
@@ -27,6 +27,6 @@ internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> 
             .ConfigureEnumeration<JournalEntryStatus>()
             .ConfigureEnumeration<Currency>();
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAccountingEntityConfigurationMarker).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(assembly: typeof(IAccountingEntityConfigurationMarker).Assembly);
     }
 }

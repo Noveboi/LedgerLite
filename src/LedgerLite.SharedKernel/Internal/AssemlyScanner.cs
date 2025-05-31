@@ -14,14 +14,14 @@ internal static class AssemblyScanner
         var assemblyScanCount = 0;
 
         var options = new AssemblyScanStrategyBuilder();
-        configure(options);
+        configure(obj: options);
 
         var search = options.GetTypeSearchStrategy();
         var implementationTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(assembly =>
+            .SelectMany(selector: assembly =>
             {
                 assemblyScanCount++;
-                return search.Filter(assembly.GetTypes());
+                return search.Filter(types: assembly.GetTypes());
             })
             .ToList();
 
@@ -30,24 +30,26 @@ internal static class AssemblyScanner
         {
             if (options.ShouldRegisterInterface)
             {
-                var interfaces = search.GetInterfaces(implementation);
+                var interfaces = search.GetInterfaces(type: implementation);
 
-                foreach (var @interface in interfaces) services.AddScoped(@interface, implementation);
+                foreach (var @interface in interfaces)
+                    services.AddScoped(serviceType: @interface, implementationType: implementation);
             }
 
-            if (options.ShouldRegisterImplementation) services.AddScoped(implementation);
+            if (options.ShouldRegisterImplementation) services.AddScoped(serviceType: implementation);
         }
 
         Log.Information(
+            messageTemplate:
             "Detected {count} implementations of {interface} from {assemblyCount} assemblies in {ms} milliseconds",
             implementationTypes.Count,
             options.BaseType.Name,
             assemblyScanCount,
-            Stopwatch.GetElapsedTime(time).TotalMilliseconds.ToString("N0"));
+            Stopwatch.GetElapsedTime(startingTimestamp: time).TotalMilliseconds.ToString(format: "N0"));
 
-        Log.Information("Registered {serviceCount} services for {interface}",
-            services.Count - beforeCount,
-            options.BaseType.Name);
+        Log.Information(messageTemplate: "Registered {serviceCount} services for {interface}",
+            propertyValue0: services.Count - beforeCount,
+            propertyValue1: options.BaseType.Name);
 
         return services;
     }

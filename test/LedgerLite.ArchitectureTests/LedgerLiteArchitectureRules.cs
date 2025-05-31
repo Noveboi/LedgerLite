@@ -20,16 +20,17 @@ internal sealed class LedgerLiteArchitectureRules
     {
         _moduleName = assembly.GetName().Name!;
 
-        _application = Types().That().AreInApplicationLayer(_moduleName).As("Application Types");
-        _infrastructure = Types().That().AreInInfrastructureLayer(_moduleName).As("Infrastructure Layer");
-        _endpoints = Types().That().AreInEndpointsLayer(_moduleName).As("Endpoint Layer");
-        _domain = Types().That().AreInDomainLayer(_moduleName).As("Domain Types");
+        _application = Types().That().AreInApplicationLayer(module: _moduleName).As(description: "Application Types");
+        _infrastructure = Types().That().AreInInfrastructureLayer(module: _moduleName)
+            .As(description: "Infrastructure Layer");
+        _endpoints = Types().That().AreInEndpointsLayer(module: _moduleName).As(description: "Endpoint Layer");
+        _domain = Types().That().AreInDomainLayer(module: _moduleName).As(description: "Domain Types");
     }
 
     public IArchRule DomainLayerHasNoDependencies => _domain
-        .Should().NotDependOnAny(_application)
-        .AndShould().NotDependOnAny(_infrastructure)
-        .AndShould().NotDependOnAny(_endpoints);
+        .Should().NotDependOnAny(types: _application)
+        .AndShould().NotDependOnAny(types: _infrastructure)
+        .AndShould().NotDependOnAny(types: _endpoints);
 
     public IArchRule EntitiesShouldBeInDomainLayer =>
         Classes()
@@ -37,8 +38,8 @@ internal sealed class LedgerLiteArchitectureRules
             .AreDomainEntities()
             .Should()
             .ResideInNamespace(
-                RuleBuildingExtensions.GetRegexNamespace(_moduleName, "Domain"),
-                true);
+                pattern: RuleBuildingExtensions.GetRegexNamespace(module: _moduleName, layerName: "Domain"),
+                useRegularExpressions: true);
 
     public static void EntitiesShouldHavePrivateParameterlessConstructor(Architecture arch)
     {
@@ -46,20 +47,21 @@ internal sealed class LedgerLiteArchitectureRules
         var isValid = Classes()
             .That()
             .AreDomainEntities()
-            .GetObjects(arch)
-            .All(entity =>
+            .GetObjects(architecture: arch)
+            .All(predicate: entity =>
             {
                 var hasParameterlessPrivateCtor = entity
                     .GetConstructors()
-                    .Any(ctor => ctor.Visibility == Visibility.Private && !ctor.Parameters.Any());
+                    .Any(predicate: ctor => ctor.Visibility == Visibility.Private && !ctor.Parameters.Any());
 
-                if (!hasParameterlessPrivateCtor) badEntities.Add(entity);
+                if (!hasParameterlessPrivateCtor) badEntities.Add(item: entity);
 
                 return hasParameterlessPrivateCtor;
             });
 
         if (!isValid)
             throw new Exception(
-                $"Entities: {string.Join(", ", badEntities.Select(x => x.Name))} do not have a parameterless private constructor.");
+                message:
+                $"Entities: {string.Join(separator: ", ", values: badEntities.Select(selector: x => x.Name))} do not have a parameterless private constructor.");
     }
 }

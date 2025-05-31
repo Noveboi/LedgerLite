@@ -9,7 +9,7 @@ public sealed record JournalEntryWithLinesResponseDto(
     public static JournalEntryWithLinesResponseDto FromEntity(JournalEntry entry)
     {
         return new JournalEntryWithLinesResponseDto(
-            JournalEntryResponseDto.FromEntity(entry),
-            entry.Lines.Select(JournalEntryLineDto.FromEntity));
+            Entry: JournalEntryResponseDto.FromEntity(entry: entry),
+            Lines: entry.Lines.Select(selector: JournalEntryLineDto.FromEntity));
     }
 }

@@ -11,11 +11,11 @@ public class JournalEntryPostTests
     public void ChangeStatus_ToPosted()
     {
         var lines = FakeJournalEntryLines.GenerateStandardLines();
-        var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, lines);
+        var entry = JournalEntryHelper.CreateWithLines(type: JournalEntryType.Standard, lines: lines);
 
         var result = entry.Post();
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        entry.Status.ShouldBe(JournalEntryStatus.Posted);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        entry.Status.ShouldBe(expected: JournalEntryStatus.Posted);
     }
 }

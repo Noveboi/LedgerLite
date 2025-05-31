@@ -8,17 +8,17 @@ public class PrivateBinder : Binder
 {
     public override Dictionary<string, MemberInfo> GetMembers(Type t)
     {
-        var members = base.GetMembers(t);
+        var members = base.GetMembers(t: t);
 
         const BindingFlags privateBindingFlags = BindingFlags.Instance | BindingFlags.NonPublic;
 
-        var allPrivateMembers = t.GetMembers(privateBindingFlags)
+        var allPrivateMembers = t.GetMembers(bindingAttr: privateBindingFlags)
             .OfType<FieldInfo>()
-            .Where(fi => fi.IsPrivate)
-            .Where(fi => !fi.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
+            .Where(predicate: fi => fi.IsPrivate)
+            .Where(predicate: fi => !fi.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
             .ToArray();
 
-        foreach (var privateField in allPrivateMembers) members.TryAdd(privateField.Name, privateField);
+        foreach (var privateField in allPrivateMembers) members.TryAdd(key: privateField.Name, value: privateField);
 
         return members;
     }

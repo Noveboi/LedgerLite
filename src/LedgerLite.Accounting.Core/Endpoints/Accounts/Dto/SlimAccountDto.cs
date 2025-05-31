@@ -7,10 +7,10 @@ public sealed record SlimAccountDto(Guid Id, string Name, string Type, string Cu
     public static SlimAccountDto FromEntity(Account account)
     {
         return new SlimAccountDto(
-            account.Id,
-            account.Name,
-            account.Type.ToString(),
-            account.Currency.ToString(),
-            account.IsPlaceholder);
+            Id: account.Id,
+            Name: account.Name,
+            Type: account.Type.ToString(),
+            Currency: account.Currency.ToString(),
+            IsControl: account.IsPlaceholder);
     }
 }

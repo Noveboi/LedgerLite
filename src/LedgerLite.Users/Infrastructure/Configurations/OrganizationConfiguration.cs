@@ -11,14 +11,14 @@ internal sealed class OrganizationConfiguration : IEntityTypeConfiguration<Organ
     {
         builder.IsDomainEntity();
 
-        builder.Property(x => x.Name).HasMaxLength(256);
-        builder.HasIndex(x => x.Name).IsUnique();
+        builder.Property(propertyExpression: x => x.Name).HasMaxLength(maxLength: 256);
+        builder.HasIndex(indexExpression: x => x.Name).IsUnique();
 
         builder
-            .HasMany(x => x.Members)
+            .HasMany(navigationExpression: x => x.Members)
             .WithOne()
-            .HasForeignKey(x => x.OrganizationId);
+            .HasForeignKey(foreignKeyExpression: x => x.OrganizationId);
 
-        builder.Navigation(x => x.Members).AutoInclude();
+        builder.Navigation(navigationExpression: x => x.Members).AutoInclude();
     }
 }

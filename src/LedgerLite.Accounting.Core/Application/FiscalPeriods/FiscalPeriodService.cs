@@ -24,22 +24,23 @@ internal sealed class FiscalPeriodService(IAccountingUnitOfWork unitOfWork) : IF
 
     public async Task<Result<FiscalPeriod>> CreateAsync(CreateFiscalPeriodRequest request, CancellationToken token)
     {
-        return await EnsurePeriodDoesNotOverlapWithAnother(request, token)
-            .BindAsync(async org =>
-                await _repository.NameExistsForOrganizationAsync(request.OrganizationId, request.Name, token)
-                    ? Result.Invalid(FiscalPeriodErrors.PeriodWithSameName(request.Name))
-                    : Result.Success(org))
-            .BindAsync(_ => FiscalPeriod.Create(
-                request.OrganizationId,
-                request.StartDate,
-                request.EndDate,
-                request.Name))
-            .BindAsync(period =>
+        return await EnsurePeriodDoesNotOverlapWithAnother(request: request, token: token)
+            .BindAsync(bindFunc: async org =>
+                await _repository.NameExistsForOrganizationAsync(organizationId: request.OrganizationId,
+                    name: request.Name, token: token)
+                    ? Result.Invalid(validationError: FiscalPeriodErrors.PeriodWithSameName(name: request.Name))
+                    : Result.Success(value: org))
+            .BindAsync(bindFunc: _ => FiscalPeriod.Create(
+                organizationId: request.OrganizationId,
+                startDate: request.StartDate,
+                endDate: request.EndDate,
+                name: request.Name))
+            .BindAsync(bindFunc: period =>
             {
-                _repository.Add(period);
-                return Result.Success(period);
+                _repository.Add(period: period);
+                return Result.Success(value: period);
             })
-            .BindAsync(period => unitOfWork.SaveChangesAsync(token).MapAsync(() => period));
+            .BindAsync(bindFunc: period => unitOfWork.SaveChangesAsync(token: token).MapAsync(func: () => period));
     }
 
     private async Task<Result<OrganizationDto>> EnsurePeriodDoesNotOverlapWithAnother(
@@ -47,15 +48,15 @@ internal sealed class FiscalPeriodService(IAccountingUnitOfWork unitOfWork) : IF
         CancellationToken token)
     {
         var overlappingPeriod = await _repository.FindOverlappingPeriodAsync(
-            request.OrganizationId,
-            request.StartDate,
-            request.EndDate,
-            token);
+            organizationId: request.OrganizationId,
+            startDate: request.StartDate,
+            endDate: request.EndDate,
+            token: token);
 
         return overlappingPeriod is null
             ? Result.Success()
-            : Result.Invalid(FiscalPeriodErrors.OverlappingPeriods(
-                overlappingPeriod.Range,
-                new DateRange(request.StartDate, request.EndDate)));
+            : Result.Invalid(validationError: FiscalPeriodErrors.OverlappingPeriods(
+                a: overlappingPeriod.Range,
+                b: new DateRange(Start: request.StartDate, End: request.EndDate)));
     }
 }

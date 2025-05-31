@@ -13,12 +13,12 @@ public class ChartOfAccountsAddTests
     {
         var expected = FakeAccounts.NewAccount();
 
-        var result = _chart.Add(expected);
+        var result = _chart.Add(account: expected);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
         _chart.Accounts
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected);
+            .ShouldBeEquivalentTo(expected: expected);
     }
 
     [Fact]
@@ -27,11 +27,11 @@ public class ChartOfAccountsAddTests
         var account = FakeAccounts.NewAccount();
         var chart = FakeChartOfAccounts.With(account);
 
-        var result = chart.Add(account);
+        var result = chart.Add(account: account);
 
-        result.Status.ShouldBe(ResultStatus.Invalid);
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountAlreadyExists(account));
+            .ShouldBeEquivalentTo(expected: ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: account));
     }
 }

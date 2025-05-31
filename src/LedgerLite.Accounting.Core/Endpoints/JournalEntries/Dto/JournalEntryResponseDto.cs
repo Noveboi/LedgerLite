@@ -12,11 +12,11 @@ public sealed record JournalEntryResponseDto(
 {
     public static JournalEntryResponseDto FromEntity(JournalEntry entry)
     {
-        return new JournalEntryResponseDto(entry.Id,
-            entry.ReferenceNumber,
-            entry.OccursAt,
-            entry.Description,
-            entry.Type.ToString(),
-            entry.Status.ToString());
+        return new JournalEntryResponseDto(Id: entry.Id,
+            ReferenceNumber: entry.ReferenceNumber,
+            OccursAtUtc: entry.OccursAt,
+            Description: entry.Description,
+            Type: entry.Type.ToString(),
+            Status: entry.Status.ToString());
     }
 }

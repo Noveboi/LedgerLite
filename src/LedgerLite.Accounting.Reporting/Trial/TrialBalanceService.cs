@@ -11,9 +11,11 @@ internal sealed class TrialBalanceService(IJournalEntryRepository journalEntrySe
     public async Task<Result<TrialBalance>> CreateTrialBalanceAsync(CreateTrialBalanceRequest request,
         CancellationToken token)
     {
-        var entries = await journalEntryService.GetByFiscalPeriodIdAsync(request.Period.Id, token);
+        var entries =
+            await journalEntryService.GetByFiscalPeriodIdAsync(fiscalPeriodId: request.Period.Id, token: token);
 
-        _log.Information("Found {entryCount} journal entries associated with period.", entries.Count);
-        return TrialBalance.Prepare(request.Period, entries);
+        _log.Information(messageTemplate: "Found {entryCount} journal entries associated with period.",
+            propertyValue: entries.Count);
+        return TrialBalance.Prepare(period: request.Period, journalEntries: entries);
     }
 }

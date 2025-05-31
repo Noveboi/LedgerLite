@@ -26,15 +26,15 @@ public sealed class ChartOfAccounts : AuditableEntity
         OrganizationId = organizationId;
     }
 
-    public IReadOnlyCollection<Account> Accounts => _nodes.Select(x => x.Account).ToList();
+    public IReadOnlyCollection<Account> Accounts => _nodes.Select(selector: x => x.Account).ToList();
     public IReadOnlyCollection<AccountNode> Nodes => _nodes;
 
     public Guid OrganizationId { get; }
 
     public static Result<ChartOfAccounts> Create(Guid organizationId)
     {
-        var chart = new ChartOfAccounts(organizationId);
-        return Result.Success(chart);
+        var chart = new ChartOfAccounts(organizationId: organizationId);
+        return Result.Success(value: chart);
     }
 
     /// <summary>
@@ -42,11 +42,12 @@ public sealed class ChartOfAccounts : AuditableEntity
     /// </summary>
     public Result Add(Account account)
     {
-        if (_nodes.Any(acc => acc.Account == account))
-            return Result.Invalid(ChartOfAccountsErrors.AccountAlreadyExists(account));
+        if (_nodes.Any(predicate: acc => acc.Account == account))
+            return Result.Invalid(
+                validationError: ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: account));
 
-        var node = AccountNode.Create(Id, account);
-        _nodes.Add(node);
+        var node = AccountNode.Create(chartId: Id, account: account);
+        _nodes.Add(item: node);
 
         return Result.Success();
     }
@@ -56,22 +57,22 @@ public sealed class ChartOfAccounts : AuditableEntity
     /// </summary>
     public Result Move(Guid accountId, Guid parentId)
     {
-        var account = _nodes.FirstOrDefault(node => node.Account.Id == accountId);
+        var account = _nodes.FirstOrDefault(predicate: node => node.Account.Id == accountId);
         if (account is null)
-            return Result.Invalid(ChartOfAccountsErrors.AccountNotFound(accountId));
+            return Result.Invalid(validationError: ChartOfAccountsErrors.AccountNotFound(id: accountId));
 
-        var parent = _nodes.FirstOrDefault(node => node.Account.Id == parentId);
+        var parent = _nodes.FirstOrDefault(predicate: node => node.Account.Id == parentId);
         if (parent is null)
-            return Result.Invalid(ChartOfAccountsErrors.AccountNotFound(parentId));
+            return Result.Invalid(validationError: ChartOfAccountsErrors.AccountNotFound(id: parentId));
 
         if (account.Parent == parent)
-            return Result.Invalid(ChartOfAccountsErrors.MoveToSameParent());
+            return Result.Invalid(validationError: ChartOfAccountsErrors.MoveToSameParent());
 
-        var removeChildResult = account.Parent?.RemoveChild(account);
+        var removeChildResult = account.Parent?.RemoveChild(child: account);
         if (removeChildResult is { IsSuccess: false })
             return removeChildResult.Map();
 
-        var addChildResult = parent.AddChild(account);
+        var addChildResult = parent.AddChild(child: account);
         if (!addChildResult.IsSuccess)
             return addChildResult;
 

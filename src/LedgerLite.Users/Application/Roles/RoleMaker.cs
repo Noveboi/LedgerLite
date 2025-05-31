@@ -13,40 +13,41 @@ internal sealed class RoleMaker(RoleManager<Role> roleManager)
 
     public async Task<Result> CreateApplicationRolesAsync(CancellationToken token)
     {
-        _log.Information("Ensuring essential application roles exist.");
+        _log.Information(messageTemplate: "Ensuring essential application roles exist.");
 
-        await GetIfRoleExistsAsync(CommonRoles.Owner);
-        await GetIfRoleExistsAsync(CommonRoles.Admin);
-        await GetIfRoleExistsAsync(CommonRoles.Member);
-        await GetIfRoleExistsAsync(CommonRoles.Viewer);
+        await GetIfRoleExistsAsync(name: CommonRoles.Owner);
+        await GetIfRoleExistsAsync(name: CommonRoles.Admin);
+        await GetIfRoleExistsAsync(name: CommonRoles.Member);
+        await GetIfRoleExistsAsync(name: CommonRoles.Viewer);
 
-        var owner = new Role(CommonRoles.Owner, "The owner of the organization");
-        var admin = new Role(CommonRoles.Admin, "Executive rights in the organization");
-        var member = new Role(CommonRoles.Member, "Standard organization member");
-        var viewer = new Role(CommonRoles.Viewer, "Member with read-only access to the organization");
+        var owner = new Role(name: CommonRoles.Owner, description: "The owner of the organization");
+        var admin = new Role(name: CommonRoles.Admin, description: "Executive rights in the organization");
+        var member = new Role(name: CommonRoles.Member, description: "Standard organization member");
+        var viewer = new Role(name: CommonRoles.Viewer,
+            description: "Member with read-only access to the organization");
 
-        return await CreateRoleAsync(owner)
-            .BindAsync(_ => CreateRoleAsync(admin))
-            .BindAsync(_ => CreateRoleAsync(member))
-            .BindAsync(_ => CreateRoleAsync(viewer));
+        return await CreateRoleAsync(role: owner)
+            .BindAsync(bindFunc: _ => CreateRoleAsync(role: admin))
+            .BindAsync(bindFunc: _ => CreateRoleAsync(role: member))
+            .BindAsync(bindFunc: _ => CreateRoleAsync(role: viewer));
     }
 
     private async Task GetIfRoleExistsAsync(string name)
     {
-        var exists = await roleManager.RoleExistsAsync(name);
-        _existingRoles[name] = exists;
+        var exists = await roleManager.RoleExistsAsync(roleName: name);
+        _existingRoles[key: name] = exists;
     }
 
     private async Task<Result> CreateRoleAsync(Role role)
     {
-        if (string.IsNullOrWhiteSpace(role.Name) || _existingRoles[role.Name]) return Result.NoContent();
+        if (string.IsNullOrWhiteSpace(value: role.Name) || _existingRoles[key: role.Name]) return Result.NoContent();
 
-        _log.Information("Adding role '{name}'", role.Name);
-        var result = await roleManager.CreateAsync(role);
+        _log.Information(messageTemplate: "Adding role '{name}'", propertyValue: role.Name);
+        var result = await roleManager.CreateAsync(role: role);
         return result.Succeeded
             ? Result.Success()
-            : Result.Invalid(result.Errors.Select(x => new ValidationError(
-                x.Code,
-                x.Description)));
+            : Result.Invalid(validationErrors: result.Errors.Select(selector: x => new ValidationError(
+                identifier: x.Code,
+                errorMessage: x.Description)));
     }
 }

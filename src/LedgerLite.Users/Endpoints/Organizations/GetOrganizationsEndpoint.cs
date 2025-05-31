@@ -16,7 +16,7 @@ internal sealed class GetOrganizationsEndpoint(IOrganizationRepository organizat
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var organizations = await organizationRepository.GetAllAsync(ct);
-        await SendAsync(organizations.Select(x => x.ToDto()), cancellation: ct);
+        var organizations = await organizationRepository.GetAllAsync(token: ct);
+        await SendAsync(response: organizations.Select(selector: x => x.ToDto()), cancellation: ct);
     }
 }

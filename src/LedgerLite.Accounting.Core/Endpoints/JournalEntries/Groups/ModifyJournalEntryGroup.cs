@@ -7,6 +7,6 @@ internal sealed class ModifyJournalEntryGroup : SubGroup<JournalEntryEndpointGro
 {
     public ModifyJournalEntryGroup()
     {
-        Configure("", ep => ep.Policy(x => x.RequireModificationPermissions()));
+        Configure(routePrefix: "", ep: ep => ep.Policy(policy: x => x.RequireModificationPermissions()));
     }
 }

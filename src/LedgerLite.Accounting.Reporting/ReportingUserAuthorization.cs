@@ -12,12 +12,13 @@ internal sealed class ReportingUserAuthorization(
 {
     public async Task<Result<FiscalPeriod>> AuthorizeAsync(Guid userId, Guid fiscalPeriodId, CancellationToken ct)
     {
-        if (await fiscalPeriodRepository.GetByIdAsync(fiscalPeriodId, ct) is not { } fiscalPeriod)
-            return Result.NotFound(CommonErrors.NotFound<FiscalPeriod>(fiscalPeriodId));
+        if (await fiscalPeriodRepository.GetByIdAsync(id: fiscalPeriodId, token: ct) is not { } fiscalPeriod)
+            return Result.NotFound(CommonErrors.NotFound<FiscalPeriod>(id: fiscalPeriodId));
 
-        if (!await user.UserBelongsInOrganizationAsync(userId, fiscalPeriod.OrganizationId, ct))
+        if (!await user.UserBelongsInOrganizationAsync(userId: userId, organizationId: fiscalPeriod.OrganizationId,
+                token: ct))
             return Result.Unauthorized();
 
-        return Result.Success(fiscalPeriod);
+        return Result.Success(value: fiscalPeriod);
     }
 }

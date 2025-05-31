@@ -10,8 +10,8 @@ public static class ConfigurationExtensions
 {
     public static void IsDomainEntity<T>(this EntityTypeBuilder<T> builder) where T : Entity
     {
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedNever();
+        builder.HasKey(keyExpression: x => x.Id);
+        builder.Property(propertyExpression: x => x.Id).ValueGeneratedNever();
     }
 
     public static void HasEnumeration<T, TProp>(
@@ -20,19 +20,19 @@ public static class ConfigurationExtensions
         where TProp : SmartEnum<TProp>
         where T : class
     {
-        builder.Property(propertyExpression)
+        builder.Property(propertyExpression: propertyExpression)
             .HasConversion(
-                prop => prop!.Value,
-                value => SmartEnum<TProp>.FromValue(value));
+                convertToProviderExpression: prop => prop!.Value,
+                convertFromProviderExpression: value => SmartEnum<TProp>.FromValue(value));
     }
 
     public static ModelBuilder ConfigureEnumeration<TEnum>(this ModelBuilder builder) where TEnum : SmartEnum<TEnum>
     {
         var enumBuilder = builder.Entity<TEnum>();
 
-        enumBuilder.HasKey(x => x.Value);
-        enumBuilder.Property(x => x.Name).IsRequired();
-        enumBuilder.HasData(SmartEnum<TEnum>.List);
+        enumBuilder.HasKey(keyExpression: x => x.Value);
+        enumBuilder.Property(propertyExpression: x => x.Name).IsRequired();
+        enumBuilder.HasData(data: SmartEnum<TEnum>.List);
 
         return builder;
     }

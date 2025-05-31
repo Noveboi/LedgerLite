@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LedgerLite.Users.Endpoints.Organizations;
 
 internal sealed record JoinOrganizationRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId,
     [property: FromRoute] Guid OrganizationId);
 
@@ -28,37 +28,39 @@ internal sealed class JoinOrganizationEndpoint(
     public override void Configure()
     {
         Put("/{organizationId:guid}/join");
-        Description(x => x.Accepts<JoinOrganizationRequestDto>());
+        Description(builder: x => x.Accepts<JoinOrganizationRequestDto>());
         Group<OrganizationEndpointGroup>();
     }
 
     public override async Task HandleAsync(JoinOrganizationRequestDto req, CancellationToken ct)
     {
-        var result = await HandleUseCaseAsync(req, ct);
+        var result = await HandleUseCaseAsync(request: req, token: ct);
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result.ToMinimalApiResult());
+            await SendResultAsync(result: result.ToMinimalApiResult());
             return;
         }
 
-        await SendOkAsync(ct);
+        await SendOkAsync(cancellation: ct);
     }
 
     public async Task<Result<OrganizationMember>> HandleUseCaseAsync(
         JoinOrganizationRequestDto request,
         CancellationToken token)
     {
-        return await userService.GetByIdAsync(request.UserId, token)
-            .BindAsync(async user => await _organizations.GetByIdAsync(request.OrganizationId, token) is { } org
-                ? Result.Success(new { User = user, Organization = org })
-                : Result.NotFound(CommonErrors.NotFound<Organization>(request.OrganizationId)))
-            .BindAsync(state => roles.GetByNameAsync(CommonRoles.Viewer, token)
-                .MapAsync(role => new { state.User, state.Organization, Role = role }))
-            .BindAsync(state => OrganizationMember.Create(state.User, state.Organization, state.Role)
-                .Map(member => new { state.User, state.Organization, Member = member }))
-            .BindAsync(state => state.Organization.AddMember(state.Member)
-                .Map(() => state.Member))
-            .BindAsync(member => unitOfWork.SaveChangesAsync(token)
-                .MapAsync(() => member));
+        return await userService.GetByIdAsync(id: request.UserId, token: token)
+            .BindAsync(bindFunc: async user =>
+                await _organizations.GetByIdAsync(id: request.OrganizationId, token: token) is { } org
+                    ? Result.Success(value: new { User = user, Organization = org })
+                    : Result.NotFound(CommonErrors.NotFound<Organization>(id: request.OrganizationId)))
+            .BindAsync(bindFunc: state => roles.GetByNameAsync(name: CommonRoles.Viewer, ct: token)
+                .MapAsync(func: role => new { state.User, state.Organization, Role = role }))
+            .BindAsync(bindFunc: state => OrganizationMember
+                .Create(user: state.User, organization: state.Organization, role: state.Role)
+                .Map(func: member => new { state.User, state.Organization, Member = member }))
+            .BindAsync(bindFunc: state => state.Organization.AddMember(member: state.Member)
+                .Map(func: () => state.Member))
+            .BindAsync(bindFunc: member => unitOfWork.SaveChangesAsync(token: token)
+                .MapAsync(func: () => member));
     }
 }

@@ -14,25 +14,27 @@ internal sealed class CreateChartOfAccountWhenOrganizationCreated(IAccountingUni
 
     public async ValueTask HandleAsync(OrganizationCreatedIntegrationEvent e, CancellationToken token)
     {
-        _log.Information("Creating new '{chartName}' because an organization was created.", nameof(ChartOfAccounts));
+        _log.Information(messageTemplate: "Creating new '{chartName}' because an organization was created.",
+            propertyValue: nameof(ChartOfAccounts));
 
-        var result = await ChartOfAccounts.Create(e.Id)
-            .Bind(chart =>
+        var result = await ChartOfAccounts.Create(organizationId: e.Id)
+            .Bind(bindFunc: chart =>
             {
-                unitOfWork.ChartOfAccountsRepository.Add(chart);
-                return Result.Success(chart);
+                unitOfWork.ChartOfAccountsRepository.Add(chart: chart);
+                return Result.Success(value: chart);
             })
-            .BindAsync(chart => unitOfWork.SaveChangesAsync(token).MapAsync(() => chart));
+            .BindAsync(bindFunc: chart => unitOfWork.SaveChangesAsync(token: token).MapAsync(func: () => chart));
 
         if (!result.IsSuccess)
         {
-            _log.Error("Could not create {chartName}. Error: {@error}", nameof(ChartOfAccounts), result);
+            _log.Error(messageTemplate: "Could not create {chartName}. Error: {@error}",
+                propertyValue0: nameof(ChartOfAccounts), propertyValue1: result);
             return;
         }
 
-        _log.Information("Created {chartName} ({chartId})  for organization '{orgName}'",
-            nameof(ChartOfAccounts),
-            e.Name,
-            result.Value.Id);
+        _log.Information(messageTemplate: "Created {chartName} ({chartId})  for organization '{orgName}'",
+            propertyValue0: nameof(ChartOfAccounts),
+            propertyValue1: e.Name,
+            propertyValue2: result.Value.Id);
     }
 }

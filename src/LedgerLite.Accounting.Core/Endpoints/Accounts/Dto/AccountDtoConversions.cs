@@ -33,7 +33,7 @@ internal static class AccountDtoConversions
             Currency = account.Currency.ToString(),
             IsControl = account.IsPlaceholder,
             Description = account.Description,
-            Lines = accountWithDetails.Lines.Select(JournalEntryLineDto.FromEntity)
+            Lines = accountWithDetails.Lines.Select(selector: JournalEntryLineDto.FromEntity)
         };
     }
 }

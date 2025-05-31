@@ -12,20 +12,20 @@ internal sealed class JournalEntryConfiguration : IEntityTypeConfiguration<Journ
     {
         builder.IsDomainEntity();
 
-        builder.Property(x => x.ReferenceNumber)
+        builder.Property(propertyExpression: x => x.ReferenceNumber)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(maxLength: 100);
 
-        builder.Property(x => x.Description)
-            .IsRequired(false)
-            .HasMaxLength(200);
+        builder.Property(propertyExpression: x => x.Description)
+            .IsRequired(required: false)
+            .HasMaxLength(maxLength: 200);
 
         builder
             .HasOne<FiscalPeriod>()
             .WithMany()
-            .HasForeignKey(x => x.FiscalPeriodId);
+            .HasForeignKey(foreignKeyExpression: x => x.FiscalPeriodId);
 
-        builder.HasEnumeration(x => x.Type);
-        builder.HasEnumeration(x => x.Status);
+        builder.HasEnumeration(propertyExpression: x => x.Type);
+        builder.HasEnumeration(propertyExpression: x => x.Status);
     }
 }

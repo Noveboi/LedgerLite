@@ -21,17 +21,18 @@ internal sealed class GetDetailedAccountUseCase(
     public async Task<Result<AccountWithDetails>> HandleAsync(GetDetailedAccountRequest request,
         CancellationToken token)
     {
-        var chartResult = await chartService.GetByUserIdAsync(request.UserId, token);
+        var chartResult = await chartService.GetByUserIdAsync(userId: request.UserId, token: token);
         if (!chartResult.IsSuccess) return chartResult.Map();
 
         var chart = chartResult.Value;
-        if (chart.Nodes.FirstOrDefault(node => node.Account.Id == request.AccountId) is not { } accountNode)
-            return Result.NotFound(CommonErrors.NotFound<Account>(request.AccountId));
+        if (chart.Nodes.FirstOrDefault(predicate: node => node.Account.Id == request.AccountId) is not { } accountNode)
+            return Result.NotFound(CommonErrors.NotFound<Account>(id: request.AccountId));
 
-        var options = new JournalEntryLineQueryOptions(request.FiscalPeriodId);
-        var lines = await lineRepository.GetLinesForAccountAsync(accountNode.Account, options, token);
+        var options = new JournalEntryLineQueryOptions(FiscalPeriodId: request.FiscalPeriodId);
+        var lines = await lineRepository.GetLinesForAccountAsync(account: accountNode.Account, options: options,
+            ct: token);
         return new AccountWithDetails(
-            accountNode,
-            lines);
+            Node: accountNode,
+            Lines: lines);
     }
 }

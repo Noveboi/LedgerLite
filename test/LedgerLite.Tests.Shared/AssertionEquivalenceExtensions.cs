@@ -13,8 +13,8 @@ public static class AssertionEquivalenceExtensions
             IgnoreCollectionOrder = true
         };
 
-        configure?.Invoke(config);
-        subject.ShouldCompare(other, compareConfig: config);
+        configure?.Invoke(obj: config);
+        subject.ShouldCompare(expected: other, compareConfig: config);
     }
 
     public static void EquivalentToEntity<T>(this T subject, T other, Action<ComparisonConfig>? configure = null)
@@ -26,9 +26,9 @@ public static class AssertionEquivalenceExtensions
             IgnoreCollectionOrder = true
         };
 
-        config.IgnoreProperty<T>(x => x.Id);
+        config.IgnoreProperty<T>(ignoredProperty: x => x.Id);
 
-        configure?.Invoke(config);
-        subject.ShouldCompare(other, compareConfig: config);
+        configure?.Invoke(obj: config);
+        subject.ShouldCompare(expected: other, compareConfig: config);
     }
 }

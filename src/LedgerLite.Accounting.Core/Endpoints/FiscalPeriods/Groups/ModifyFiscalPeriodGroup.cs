@@ -7,6 +7,6 @@ internal sealed class ModifyFiscalPeriodGroup : SubGroup<FiscalPeriodEndpointGro
 {
     public ModifyFiscalPeriodGroup()
     {
-        Configure("", ep => ep.Policy(x => x.RequireModificationPermissions()));
+        Configure(routePrefix: "", ep: ep => ep.Policy(policy: x => x.RequireModificationPermissions()));
     }
 }

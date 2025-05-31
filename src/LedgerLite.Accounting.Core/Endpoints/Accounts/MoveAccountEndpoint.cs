@@ -9,7 +9,7 @@ using LedgerLite.SharedKernel.Identity;
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record MoveAccountRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId,
     [property: RouteParam] Guid AccountId,
     [property: RouteParam] Guid NewParentId);
@@ -25,15 +25,15 @@ internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccou
 
     public override async Task HandleAsync(MoveAccountRequestDto req, CancellationToken ct)
     {
-        var chart = await charts.GetByUserIdAsync(req.UserId, ct);
+        var chart = await charts.GetByUserIdAsync(userId: req.UserId, token: ct);
         if (!chart.IsSuccess)
         {
-            await SendResultAsync(chart.ToMinimalApiResult());
+            await SendResultAsync(result: chart.ToMinimalApiResult());
             return;
         }
 
-        var request = new MoveAccountRequest(chart, req.AccountId, req.NewParentId);
-        var result = await accounts.MoveAsync(request, ct);
-        await SendResultAsync(result.ToMinimalApiResult());
+        var request = new MoveAccountRequest(Chart: chart, AccountId: req.AccountId, ParentId: req.NewParentId);
+        var result = await accounts.MoveAsync(request: request, token: ct);
+        await SendResultAsync(result: result.ToMinimalApiResult());
     }
 }

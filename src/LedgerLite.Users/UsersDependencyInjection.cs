@@ -17,24 +17,24 @@ public static class UsersDependencyInjection
 {
     public static IServiceCollection AddLedgerLiteAuth(this IServiceCollection services)
     {
-        Log.Information("Registering Authentication/Authorization.");
+        Log.Information(messageTemplate: "Registering Authentication/Authorization.");
 
         services.AddAuthorization();
-        services.AddAuthentication(IdentityConstants.BearerScheme)
-            .AddCookie(IdentityConstants.ApplicationScheme)
-            .AddBearerToken(IdentityConstants.BearerScheme);
+        services.AddAuthentication(defaultScheme: IdentityConstants.BearerScheme)
+            .AddCookie(authenticationScheme: IdentityConstants.ApplicationScheme)
+            .AddBearerToken(authenticationScheme: IdentityConstants.BearerScheme);
 
         return services;
     }
 
     public static IServiceCollection AddUsersModule(this IServiceCollection services, IConfiguration configuration)
     {
-        Log.Logger.RegisteringModule("Users");
+        Log.Logger.RegisteringModule(moduleName: "Users");
 
-        services.AddDbContext<UsersDbContext>((sp, options) => options
-            .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.CoreDatabase))
+        services.AddDbContext<UsersDbContext>(optionsAction: (sp, options) => options
+            .UseNpgsql(connectionString: configuration.GetConnectionString(name: ConnectionStrings.CoreDatabase))
             .AddAuditLogging()
-            .AddDomainEventProcessing(sp));
+            .AddDomainEventProcessing(sp: sp));
 
         return services
             .AddUsersIntegrations()

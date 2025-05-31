@@ -8,49 +8,49 @@ internal static class OrganizationErrors
 
     public static ValidationError MemberAlreadyInOrganization(OrganizationMember member)
     {
-        return new ValidationError(OrganizationIdentifier,
-            $"User '{member.User.UserName}' is already in this organization.",
-            "ORG-ALREADY_IN",
-            ValidationSeverity.Error);
+        return new ValidationError(identifier: OrganizationIdentifier,
+            errorMessage: $"User '{member.User.UserName}' is already in this organization.",
+            errorCode: "ORG-ALREADY_IN",
+            severity: ValidationSeverity.Error);
     }
 
     public static ValidationError MemberNotInOrganization(OrganizationMember member)
     {
-        return new ValidationError(OrganizationIdentifier,
-            $"User '{member.User.UserName}' is not in organization.",
-            "ORG-MEMBER_NOT_FOUND",
-            ValidationSeverity.Error);
+        return new ValidationError(identifier: OrganizationIdentifier,
+            errorMessage: $"User '{member.User.UserName}' is not in organization.",
+            errorCode: "ORG-MEMBER_NOT_FOUND",
+            severity: ValidationSeverity.Error);
     }
 
     public static ValidationError NameIsTheSame()
     {
-        return new ValidationError(OrganizationIdentifier,
-            "Cannot rename organization using the same name.",
-            "ORG-SAME_NAME",
-            ValidationSeverity.Error);
+        return new ValidationError(identifier: OrganizationIdentifier,
+            errorMessage: "Cannot rename organization using the same name.",
+            errorCode: "ORG-SAME_NAME",
+            severity: ValidationSeverity.Error);
     }
 
     public static ValidationError CannotBeInTwoOrganizations(User user)
     {
-        return new ValidationError(OrganizationIdentifier,
-            $"{user.UserName} is already in an organization.",
-            "ORG-ALREADY_IN_ONE",
-            ValidationSeverity.Error);
+        return new ValidationError(identifier: OrganizationIdentifier,
+            errorMessage: $"{user.UserName} is already in an organization.",
+            errorCode: "ORG-ALREADY_IN_ONE",
+            severity: ValidationSeverity.Error);
     }
 
     public static ValidationError MemberDoesNotHaveRole(OrganizationMember member)
     {
-        return new ValidationError(OrganizationIdentifier,
-            $"Cannot add member '{member.User.UserName}' without a role.",
-            "ORG-NO_ROLE",
-            ValidationSeverity.Error);
+        return new ValidationError(identifier: OrganizationIdentifier,
+            errorMessage: $"Cannot add member '{member.User.UserName}' without a role.",
+            errorCode: "ORG-NO_ROLE",
+            severity: ValidationSeverity.Error);
     }
 
     public static ValidationError AlreadyHasOwner()
     {
-        return new ValidationError(OrganizationIdentifier,
-            "Organization already has an owner.",
-            "ORG-OWNER",
-            ValidationSeverity.Error);
+        return new ValidationError(identifier: OrganizationIdentifier,
+            errorMessage: "Organization already has an owner.",
+            errorCode: "ORG-OWNER",
+            severity: ValidationSeverity.Error);
     }
 }

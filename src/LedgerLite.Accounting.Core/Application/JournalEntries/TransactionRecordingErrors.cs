@@ -9,9 +9,9 @@ public static class TransactionRecordingErrors
     public static ValidationError FiscalPeriodNotFound(Guid periodId)
     {
         return new ValidationError(
-            TransactionIdentifier,
-            $"Fiscal period '{periodId}' does not exist.",
-            "TRA-FP_NOT_FOUND",
-            ValidationSeverity.Error);
+            identifier: TransactionIdentifier,
+            errorMessage: $"Fiscal period '{periodId}' does not exist.",
+            errorCode: "TRA-FP_NOT_FOUND",
+            severity: ValidationSeverity.Error);
     }
 }

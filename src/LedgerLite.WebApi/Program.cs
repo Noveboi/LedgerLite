@@ -6,21 +6,21 @@ using Serilog;
 using Serilog.Events;
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override(source: "Microsoft", minimumLevel: LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .CreateBootstrapLogger();
 
 try
 {
-    Log.Information("Starting LedgerLite web API...");
-    var builder = WebApplication.CreateBuilder(args);
+    Log.Information(messageTemplate: "Starting LedgerLite web API...");
+    var builder = WebApplication.CreateBuilder(args: args);
 
     builder.Services
-        .AddLedgerLiteCors(builder.Configuration)
+        .AddLedgerLiteCors(configuration: builder.Configuration)
         .AddLedgerLiteAuth()
-        .AddModules(builder.Configuration)
-        .AddApiInfrastructure(builder.Configuration)
+        .AddModules(configuration: builder.Configuration)
+        .AddApiInfrastructure(configuration: builder.Configuration)
         .AddSharedKernelServices();
 
     var app = builder.Build();
@@ -28,7 +28,7 @@ try
     if (app.Environment.IsProduction()) app.UseHttpsRedirection();
 
     app.UseSerilogRequestLogging();
-    app.UseCors("LedgerLite");
+    app.UseCors(policyName: "LedgerLite");
     app.MapOpenApi();
     app.UseAuthorization();
     app.UseFastEndpoints();
@@ -36,7 +36,7 @@ try
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "LedgerLite ended abruptly.");
+    Log.Fatal(exception: ex, messageTemplate: "LedgerLite ended abruptly.");
 }
 finally
 {

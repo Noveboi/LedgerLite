@@ -17,11 +17,12 @@ internal sealed class GetFiscalPeriodsForUserUseCase(
         GetFiscalPeriodsForUserRequest request,
         CancellationToken token)
     {
-        var userResult = await userRequests.GetUserByIdAsync(request.UserId, token);
+        var userResult = await userRequests.GetUserByIdAsync(id: request.UserId, token: token);
         if (userResult.Value is not { } user) return userResult.Map();
 
         return user.Organization is null
             ? new List<FiscalPeriod>()
-            : Result.Success(await repository.GetForOrganizationAsync(user.Organization.Id, token));
+            : Result.Success(
+                value: await repository.GetForOrganizationAsync(organizationId: user.Organization.Id, token: token));
     }
 }

@@ -12,15 +12,15 @@ internal sealed class JournalEntryLineConfiguration : IEntityTypeConfiguration<J
         builder.IsDomainEntity();
 
         builder
-            .HasOne(x => x.Entry)
-            .WithMany(x => x.Lines)
-            .HasForeignKey(x => x.EntryId);
+            .HasOne(navigationExpression: x => x.Entry)
+            .WithMany(navigationExpression: x => x.Lines)
+            .HasForeignKey(foreignKeyExpression: x => x.EntryId);
 
         builder
-            .HasOne(x => x.Account)
+            .HasOne(navigationExpression: x => x.Account)
             .WithMany()
-            .HasForeignKey(x => x.AccountId);
+            .HasForeignKey(foreignKeyExpression: x => x.AccountId);
 
-        builder.Navigation(x => x.Account).IsRequired().AutoInclude();
+        builder.Navigation(navigationExpression: x => x.Account).IsRequired().AutoInclude();
     }
 }

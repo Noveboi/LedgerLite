@@ -28,50 +28,50 @@ public sealed class Organization : AuditableEntity
 
     public static Result<Organization> Create(User creator, Role creatorRole, string name)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Invalid(CommonErrors.NameIsEmpty());
+        if (string.IsNullOrWhiteSpace(value: name))
+            return Result.Invalid(validationError: CommonErrors.NameIsEmpty());
 
         if (creatorRole.Name != CommonRoles.Owner)
-            throw new InvalidOperationException($"Organization creator must be '{CommonRoles.Owner}'.");
+            throw new InvalidOperationException(message: $"Organization creator must be '{CommonRoles.Owner}'.");
 
-        var organization = new Organization(name);
-        var member = OrganizationMember.Create(creator, organization, creatorRole);
-        organization.AddMember(member);
+        var organization = new Organization(name: name);
+        var member = OrganizationMember.Create(user: creator, organization: organization, role: creatorRole);
+        organization.AddMember(member: member);
 
-        organization.AddDomainEvent(new OrganizationCreatedEvent(organization));
+        organization.AddDomainEvent(domainEvent: new OrganizationCreatedEvent(org: organization));
 
-        return Result.Success(organization);
+        return Result.Success(value: organization);
     }
 
     public Result AddMember(OrganizationMember member)
     {
-        if (_members.Any(m => m == member))
-            return Result.Invalid(OrganizationErrors.MemberAlreadyInOrganization(member));
+        if (_members.Any(predicate: m => m == member))
+            return Result.Invalid(validationError: OrganizationErrors.MemberAlreadyInOrganization(member: member));
 
         if (member.Roles.Count == 0)
-            return Result.Invalid(OrganizationErrors.MemberDoesNotHaveRole(member));
+            return Result.Invalid(validationError: OrganizationErrors.MemberDoesNotHaveRole(member: member));
 
-        if (_members.Any(m => m.HasRole(CommonRoles.Owner)) && member.HasRole(CommonRoles.Owner))
-            return Result.Invalid(OrganizationErrors.AlreadyHasOwner());
+        if (_members.Any(predicate: m => m.HasRole(name: CommonRoles.Owner)) && member.HasRole(name: CommonRoles.Owner))
+            return Result.Invalid(validationError: OrganizationErrors.AlreadyHasOwner());
 
-        _members.Add(member);
+        _members.Add(item: member);
         return Result.Success();
     }
 
     public Result RemoveMember(OrganizationMember member)
     {
-        return _members.Remove(member)
+        return _members.Remove(item: member)
             ? Result.Success()
-            : Result.Invalid(OrganizationErrors.MemberNotInOrganization(member));
+            : Result.Invalid(validationError: OrganizationErrors.MemberNotInOrganization(member: member));
     }
 
     public Result Rename(string newName)
     {
-        if (string.IsNullOrWhiteSpace(newName))
-            return Result.Invalid(CommonErrors.NameIsEmpty());
+        if (string.IsNullOrWhiteSpace(value: newName))
+            return Result.Invalid(validationError: CommonErrors.NameIsEmpty());
 
         if (newName == Name)
-            return Result.Invalid(OrganizationErrors.NameIsTheSame());
+            return Result.Invalid(validationError: OrganizationErrors.NameIsTheSame());
 
         Name = newName;
         return Result.Success();

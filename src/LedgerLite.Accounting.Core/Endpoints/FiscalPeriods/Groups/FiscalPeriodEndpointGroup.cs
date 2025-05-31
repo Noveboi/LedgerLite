@@ -6,6 +6,6 @@ public sealed class FiscalPeriodEndpointGroup : Group
 {
     public FiscalPeriodEndpointGroup()
     {
-        Configure("periods", _ => { });
+        Configure(routePrefix: "periods", ep: _ => { });
     }
 }

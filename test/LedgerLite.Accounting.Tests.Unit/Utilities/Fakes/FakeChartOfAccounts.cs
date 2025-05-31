@@ -16,38 +16,41 @@ public static class FakeChartOfAccounts
 {
     private static readonly Faker<Account> AccountFaker = FakeAccounts.GetAccountFaker();
 
-    public static ChartOfAccounts Empty => GetFaker(new ChartOfAccountsFakerOptions
+    public static ChartOfAccounts Empty => GetFaker(options: new ChartOfAccountsFakerOptions
     {
         Nodes = []
     }).Generate();
 
     public static Faker<ChartOfAccounts> GetFaker(ChartOfAccountsFakerOptions? options = null)
     {
-        return new PrivateFaker<ChartOfAccounts>(new PrivateBinder())
+        return new PrivateFaker<ChartOfAccounts>(binder: new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(x => x.Id, (_, c) => options?.Id ?? c.Id)
-            .RuleFor(x => x.OrganizationId, _ => options?.OrganizationId ?? Guid.NewGuid())
-            .RuleFor("_nodes", (f, c) => options?.Nodes?.ToList()
-                                         ?? AccountFaker
-                                             .GenerateLazy(f.Random.Number(1, 3))
-                                             .Select(x => AccountNode.Create(c.Id, x))
-                                             .ToList());
+            .RuleFor(property: x => x.Id, setter: (_, c) => options?.Id ?? c.Id)
+            .RuleFor(property: x => x.OrganizationId, setter: _ => options?.OrganizationId ?? Guid.NewGuid())
+            .RuleFor(propertyOrFieldName: "_nodes", setter: (f, c) => options?.Nodes?.ToList()
+                                                                      ?? AccountFaker
+                                                                          .GenerateLazy(
+                                                                              count: f.Random.Number(min: 1, max: 3))
+                                                                          .Select(selector: x =>
+                                                                              AccountNode.Create(chartId: c.Id,
+                                                                                  account: x))
+                                                                          .ToList());
     }
 
     public static ChartOfAccounts With(params FakeNodeBuilder[] accounts)
     {
         var id = Guid.NewGuid();
-        var faker = GetFaker(new ChartOfAccountsFakerOptions
+        var faker = GetFaker(options: new ChartOfAccountsFakerOptions
         {
             Id = id,
-            Nodes = accounts.SelectMany(x =>
+            Nodes = accounts.SelectMany(selector: x =>
             {
-                var node = AccountNode.Create(id, x.Account);
+                var node = AccountNode.Create(chartId: id, account: x.Account);
                 if (x.ConfigureChildren is null)
                     return new List<AccountNode> { node };
 
-                var builder = new FakeChartOfAccountsBuilder(node);
-                x.ConfigureChildren(builder);
+                var builder = new FakeChartOfAccountsBuilder(parent: node);
+                x.ConfigureChildren(obj: builder);
 
                 return [node, ..builder.Children];
             })
@@ -61,14 +64,14 @@ public sealed record FakeNodeBuilder(Account Account, Action<FakeChartOfAccounts
 {
     public static implicit operator FakeNodeBuilder(Account account)
     {
-        return new FakeNodeBuilder(account, null);
+        return new FakeNodeBuilder(Account: account, ConfigureChildren: null);
     }
 
     public static implicit operator FakeNodeBuilder(ValueTuple<Account, Action<FakeChartOfAccountsBuilder>> tuple)
     {
         return new FakeNodeBuilder(
-            tuple.Item1,
-            tuple.Item2);
+            Account: tuple.Item1,
+            ConfigureChildren: tuple.Item2);
     }
 }
 
@@ -78,10 +81,10 @@ public sealed class FakeChartOfAccountsBuilder(AccountNode parent)
 
     public FakeChartOfAccountsBuilder AddChild(Account child)
     {
-        var childNode = AccountNode.Create(parent.ChartId, child);
-        parent.AddChild(childNode);
+        var childNode = AccountNode.Create(chartId: parent.ChartId, account: child);
+        parent.AddChild(child: childNode);
 
-        Children.Add(childNode);
+        Children.Add(item: childNode);
 
         return this;
     }

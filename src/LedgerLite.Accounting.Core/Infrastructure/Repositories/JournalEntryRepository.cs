@@ -7,26 +7,26 @@ internal sealed class JournalEntryRepository(AccountingDbContext context) : IJou
 {
     public void Add(JournalEntry entry)
     {
-        context.JournalEntries.Add(entry);
+        context.JournalEntries.Add(entity: entry);
     }
 
     public void Remove(JournalEntry entry)
     {
-        context.JournalEntries.Remove(entry);
+        context.JournalEntries.Remove(entity: entry);
     }
 
     public Task<JournalEntry?> GetByIdAsync(Guid id, CancellationToken token)
     {
-        return context.JournalEntries.FirstOrDefaultAsync(x => x.Id == id, token);
+        return context.JournalEntries.FirstOrDefaultAsync(predicate: x => x.Id == id, cancellationToken: token);
     }
 
     public async Task<IReadOnlyList<JournalEntry>> GetByFiscalPeriodIdAsync(Guid fiscalPeriodId,
         CancellationToken token)
     {
         return await context.JournalEntries
-            .Include(x => x.Lines)
-            .ThenInclude(x => x.Account)
-            .Where(x => x.FiscalPeriodId == fiscalPeriodId)
-            .ToListAsync(token);
+            .Include(navigationPropertyPath: x => x.Lines)
+            .ThenInclude(navigationPropertyPath: x => x.Account)
+            .Where(predicate: x => x.FiscalPeriodId == fiscalPeriodId)
+            .ToListAsync(cancellationToken: token);
     }
 }

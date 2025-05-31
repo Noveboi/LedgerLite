@@ -11,12 +11,12 @@ public sealed class AssemblyScanStrategyBuilder
     internal ITypeSearchStrategy GetTypeSearchStrategy()
     {
         if (BaseType is null)
-            throw new InvalidOperationException("Base type should not be null");
+            throw new InvalidOperationException(message: "Base type should not be null");
 
         if (BaseType.IsGenericType)
-            return new GenericTypeSearchStrategy(BaseType);
+            return new GenericTypeSearchStrategy(searchTarget: BaseType);
 
-        return new StandardTypeSearchStrategy(BaseType);
+        return new StandardTypeSearchStrategy(searchTarget: BaseType);
     }
 
     public AssemblyScanStrategyBuilder Implementing<TBase>()

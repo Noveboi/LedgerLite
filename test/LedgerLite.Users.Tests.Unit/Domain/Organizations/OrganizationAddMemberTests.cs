@@ -11,38 +11,38 @@ public class OrganizationAddMemberTests
     [Fact]
     public void AppendMember_ToList()
     {
-        var member = FakeOrganizationMembers.Get(x => x.WithRole(CommonRoles.Member));
+        var member = FakeOrganizationMembers.Get(configure: x => x.WithRole(name: CommonRoles.Member));
         var organization = FakeOrganizations.Get();
 
-        var result = organization.AddMember(member);
+        var result = organization.AddMember(member: member);
 
-        result.Status.ShouldBe(ResultStatus.Ok);
-        organization.Members.ShouldHaveSingleItem().ShouldBeEquivalentTo(member);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
+        organization.Members.ShouldHaveSingleItem().ShouldBeEquivalentTo(expected: member);
     }
 
     [Fact]
     public void Invalid_WhenMemberAlreadyInOrganization()
     {
         var member = FakeOrganizationMembers.Get();
-        var organization = FakeOrganizations.Get(o => o.WithMember(member));
+        var organization = FakeOrganizations.Get(configure: o => o.WithMember(member: member));
 
-        var result = organization.AddMember(member);
+        var result = organization.AddMember(member: member);
 
         result.ShouldBeInvalid();
-        result.ShouldHaveError(OrganizationErrors.MemberAlreadyInOrganization(member));
+        result.ShouldHaveError(error: OrganizationErrors.MemberAlreadyInOrganization(member: member));
     }
 
     [Fact]
     public void Invalid_IfAddingAnotherOwner()
     {
-        var owner = FakeOrganizationMembers.Get(x => x.WithRole(CommonRoles.Owner));
-        var organization = FakeOrganizations.Get(x => x.WithMember(owner));
-        var another = FakeOrganizationMembers.Get(x => x.WithRole(CommonRoles.Owner));
+        var owner = FakeOrganizationMembers.Get(configure: x => x.WithRole(name: CommonRoles.Owner));
+        var organization = FakeOrganizations.Get(configure: x => x.WithMember(member: owner));
+        var another = FakeOrganizationMembers.Get(configure: x => x.WithRole(name: CommonRoles.Owner));
 
-        var result = organization.AddMember(another);
+        var result = organization.AddMember(member: another);
 
         result.ShouldBeInvalid();
-        result.ShouldHaveError(OrganizationErrors.AlreadyHasOwner());
+        result.ShouldHaveError(error: OrganizationErrors.AlreadyHasOwner());
     }
 
     [Fact]
@@ -51,9 +51,9 @@ public class OrganizationAddMemberTests
         var member = FakeOrganizationMembers.Get();
         var organization = FakeOrganizations.Get();
 
-        var result = organization.AddMember(member);
+        var result = organization.AddMember(member: member);
 
         result.ShouldBeInvalid();
-        result.ShouldHaveError(OrganizationErrors.MemberDoesNotHaveRole(member));
+        result.ShouldHaveError(error: OrganizationErrors.MemberDoesNotHaveRole(member: member));
     }
 }

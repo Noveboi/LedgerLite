@@ -26,17 +26,18 @@ public sealed class JournalEntryLine : AuditableEntity
     public Account GetTransferAccount()
     {
         if (Entry is null)
-            throw new InvalidOperationException("Related JournalEntry is null.");
+            throw new InvalidOperationException(message: "Related JournalEntry is null.");
 
         if (Entry.Type == JournalEntryType.Compound)
-            throw new NotSupportedException($"{nameof(GetTransferAccount)} is not supported for compound entries.");
+            throw new NotSupportedException(
+                message: $"{nameof(GetTransferAccount)} is not supported for compound entries.");
 
-        var otherLine = Entry.Lines.FirstOrDefault(x => x.Id != Id);
+        var otherLine = Entry.Lines.FirstOrDefault(predicate: x => x.Id != Id);
         if (otherLine is null)
-            throw new InvalidOperationException("Second entry line does not exist.");
+            throw new InvalidOperationException(message: "Second entry line does not exist.");
 
         if (otherLine.Account is null)
-            throw new InvalidOperationException("Account navigation for other entry line is null");
+            throw new InvalidOperationException(message: "Account navigation for other entry line is null");
 
         return otherLine.Account;
     }

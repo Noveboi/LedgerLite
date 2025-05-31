@@ -21,12 +21,12 @@ internal sealed class GetJournalEntryEndpoint(IJournalEntryRepository repository
 
     public override async Task HandleAsync(GetJournalEntryRequest req, CancellationToken ct)
     {
-        if (await repository.GetByIdAsync(req.Id, ct) is not { } journalEntry)
+        if (await repository.GetByIdAsync(id: req.Id, token: ct) is not { } journalEntry)
         {
-            await SendResultAsync(Results.NotFound(CommonErrors.NotFound<JournalEntry>(req.Id)));
+            await SendResultAsync(result: Results.NotFound(value: CommonErrors.NotFound<JournalEntry>(id: req.Id)));
             return;
         }
 
-        await SendAsync(JournalEntryWithLinesResponseDto.FromEntity(journalEntry), cancellation: ct);
+        await SendAsync(response: JournalEntryWithLinesResponseDto.FromEntity(entry: journalEntry), cancellation: ct);
     }
 }

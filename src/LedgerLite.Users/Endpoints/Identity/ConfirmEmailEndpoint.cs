@@ -13,52 +13,52 @@ internal sealed class ConfirmEmailEndpoint(UserManager<User> userManager) : Endp
     {
         AllowAnonymous();
         Get("/confirmEmail");
-        Description(b => b.WithName("confirmEmail"));
+        Description(builder: b => b.WithName(endpointName: "confirmEmail"));
         Group<IdentityEndpointGroup>();
     }
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = Query<string>("userId", true)!;
-        var code = Query<string>("code", true)!;
-        var changedEmail = Query<string>("changedEmail", true)!;
+        var userId = Query<string>(paramName: "userId", isRequired: true)!;
+        var code = Query<string>(paramName: "code", isRequired: true)!;
+        var changedEmail = Query<string>(paramName: "changedEmail", isRequired: true)!;
 
-        if (ValidationFailed || await userManager.FindByIdAsync(userId) is not { } user)
+        if (ValidationFailed || await userManager.FindByIdAsync(userId: userId) is not { } user)
         {
-            await SendUnauthorizedAsync(ct);
+            await SendUnauthorizedAsync(cancellation: ct);
             return;
         }
 
         try
         {
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            code = Encoding.UTF8.GetString(bytes: WebEncoders.Base64UrlDecode(input: code));
         }
         catch (FormatException)
         {
-            await SendUnauthorizedAsync(ct);
+            await SendUnauthorizedAsync(cancellation: ct);
             return;
         }
 
         IdentityResult result;
 
-        if (string.IsNullOrEmpty(changedEmail))
+        if (string.IsNullOrEmpty(value: changedEmail))
         {
-            result = await userManager.ConfirmEmailAsync(user, code);
+            result = await userManager.ConfirmEmailAsync(user: user, token: code);
         }
         else
         {
-            result = await userManager.ChangeEmailAsync(user, changedEmail, code);
+            result = await userManager.ChangeEmailAsync(user: user, newEmail: changedEmail, token: code);
 
             if (result.Succeeded && user.IsUsingEmailAsUsername())
-                result = await userManager.SetUserNameAsync(user, changedEmail);
+                result = await userManager.SetUserNameAsync(user: user, userName: changedEmail);
         }
 
         if (!result.Succeeded)
         {
-            await SendUnauthorizedAsync(ct);
+            await SendUnauthorizedAsync(cancellation: ct);
             return;
         }
 
-        await SendStringAsync("Thank you for confirming your email.", cancellation: ct);
+        await SendStringAsync(content: "Thank you for confirming your email.", cancellation: ct);
     }
 }

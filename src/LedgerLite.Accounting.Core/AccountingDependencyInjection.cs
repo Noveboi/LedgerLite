@@ -17,12 +17,12 @@ public static class AccountingDependencyInjection
 {
     public static IServiceCollection AddAccountingModule(this IServiceCollection services, IConfiguration configuration)
     {
-        Log.Logger.RegisteringModule("Accounting");
+        Log.Logger.RegisteringModule(moduleName: "Accounting");
 
-        services.AddDbContext<AccountingDbContext>((sp, options) => options
-            .UseNpgsql(configuration.GetConnectionString(ConnectionStrings.CoreDatabase))
+        services.AddDbContext<AccountingDbContext>(optionsAction: (sp, options) => options
+            .UseNpgsql(connectionString: configuration.GetConnectionString(name: ConnectionStrings.CoreDatabase))
             .AddAuditLogging()
-            .AddDomainEventProcessing(sp));
+            .AddDomainEventProcessing(sp: sp));
 
         services.AddAccountingInfrastructure();
 

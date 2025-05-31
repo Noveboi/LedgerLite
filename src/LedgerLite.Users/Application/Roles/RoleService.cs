@@ -8,9 +8,9 @@ internal sealed class RoleService(IRoleStore<Role> store, RoleManager<Role> mana
 {
     public async Task<Result<Role>> GetByNameAsync(string name, CancellationToken ct)
     {
-        var normalizedName = manager.NormalizeKey(name);
+        var normalizedName = manager.NormalizeKey(key: name);
 
-        if (await store.FindByNameAsync(normalizedName, ct) is not { } role)
+        if (await store.FindByNameAsync(normalizedRoleName: normalizedName, cancellationToken: ct) is not { } role)
             return Result.NotFound($"Role '{normalizedName}' does not exist.");
 
         return role;

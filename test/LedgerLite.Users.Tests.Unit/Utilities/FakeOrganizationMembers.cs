@@ -9,18 +9,19 @@ public static class FakeOrganizationMembers
 {
     private static Faker<OrganizationMember> Faker(FakeOrganizationMemberBuilder builder)
     {
-        return new PrivateFaker<OrganizationMember>(new PrivateBinder())
+        return new PrivateFaker<OrganizationMember>(binder: new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(x => x.OrganizationId, _ => builder.OrganizationId ?? Guid.NewGuid())
-            .RuleFor(x => x.User, _ => builder.User ?? FakeUsers.Get())
-            .RuleFor("_roles", (_, m) => builder.Roles.Select(func => func(m)).ToList());
+            .RuleFor(property: x => x.OrganizationId, setter: _ => builder.OrganizationId ?? Guid.NewGuid())
+            .RuleFor(property: x => x.User, setter: _ => builder.User ?? FakeUsers.Get())
+            .RuleFor(propertyOrFieldName: "_roles",
+                setter: (_, m) => builder.Roles.Select(selector: func => func(arg: m)).ToList());
     }
 
     public static OrganizationMember Get(Action<FakeOrganizationMemberBuilder>? configure = null)
     {
         var builder = new FakeOrganizationMemberBuilder();
-        configure?.Invoke(builder);
-        return Faker(builder);
+        configure?.Invoke(obj: builder);
+        return Faker(builder: builder);
     }
 }
 
@@ -32,8 +33,8 @@ public sealed class FakeOrganizationMemberBuilder
 
     public FakeOrganizationMemberBuilder WithRole(string name)
     {
-        var role = new Role(name);
-        Roles.Add(m => new UserRole
+        var role = new Role(name: name);
+        Roles.Add(item: m => new UserRole
         {
             OrganizationMember = m,
             OrganizationMemberId = m.Id,

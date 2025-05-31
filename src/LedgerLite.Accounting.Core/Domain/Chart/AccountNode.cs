@@ -37,26 +37,27 @@ public sealed class AccountNode : Entity
 
     public static AccountNode Create(Guid chartId, Account account)
     {
-        return new AccountNode(chartId, account);
+        return new AccountNode(chartId: chartId, account: account);
     }
 
     public Result AddChild(AccountNode child)
     {
         if (Account == child.Account)
-            return Result.Invalid(AccountErrors.AddAccountToItself());
+            return Result.Invalid(validationError: AccountErrors.AddAccountToItself());
 
         if (!Account.IsPlaceholder)
-            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder(Account));
+            return Result.Invalid(validationError: AccountErrors.NoChildrenWhenNotPlaceholder(account: Account));
 
         if (Account.Type != child.Account.Type)
-            return Result.Invalid(AccountErrors.ChildHasDifferentType(
-                Account.Type,
-                child.Account.Type));
+            return Result.Invalid(validationError: AccountErrors.ChildHasDifferentType(
+                expected: Account.Type,
+                actual: child.Account.Type));
 
-        if (_children.Any(node => node.Account == child.Account))
-            return Result.Invalid(ChartOfAccountsErrors.AccountAlreadyExists(child.Account));
+        if (_children.Any(predicate: node => node.Account == child.Account))
+            return Result.Invalid(
+                validationError: ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: child.Account));
 
-        _children.Add(child);
+        _children.Add(item: child);
         child.Parent = this;
         child.ParentId = Id;
 
@@ -66,10 +67,12 @@ public sealed class AccountNode : Entity
     public Result RemoveChild(AccountNode child)
     {
         if (_children.Count == 0)
-            return Result.Invalid(ChartOfAccountsErrors.AccountHasNoChildrenToRemove(Account));
+            return Result.Invalid(
+                validationError: ChartOfAccountsErrors.AccountHasNoChildrenToRemove(account: Account));
 
-        if (!_children.Remove(child))
-            return Result.Invalid(ChartOfAccountsErrors.AccountNotChild(Account, child.Account));
+        if (!_children.Remove(item: child))
+            return Result.Invalid(
+                validationError: ChartOfAccountsErrors.AccountNotChild(parent: Account, child: child.Account));
 
         child.Parent = null;
         child.ParentId = null!;

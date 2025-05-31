@@ -7,16 +7,16 @@ internal sealed class AccountRepository(AccountingDbContext context) : IAccountR
 {
     public void Add(Account account)
     {
-        context.Accounts.Add(account);
+        context.Accounts.Add(entity: account);
     }
 
     public void Remove(Account account)
     {
-        context.Accounts.Remove(account);
+        context.Accounts.Remove(entity: account);
     }
 
     public Task<Account?> GetByIdAsync(Guid id, CancellationToken token)
     {
-        return context.Accounts.FirstOrDefaultAsync(x => x.Id == id, token);
+        return context.Accounts.FirstOrDefaultAsync(predicate: x => x.Id == id, cancellationToken: token);
     }
 }

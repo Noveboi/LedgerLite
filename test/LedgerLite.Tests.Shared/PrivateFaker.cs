@@ -8,13 +8,14 @@ public sealed class PrivateFaker<T> : Faker<T> where T : class
     {
     }
 
-    public PrivateFaker(Binder binder) : base("en", binder)
+    public PrivateFaker(Binder binder) : base(locale: "en", binder: binder)
     {
     }
 
     public PrivateFaker<T> UsePrivateConstructor()
     {
-        return (CustomInstantiator(_ => (Activator.CreateInstance(typeof(T), true) as T)!)
+        return (CustomInstantiator(factoryMethod: _ =>
+                (Activator.CreateInstance(type: typeof(T), nonPublic: true) as T)!)
             as PrivateFaker<T>)!;
     }
 }

@@ -7,7 +7,7 @@ using LedgerLite.Users.Contracts.Models;
 namespace LedgerLite.Users.Endpoints.Identity;
 
 internal sealed record GetUserRequest(
-    [property: FromClaim(LedgerClaims.UserId)]
+    [property: FromClaim(claimType: LedgerClaims.UserId)]
     Guid UserId);
 
 internal sealed class GetUserEndpoint(IUserRequests requests) : Endpoint<GetUserRequest, UserDto>
@@ -20,7 +20,7 @@ internal sealed class GetUserEndpoint(IUserRequests requests) : Endpoint<GetUser
 
     public override async Task HandleAsync(GetUserRequest req, CancellationToken ct)
     {
-        var userResult = await requests.GetUserByIdAsync(req.UserId, ct);
-        await SendResultAsync(userResult.ToMinimalApiResult());
+        var userResult = await requests.GetUserByIdAsync(id: req.UserId, token: ct);
+        await SendResultAsync(result: userResult.ToMinimalApiResult());
     }
 }

@@ -6,6 +6,6 @@ internal sealed class OrganizationEndpointGroup : Group
 {
     public OrganizationEndpointGroup()
     {
-        Configure("/organizations", static _ => { });
+        Configure(routePrefix: "/organizations", ep: static _ => { });
     }
 }

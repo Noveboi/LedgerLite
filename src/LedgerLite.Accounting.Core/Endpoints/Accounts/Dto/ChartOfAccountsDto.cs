@@ -10,10 +10,10 @@ public sealed record ChartOfAccountsDto(
     public static ChartOfAccountsDto FromEntity(ChartOfAccounts chart)
     {
         return new ChartOfAccountsDto(
-            chart.Id,
-            chart.OrganizationId,
-            chart.Nodes
-                .Where(x => x.ParentId is null)
-                .Select(ChartAccountNodeWithChildrenDto.FromEntity));
+            Id: chart.Id,
+            OrganizationId: chart.OrganizationId,
+            Accounts: chart.Nodes
+                .Where(predicate: x => x.ParentId is null)
+                .Select(selector: ChartAccountNodeWithChildrenDto.FromEntity));
     }
 }

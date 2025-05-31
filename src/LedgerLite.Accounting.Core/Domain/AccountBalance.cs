@@ -11,20 +11,21 @@ public sealed record AccountBalance(Account Account, TransactionType Type, decim
     public static AccountBalance FromLines(Account account, IEnumerable<JournalEntryLine> lines)
     {
         var lineList = lines.ToList();
-        if (lineList.FirstOrDefault(x => x.Account != account) is { } invalidLine)
-            throw new ArgumentException($"Lines contains other accounts apart from {account}. ({invalidLine.Account})");
+        if (lineList.FirstOrDefault(predicate: x => x.Account != account) is { } invalidLine)
+            throw new ArgumentException(
+                message: $"Lines contains other accounts apart from {account}. ({invalidLine.Account})");
 
-        return Create(account, lineList);
+        return Create(account: account, lines: lineList);
     }
 
     public static AccountBalance FromGroup(IGrouping<Account, JournalEntryLine> group)
     {
-        return Create(group.Key, group);
+        return Create(account: group.Key, lines: group);
     }
 
     private static AccountBalance Create(Account account, IEnumerable<JournalEntryLine> lines)
     {
-        var balance = lines.Aggregate(0m, (current, line) => line.TransactionType switch
+        var balance = lines.Aggregate(seed: 0m, func: (current, line) => line.TransactionType switch
         {
             TransactionType.Credit when line.Account.Type.IsCredit() => current + line.Amount,
             TransactionType.Debit when line.Account.Type.IsDebit() => current + line.Amount,
@@ -37,6 +38,6 @@ public sealed record AccountBalance(Account Account, TransactionType Type, decim
                 ? TransactionType.Debit
                 : TransactionType.Credit;
 
-        return new AccountBalance(account, type, Math.Abs(balance));
+        return new AccountBalance(Account: account, Type: type, Amount: Math.Abs(value: balance));
     }
 }

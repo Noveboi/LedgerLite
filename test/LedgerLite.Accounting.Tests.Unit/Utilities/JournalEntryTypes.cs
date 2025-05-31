@@ -5,7 +5,7 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 public static class JournalEntryTypes
 {
     public static TheoryData<JournalEntryType> AllTypesExceptCompound => new(
-        JournalEntryType.List.Except([JournalEntryType.Compound]));
+        values: JournalEntryType.List.Except(second: [JournalEntryType.Compound]));
 
-    public static TheoryData<JournalEntryType> AllTypes => new(JournalEntryType.List);
+    public static TheoryData<JournalEntryType> AllTypes => new(values: JournalEntryType.List);
 }

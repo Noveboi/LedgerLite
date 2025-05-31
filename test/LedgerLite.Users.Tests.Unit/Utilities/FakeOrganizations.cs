@@ -8,17 +8,17 @@ public static class FakeOrganizations
 {
     private static Faker<Organization> Faker(FakeOrganizationBuilder builder)
     {
-        return new PrivateFaker<Organization>(new PrivateBinder())
+        return new PrivateFaker<Organization>(binder: new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(x => x.Name, f => builder.Name ?? f.Company.CompanyName())
-            .RuleFor("_members", _ => builder.Members);
+            .RuleFor(property: x => x.Name, setter: f => builder.Name ?? f.Company.CompanyName())
+            .RuleFor(propertyOrFieldName: "_members", setter: _ => builder.Members);
     }
 
     public static Organization Get(Action<FakeOrganizationBuilder>? configure = null)
     {
         var builder = new FakeOrganizationBuilder();
-        configure?.Invoke(builder);
-        return Faker(builder).Generate();
+        configure?.Invoke(obj: builder);
+        return Faker(builder: builder).Generate();
     }
 }
 
@@ -35,7 +35,7 @@ public sealed record FakeOrganizationBuilder
 
     public FakeOrganizationBuilder WithMember(OrganizationMember member)
     {
-        Members.Add(member);
+        Members.Add(item: member);
         return this;
     }
 }

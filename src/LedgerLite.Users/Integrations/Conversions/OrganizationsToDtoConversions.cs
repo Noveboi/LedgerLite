@@ -8,7 +8,7 @@ internal static class OrganizationsToDtoConversions
     public static OrganizationDto ToDto(this Organization org)
     {
         return new OrganizationDto(
-            org.Id,
-            org.Name);
+            Id: org.Id,
+            Name: org.Name);
     }
 }

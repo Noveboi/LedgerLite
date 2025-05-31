@@ -13,10 +13,10 @@ public abstract class IntegrationEventPropagator<TDomainEvent, TIntegrationEvent
 
     public ValueTask HandleAsync(TDomainEvent e, CancellationToken token)
     {
-        var integrationEvent = MapToIntegrationEvent(e);
-        _log.Information("Propagating integration event {@event}", integrationEvent);
+        var integrationEvent = MapToIntegrationEvent(domainEvent: e);
+        _log.Information(messageTemplate: "Propagating integration event {@event}", propertyValue: integrationEvent);
 
-        return publisher.PublishAsync(integrationEvent, token);
+        return publisher.PublishAsync(e: integrationEvent, token: token);
     }
 
     protected abstract TIntegrationEvent MapToIntegrationEvent(TDomainEvent domainEvent);

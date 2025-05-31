@@ -13,14 +13,15 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
     public async Task<Result<JournalEntry>> RecordStandardEntryAsync(RecordStandardEntryRequest req,
         CancellationToken ct)
     {
-        if (await unitOfWork.FiscalPeriodRepository.GetByIdAsync(req.FiscalPeriodId, ct) is not { } period)
-            return Result.Invalid(TransactionRecordingErrors.FiscalPeriodNotFound(req.FiscalPeriodId));
+        if (await unitOfWork.FiscalPeriodRepository.GetByIdAsync(id: req.FiscalPeriodId, token: ct) is not { } period)
+            return Result.Invalid(
+                validationError: TransactionRecordingErrors.FiscalPeriodNotFound(periodId: req.FiscalPeriodId));
 
-        return await CreateStandardJournalEntry(req, period)
-            .Bind(entry => AddCreditLine(entry, req.CreditLine))
-            .Bind(entry => AddDebitLine(entry, req.DebitLine))
-            .Bind(entry => AddJournalEntryToRepository(entry))
-            .BindAsync(entry => SaveChangesAsync(entry, ct));
+        return await CreateStandardJournalEntry(request: req, period: period)
+            .Bind(bindFunc: entry => AddCreditLine(journalEntry: entry, request: req.CreditLine))
+            .Bind(bindFunc: entry => AddDebitLine(journalEntry: entry, request: req.DebitLine))
+            .Bind(bindFunc: entry => AddJournalEntryToRepository(entry: entry))
+            .BindAsync(bindFunc: entry => SaveChangesAsync(entry: entry, token: ct));
     }
 
     private static Result<JournalEntry> CreateStandardJournalEntry(RecordStandardEntryRequest request,
@@ -38,28 +39,28 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
     private static Result<JournalEntry> AddCreditLine(JournalEntry journalEntry, CreateJournalEntryLineRequest request)
     {
         return journalEntry.AddLine(
-            request.AccountId,
-            TransactionType.Credit,
-            request.Amount);
+            accountId: request.AccountId,
+            type: TransactionType.Credit,
+            amount: request.Amount);
     }
 
     private static Result<JournalEntry> AddDebitLine(JournalEntry journalEntry, CreateJournalEntryLineRequest request)
     {
         return journalEntry.AddLine(
-            request.AccountId,
-            TransactionType.Debit,
-            request.Amount);
+            accountId: request.AccountId,
+            type: TransactionType.Debit,
+            amount: request.Amount);
     }
 
     private Result<JournalEntry> AddJournalEntryToRepository(JournalEntry entry)
     {
-        unitOfWork.JournalEntryRepository.Add(entry);
-        return Result.Success(entry);
+        unitOfWork.JournalEntryRepository.Add(entry: entry);
+        return Result.Success(value: entry);
     }
 
     private async Task<Result<JournalEntry>> SaveChangesAsync(JournalEntry entry, CancellationToken token)
     {
-        await unitOfWork.SaveChangesAsync(token);
-        return Result.Success(entry);
+        await unitOfWork.SaveChangesAsync(token: token);
+        return Result.Success(value: entry);
     }
 }
