@@ -8,6 +8,7 @@ public sealed class Role : IdentityRole<Guid>
 
     public Role(string name, string description = "")
     {
+        Id = Guid.CreateVersion7();
         Name = name;
         Description = description;
     }
