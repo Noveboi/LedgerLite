@@ -8,7 +8,7 @@ internal static class DependencyInjection
     public static IServiceCollection AddUsersInfrastructure(this IServiceCollection services)
     {
         return services
-            .AddScoped<IUserUnitOfWork, UserUnitOfWork>()
+            .AddScoped<IUsersUnitOfWork, UsersUnitOfWork>()
             .AddScoped<IOrganizationRepository, OrganizationRepository>();
     }
 }
