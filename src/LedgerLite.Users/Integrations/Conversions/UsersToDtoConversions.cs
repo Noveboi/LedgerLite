@@ -16,7 +16,7 @@ internal static class UsersToDtoConversions
             Organization: organization?.ToDto(),
             OrganizationRoles: user.OrganizationMember?.Roles
                 .Where(x => x.Role.Name is not null)
-                .Select(x => x.Role.Name!) ?? [],
+                .Select(x => x.Role.ToDto()) ?? [],
             Username: user.UserName ?? "",
             Email: user.Email ?? "",
             FullName: (user.FirstName, user.LastName) switch
