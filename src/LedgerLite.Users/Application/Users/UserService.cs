@@ -15,6 +15,9 @@ internal sealed class UserService(UsersDbContext context) : IUserService
 
     private Task<User?> GetUserAsync(Guid id, CancellationToken token) =>
         context.Users
+            .AsSplitQuery()
             .Include(x => x.OrganizationMember)
+            .ThenInclude(x => x!.Roles)
+            .ThenInclude(x => x.Role)
             .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
 }
