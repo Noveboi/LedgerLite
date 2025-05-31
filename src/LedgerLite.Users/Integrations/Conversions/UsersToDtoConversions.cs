@@ -14,7 +14,9 @@ internal static class UsersToDtoConversions
         return new UserDto(
             Id: user.Id,
             Organization: organization?.ToDto(),
-            OrganizationRoles: user.OrganizationMember?.Roles.Select(x => x.Role.ToDto()) ?? [],
+            OrganizationRoles: user.OrganizationMember?.Roles
+                .Where(x => x.Role.Name is not null)
+                .Select(x => x.Role.Name!) ?? [],
             Username: user.UserName ?? "",
             Email: user.Email ?? "",
             FullName: (user.FirstName, user.LastName) switch
