@@ -9,48 +9,25 @@ namespace LedgerLite.Users.Domain.Organizations;
 public sealed class OrganizationMember : AuditableEntity
 {
     private OrganizationMember() { }
-    private OrganizationMember(User user, Guid organizationId)
+    private OrganizationMember(User user, Guid organizationId, Role role)
     {
         OrganizationId = organizationId;
-        UserId = user.Id;
+        User = user;
+        _roles = [new UserRole(role, this)];
     }
 
     public Guid OrganizationId { get; private set; } 
-    public Guid UserId { get; private set; }
     public User User { get; private init; } = null!;
 
 
-    private readonly List<UserRole> _roles = [];
+    private readonly List<UserRole> _roles = null!;
     public IReadOnlyCollection<UserRole> Roles => _roles;
 
-    public static Result<OrganizationMember> Create(User user, Guid organizationId) => 
+    public static Result<OrganizationMember> Create(User user, Organization organization, Role role) =>
         Result.Success(new OrganizationMember(
             user: user,
-            organizationId: organizationId));
+            organizationId: organization.Id,
+            role: role));
 
-    public Result AssignRole(Role role)
-    {
-        if (_roles.Any(x => x.RoleId == role.Id))
-        {
-            return Result.Conflict($"Member '{User?.Email}' already has role '{role.Name}'");
-        }
-
-        var userRole = new UserRole(role, this);
-        
-        _roles.Add(userRole);
-        return Result.Success();
-    }
-
-    public Result RevokeRole(Role role)
-    {
-        var roleToRemove = _roles.FirstOrDefault(x => x.RoleId == role.Id);
-        
-        if (roleToRemove is null)
-        {
-            return Result.NotFound($"Member '{User?.Email}' doesn't have role '{role.Name}'");
-        }
-
-        _roles.Remove(roleToRemove);
-        return Result.Success();
-    } 
+    public bool HasRole(string name) => _roles.Any(x => x.Role.Name == name);
 }
