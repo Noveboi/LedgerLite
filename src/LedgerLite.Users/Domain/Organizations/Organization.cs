@@ -7,7 +7,7 @@ using LedgerLite.Users.Domain.Organizations.Events;
 namespace LedgerLite.Users.Domain.Organizations;
 
 /// <summary>
-/// An organization can be one person, a small business or an enterprise. It is simply a collection of user under a
+/// An organization can be one person, a small business or an enterprise. It is simply a collection of users under a
 /// common entity.
 /// </summary>
 public sealed class Organization : AuditableEntity

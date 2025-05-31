@@ -8,7 +8,9 @@ public sealed class UserRole : IdentityUserRole<Guid>
     public UserRole() { }
     public UserRole(Role role, OrganizationMember member)
     {
+        Role = role;
         RoleId = role.Id;
+        OrganizationMember = member;
         OrganizationMemberId = member.Id;
         UserId = member.User.Id;
     }
