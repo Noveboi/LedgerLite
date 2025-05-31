@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LedgerLite.Users.Infrastructure;
 
-internal sealed class UserUnitOfWork(
+internal sealed class UsersUnitOfWork(
     IServiceProvider serviceProvider,
-    UsersDbContext context) : UnitOfWork<UsersDbContext>(context), IUserUnitOfWork
+    UsersDbContext context) : UnitOfWork<UsersDbContext>(context), IUsersUnitOfWork
 {
     [field: AllowNull, MaybeNull]
     public IOrganizationRepository OrganizationRepository => 
