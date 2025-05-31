@@ -3,6 +3,7 @@ using Ardalis.Result.AspNetCore;
 using FastEndpoints;
 using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.SharedKernel.Identity;
+using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Application.Users;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Infrastructure;
@@ -17,9 +18,10 @@ internal sealed record JoinOrganizationRequestDto(
 
 internal sealed class JoinOrganizationEndpoint(
     IUserService userService,
-    IUserUnitOfWork unitOfWork) : Endpoint<JoinOrganizationRequestDto>
+    IUsersUnitOfWork unitOfWork,
+    IRoleService roles) : Endpoint<JoinOrganizationRequestDto>
 {
-    private readonly IOrganizationRepository _organizationRepository = unitOfWork.OrganizationRepository;
+    private readonly IOrganizationRepository _organizations = unitOfWork.OrganizationRepository;
     
     public override void Configure()
     {
@@ -44,10 +46,12 @@ internal sealed class JoinOrganizationEndpoint(
         JoinOrganizationRequestDto request,
         CancellationToken token) =>
         await userService.GetByIdAsync(request.UserId, token)
-            .BindAsync(async user => await _organizationRepository.GetByIdAsync(request.OrganizationId, token) is { } org
+            .BindAsync(async user => await _organizations.GetByIdAsync(request.OrganizationId, token) is { } org
                 ? Result.Success(new { User = user, Organization = org })
                 : Result.NotFound(CommonErrors.NotFound<Organization>(request.OrganizationId)))
-            .BindAsync(state => OrganizationMember.Create(state.User, state.Organization.Id)
+            .BindAsync(state => roles.GetByNameAsync(CommonRoles.Viewer, token)
+                .MapAsync(role => new { state.User, state.Organization, Role = role }))
+            .BindAsync(state => OrganizationMember.Create(state.User, state.Organization, state.Role)
                 .Map(member => new { state.User, state.Organization, Member = member }))
             .BindAsync(state => state.Organization.AddMember(state.Member)
                 .Map(() => state.Member))

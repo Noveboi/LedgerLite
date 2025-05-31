@@ -5,12 +5,12 @@ namespace LedgerLite.Users.Domain;
 
 public sealed class UserRole : IdentityUserRole<Guid>
 {
-    private UserRole() { }
+    public UserRole() { }
     public UserRole(Role role, OrganizationMember member)
     {
         RoleId = role.Id;
         OrganizationMemberId = member.Id;
-        UserId = member.UserId;
+        UserId = member.User.Id;
     }
 
     public Role Role { get; init; } = null!;
