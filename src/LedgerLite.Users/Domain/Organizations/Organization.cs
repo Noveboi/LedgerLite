@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain;
 using LedgerLite.SharedKernel.Domain.Errors;
+using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Domain.Organizations.Events;
 
 namespace LedgerLite.Users.Domain.Organizations;
@@ -38,6 +39,12 @@ public sealed class Organization : AuditableEntity
     {
         if (_members.Any(m => m == member))
             return Result.Invalid(OrganizationErrors.MemberAlreadyInOrganization(member));
+
+        if (member.Roles.Count == 0)
+            return Result.Invalid(OrganizationErrors.MemberDoesNotHaveRole(member));
+
+        if (_members.Any(m => m.HasRole(CommonRoles.Owner)) && member.HasRole(CommonRoles.Owner))
+            return Result.Invalid(OrganizationErrors.AlreadyHasOwner());
         
         _members.Add(member);
         return Result.Success();
