@@ -7,8 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj" />
-      <ProjectReference Include="..\LedgerLite.Accounting.Tests.Unit\LedgerLite.Accounting.Tests.Unit.csproj" />
+        <ProjectReference Include="..\..\src\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj"/>
+        <ProjectReference Include="..\LedgerLite.Accounting.Tests.Unit\LedgerLite.Accounting.Tests.Unit.csproj"/>
     </ItemGroup>
 
 </Project>

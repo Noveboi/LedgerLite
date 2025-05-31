@@ -8,9 +8,10 @@ using LedgerLite.SharedKernel.Identity;
 namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
 
 internal sealed record GetFiscalPeriodsRequest(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId);
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId);
 
-internal sealed class GetFiscalPeriodsEndpoint(GetFiscalPeriodsForUserUseCase getFiscalPeriodsForUser) 
+internal sealed class GetFiscalPeriodsEndpoint(GetFiscalPeriodsForUserUseCase getFiscalPeriodsForUser)
     : Endpoint<GetFiscalPeriodsRequest, IEnumerable<FiscalPeriodDto>>
 {
     public override void Configure()
@@ -23,7 +24,7 @@ internal sealed class GetFiscalPeriodsEndpoint(GetFiscalPeriodsForUserUseCase ge
     {
         var request = new GetFiscalPeriodsForUserRequest(req.UserId);
         var response = await getFiscalPeriodsForUser.HandleAsync(request, ct);
-        
+
         if (!response.IsSuccess)
         {
             await SendResultAsync(response.ToMinimalApiResult());

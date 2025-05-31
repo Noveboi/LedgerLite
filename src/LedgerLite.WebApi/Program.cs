@@ -25,11 +25,8 @@ try
 
     var app = builder.Build();
 
-    if (app.Environment.IsProduction())
-    {
-        app.UseHttpsRedirection();
-    }
-    
+    if (app.Environment.IsProduction()) app.UseHttpsRedirection();
+
     app.UseSerilogRequestLogging();
     app.UseCors("LedgerLite");
     app.MapOpenApi();

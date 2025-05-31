@@ -9,17 +9,17 @@ namespace LedgerLite.ArchitectureTests;
 
 internal sealed class LedgerLiteArchitectureRules
 {
-    private readonly GivenTypesConjunctionWithDescription _domain;
     private readonly GivenTypesConjunctionWithDescription _application;
-    private readonly GivenTypesConjunctionWithDescription _infrastructure;
+    private readonly GivenTypesConjunctionWithDescription _domain;
     private readonly GivenTypesConjunctionWithDescription _endpoints;
+    private readonly GivenTypesConjunctionWithDescription _infrastructure;
 
     private readonly string _moduleName;
-    
+
     public LedgerLiteArchitectureRules(Assembly assembly)
     {
         _moduleName = assembly.GetName().Name!;
-        
+
         _application = Types().That().AreInApplicationLayer(_moduleName).As("Application Types");
         _infrastructure = Types().That().AreInInfrastructureLayer(_moduleName).As("Infrastructure Layer");
         _endpoints = Types().That().AreInEndpointsLayer(_moduleName).As("Endpoint Layer");
@@ -37,8 +37,8 @@ internal sealed class LedgerLiteArchitectureRules
             .AreDomainEntities()
             .Should()
             .ResideInNamespace(
-                RuleBuildingExtensions.GetRegexNamespace(_moduleName, "Domain"), 
-                useRegularExpressions: true);
+                RuleBuildingExtensions.GetRegexNamespace(_moduleName, "Domain"),
+                true);
 
     public static void EntitiesShouldHavePrivateParameterlessConstructor(Architecture arch)
     {
@@ -53,18 +53,13 @@ internal sealed class LedgerLiteArchitectureRules
                     .GetConstructors()
                     .Any(ctor => ctor.Visibility == Visibility.Private && !ctor.Parameters.Any());
 
-                if (!hasParameterlessPrivateCtor)
-                {
-                    badEntities.Add(entity);
-                }
-                
+                if (!hasParameterlessPrivateCtor) badEntities.Add(entity);
+
                 return hasParameterlessPrivateCtor;
             });
 
         if (!isValid)
-        {
             throw new Exception(
                 $"Entities: {string.Join(", ", badEntities.Select(x => x.Name))} do not have a parameterless private constructor.");
-        }
     }
 }

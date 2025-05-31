@@ -14,5 +14,5 @@ internal static class DependencyInjection
             .AddScoped<IAccountRepository, AccountRepository>()
             .AddScoped<IJournalEntryRepository, JournalEntryRepository>()
             .AddScoped<IJournalEntryLineRepository, JournalEntryLineRepository>();
-    } 
+    }
 }

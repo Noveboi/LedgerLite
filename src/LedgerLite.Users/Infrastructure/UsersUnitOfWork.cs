@@ -9,7 +9,8 @@ internal sealed class UsersUnitOfWork(
     IServiceProvider serviceProvider,
     UsersDbContext context) : UnitOfWork<UsersDbContext>(context), IUsersUnitOfWork
 {
-    [field: AllowNull, MaybeNull]
-    public IOrganizationRepository OrganizationRepository => 
+    [field: AllowNull]
+    [field: MaybeNull]
+    public IOrganizationRepository OrganizationRepository =>
         field ?? serviceProvider.GetRequiredService<IOrganizationRepository>();
 }

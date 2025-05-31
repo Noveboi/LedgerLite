@@ -8,7 +8,7 @@ namespace LedgerLite.Users.Infrastructure.Workers;
 public sealed class StartupService(IServiceProvider provider) : BackgroundService
 {
     private readonly ILogger _log = Log.ForContext<StartupService>();
-    
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _log.Information("Running {service}", nameof(StartupService));
@@ -18,10 +18,7 @@ public sealed class StartupService(IServiceProvider provider) : BackgroundServic
             var roleMaker = scope.ServiceProvider.GetRequiredService<RoleMaker>();
 
             var result = await roleMaker.CreateApplicationRolesAsync(stoppingToken);
-            if (!result.IsSuccess)
-            {
-                _log.Error("Role maker failed. {@result}", result);
-            }
+            if (!result.IsSuccess) _log.Error("Role maker failed. {@result}", result);
         }
         catch (Exception ex)
         {

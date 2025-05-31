@@ -8,5 +8,7 @@ public interface IFiscalPeriodRepository
     Task<FiscalPeriod?> GetByIdAsync(Guid id, CancellationToken token);
     Task<IReadOnlyList<FiscalPeriod>> GetForOrganizationAsync(Guid organizationId, CancellationToken token);
     Task<bool> NameExistsForOrganizationAsync(Guid organizationId, string name, CancellationToken token);
-    Task<FiscalPeriod?> FindOverlappingPeriodAsync(Guid organizationId, DateOnly startDate, DateOnly endDate, CancellationToken token);
+
+    Task<FiscalPeriod?> FindOverlappingPeriodAsync(Guid organizationId, DateOnly startDate, DateOnly endDate,
+        CancellationToken token);
 }

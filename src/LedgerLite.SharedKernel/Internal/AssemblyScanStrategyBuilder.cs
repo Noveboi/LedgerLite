@@ -6,7 +6,7 @@ public sealed class AssemblyScanStrategyBuilder
 {
     internal Type BaseType { get; private set; } = null!;
     internal bool ShouldRegisterInterface { get; private set; } = true;
-    internal bool ShouldRegisterImplementation { get; private set; } = false;
+    internal bool ShouldRegisterImplementation { get; private set; }
 
     internal ITypeSearchStrategy GetTypeSearchStrategy()
     {
@@ -37,7 +37,7 @@ public sealed class AssemblyScanStrategyBuilder
         ShouldRegisterImplementation = true;
         return this;
     }
-    
+
     public AssemblyScanStrategyBuilder Implementing(Type type)
     {
         BaseType = type;

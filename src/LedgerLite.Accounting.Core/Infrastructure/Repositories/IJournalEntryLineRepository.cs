@@ -9,8 +9,9 @@ internal interface IJournalEntryLineRepository
     void Remove(JournalEntryLine line);
 
     Task<IReadOnlyList<JournalEntryLine>> GetLinesForAccountAsync(
-        Account account, 
-        JournalEntryLineQueryOptions? options = null, 
+        Account account,
+        JournalEntryLineQueryOptions? options = null,
         CancellationToken ct = default);
+
     Task<IReadOnlyList<JournalEntryLine>> GetLinesForEntryAsync(JournalEntry entry, CancellationToken ct);
 }

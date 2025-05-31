@@ -14,7 +14,7 @@ public class JournalEntryPostTests
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, lines);
 
         var result = entry.Post();
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         entry.Status.ShouldBe(JournalEntryStatus.Posted);
     }

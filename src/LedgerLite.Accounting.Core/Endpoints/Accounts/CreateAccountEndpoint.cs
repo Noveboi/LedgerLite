@@ -15,12 +15,13 @@ using Serilog;
 
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
-internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService, IAccountService accountService) : Endpoint<CreateAccountRequestDto>
+internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService, IAccountService accountService)
+    : Endpoint<CreateAccountRequestDto>
 {
     private readonly ILogger _log = Log.ForContext<CreateAccountEndpoint>();
 
     public override void Configure()
-    {        
+    {
         Post("");
         Group<ChartOfAccountsModifyGroup>();
     }
@@ -28,14 +29,14 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
     public override async Task HandleAsync(CreateAccountRequestDto req, CancellationToken ct)
     {
         _log.Information("Account {action}: {number} - {name}", "CREATE", req.Number, req.Name);
-        
+
         var request = await MapToEntity(req, () => chartService.GetByUserIdAsync(req.UserId, ct));
         if (!request.IsSuccess)
         {
             await SendResultAsync(request.ToMinimalApiResult());
             return;
         }
-        
+
         var creationResult = await accountService.CreateAsync(request, ct);
         if (!creationResult.IsSuccess)
         {
@@ -46,19 +47,19 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
         var account = creationResult.Value;
 
         await SendCreatedAtAsync<GetAccountEndpoint>(
-            routeValues: new { account.Id },
-            responseBody: account.ToDto(),
+            new { account.Id },
+            account.ToDto(),
             cancellation: ct);
     }
 
     private static async Task<Result<CreateAccountRequest>> MapToEntity(
-        CreateAccountRequestDto r, 
+        CreateAccountRequestDto r,
         Func<Task<Result<ChartOfAccounts>>> getChart)
     {
         var typeConversion = Enumeration<AccountType>.FromName(r.Type);
         if (!typeConversion.IsSuccess)
             return typeConversion.Map();
-        
+
         var currencyConversion = Enumeration<Currency>.FromName(r.Currency);
         if (!currencyConversion.IsSuccess)
             return currencyConversion.Map();
@@ -68,19 +69,20 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
             return chart.Map();
 
         return new CreateAccountRequest(
-            Name: r.Name,
-            Number: r.Number,
-            Type: typeConversion.Value,
-            Currency: currencyConversion.Value,
-            IsPlaceholder: r.IsPlaceholder,
-            Description: r.Description ?? "",
-            Chart: chart,
-            ParentId: r.ParentId);
+            r.Name,
+            r.Number,
+            typeConversion.Value,
+            currencyConversion.Value,
+            r.IsPlaceholder,
+            r.Description ?? "",
+            chart,
+            r.ParentId);
     }
 }
 
 internal sealed record CreateAccountRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId,
     string Name,
     string Number,
     string Type,

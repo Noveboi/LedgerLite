@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
+        <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj"/>
     </ItemGroup>
 
 </Project>

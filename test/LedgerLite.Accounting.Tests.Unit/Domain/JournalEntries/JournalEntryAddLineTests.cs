@@ -9,7 +9,7 @@ namespace LedgerLite.Accounting.Tests.Unit.Domain.JournalEntries;
 public class JournalEntryAddLineTests
 {
     private static readonly Guid Id = Guid.NewGuid();
-    
+
     [Fact]
     public void Invalid_WhenNotEditable()
     {
@@ -18,7 +18,7 @@ public class JournalEntryAddLineTests
         entry.Post();
 
         var result = entry.AddLine(Id, TransactionType.Credit, 10);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -30,9 +30,9 @@ public class JournalEntryAddLineTests
     {
         var entry = JournalEntryHelper.Create(JournalEntryType.Standard);
         var expected = JournalEntryLine.Create(TransactionType.Credit, 10, Id, entry.Id);
-        
+
         var result = entry.AddLine(Id, TransactionType.Credit, 10);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         var line = entry.Lines.ShouldHaveSingleItem();
         line.Amount.ShouldBe(expected.Amount);

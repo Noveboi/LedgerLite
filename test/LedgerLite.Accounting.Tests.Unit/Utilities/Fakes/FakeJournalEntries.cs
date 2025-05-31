@@ -23,7 +23,7 @@ public sealed class FakeJournalEntryOptions
         Lines.Add(line);
         return this;
     }
-    
+
     public FakeJournalEntryOptions AddLine(Action<FakeJournalEntryLineOptions> configureLine)
     {
         Lines ??= [];
@@ -31,10 +31,10 @@ public sealed class FakeJournalEntryOptions
         {
             EntryId = Id
         };
-        
+
         configureLine(options);
         var line = FakeJournalEntryLines.GetFakerCore(options).Generate();
-        
+
         Lines.Add(line);
         return this;
     }
@@ -49,8 +49,10 @@ public sealed class FakeJournalEntryOptions
 public static class FakeJournalEntries
 {
     private static readonly Guid FiscalPeriodId = Guid.NewGuid();
-    private static Faker<JournalEntry> GetFaker(FakeJournalEntryOptions options) =>
-        new PrivateFaker<JournalEntry>(new PrivateBinder())
+
+    private static Faker<JournalEntry> GetFaker(FakeJournalEntryOptions options)
+    {
+        return new PrivateFaker<JournalEntry>(new PrivateBinder())
             .UsePrivateConstructor()
             .RuleFor(x => x.Id, options.Id)
             .RuleFor(x => x.FiscalPeriodId, options.FiscalPeriodId ?? FiscalPeriodId)
@@ -59,6 +61,7 @@ public static class FakeJournalEntries
             .RuleFor(x => x.Type, options.JournalEntryType ?? JournalEntryType.Standard)
             .RuleFor(x => x.Status, JournalEntryStatus.Editable)
             .RuleFor("_lines", _ => options.Lines ?? []);
+    }
 
     public static JournalEntry Get(Action<FakeJournalEntryOptions>? configure = null)
     {

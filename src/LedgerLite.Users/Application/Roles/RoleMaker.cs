@@ -8,9 +8,9 @@ namespace LedgerLite.Users.Application.Roles;
 
 internal sealed class RoleMaker(RoleManager<Role> roleManager)
 {
-    private readonly ILogger _log = Log.ForContext<RoleMaker>();
     private readonly Dictionary<string, bool> _existingRoles = [];
-    
+    private readonly ILogger _log = Log.ForContext<RoleMaker>();
+
     public async Task<Result> CreateApplicationRolesAsync(CancellationToken token)
     {
         _log.Information("Ensuring essential application roles exist.");
@@ -19,7 +19,7 @@ internal sealed class RoleMaker(RoleManager<Role> roleManager)
         await GetIfRoleExistsAsync(CommonRoles.Admin);
         await GetIfRoleExistsAsync(CommonRoles.Member);
         await GetIfRoleExistsAsync(CommonRoles.Viewer);
-        
+
         var owner = new Role(CommonRoles.Owner, "The owner of the organization");
         var admin = new Role(CommonRoles.Admin, "Executive rights in the organization");
         var member = new Role(CommonRoles.Member, "Standard organization member");
@@ -36,20 +36,17 @@ internal sealed class RoleMaker(RoleManager<Role> roleManager)
         var exists = await roleManager.RoleExistsAsync(name);
         _existingRoles[name] = exists;
     }
-    
+
     private async Task<Result> CreateRoleAsync(Role role)
     {
-        if (string.IsNullOrWhiteSpace(role.Name) || _existingRoles[role.Name])
-        {
-            return Result.NoContent();
-        }
-        
+        if (string.IsNullOrWhiteSpace(role.Name) || _existingRoles[role.Name]) return Result.NoContent();
+
         _log.Information("Adding role '{name}'", role.Name);
         var result = await roleManager.CreateAsync(role);
         return result.Succeeded
             ? Result.Success()
             : Result.Invalid(result.Errors.Select(x => new ValidationError(
-                identifier: x.Code, 
-                errorMessage: x.Description)));
+                x.Code,
+                x.Description)));
     }
 }

@@ -19,7 +19,7 @@ public class PublisherTests
     {
         ConfigureEventHandlers(Substitute.For<IEventHandler<ExampleEvent>>());
         var @event = new ExampleEvent("Hello!");
-        
+
         var publishAction = () => _sut.PublishAsync(@event, CancellationToken.None);
 
         await publishAction.ShouldNotThrow();
@@ -34,9 +34,9 @@ public class PublisherTests
         await _sut.PublishAsync(@event, CancellationToken.None);
 
         await _eventPublisher.Received(1).PublishAsync(
-            eventExecutors: Arg.Is<IEnumerable<EventExecutor>>(executors => executors.Count() == 1),
-            e: @event,
-            token: Arg.Any<CancellationToken>());
+            Arg.Is<IEnumerable<EventExecutor>>(executors => executors.Count() == 1),
+            @event,
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -53,7 +53,11 @@ public class PublisherTests
     }
 
 
-    private void ConfigureRealEventPublisher() => _sut = new Publisher(new SequentialEventPublisher(), _serviceProvider);
+    private void ConfigureRealEventPublisher()
+    {
+        _sut = new Publisher(new SequentialEventPublisher(), _serviceProvider);
+    }
+
     private void ConfigureEventHandlers<TEvent>(params IList<IEventHandler<TEvent>> handlers) where TEvent : IEvent
     {
         var handlerType = typeof(IEnumerable<IEventHandler<TEvent>>);

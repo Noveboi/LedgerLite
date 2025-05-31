@@ -5,7 +5,7 @@ using LedgerLite.Accounting.Core.Domain.JournalEntries;
 namespace LedgerLite.Accounting.Core.Application.JournalEntries;
 
 /// <summary>
-/// Orchestrates use cases involving the recording of financial transactions
+///     Orchestrates use cases involving the recording of financial transactions
 /// </summary>
 public interface ITransactionRecordingService
 {

@@ -15,7 +15,7 @@ internal sealed class ReportingUserAuthorization(
         if (await fiscalPeriodRepository.GetByIdAsync(fiscalPeriodId, ct) is not { } fiscalPeriod)
             return Result.NotFound(CommonErrors.NotFound<FiscalPeriod>(fiscalPeriodId));
 
-        if (!await user.UserBelongsInOrganizationAsync(userId: userId, organizationId: fiscalPeriod.OrganizationId, ct))
+        if (!await user.UserBelongsInOrganizationAsync(userId, fiscalPeriod.OrganizationId, ct))
             return Result.Unauthorized();
 
         return Result.Success(fiscalPeriod);

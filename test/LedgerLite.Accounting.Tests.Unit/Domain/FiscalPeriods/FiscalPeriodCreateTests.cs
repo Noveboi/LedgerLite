@@ -7,7 +7,7 @@ namespace LedgerLite.Accounting.Tests.Unit.Domain.FiscalPeriods;
 public class FiscalPeriodCreateTests
 {
     private static readonly Guid OrganizationId = Guid.NewGuid();
-    
+
     [Fact]
     public void Invalid_WhenStartDateAfterEndDate()
     {
@@ -15,7 +15,7 @@ public class FiscalPeriodCreateTests
         var end = new DateOnly(2024, 1, 1);
 
         var result = FiscalPeriod.Create(OrganizationId, start, end, "Test!");
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(FiscalPeriodErrors.StartIsAfterEnd(start, end));
     }

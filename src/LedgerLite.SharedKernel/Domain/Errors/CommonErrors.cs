@@ -7,11 +7,14 @@ public static class CommonErrors
 {
     private const string CommonIdentifier = "Common";
 
-    public static ValidationError NameIsEmpty() => new(
-        identifier: CommonIdentifier,
-        errorMessage: "Name is empty.",
-        errorCode: "NAME_EMPTY",
-        severity: ValidationSeverity.Error);
+    public static ValidationError NameIsEmpty()
+    {
+        return new ValidationError(
+            CommonIdentifier,
+            "Name is empty.",
+            "NAME_EMPTY",
+            ValidationSeverity.Error);
+    }
 
     public static string NotFound<T>(Guid id) where T : class
     {

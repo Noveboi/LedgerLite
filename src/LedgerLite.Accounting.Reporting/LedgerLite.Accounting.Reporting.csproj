@@ -7,11 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj" />
+        <ProjectReference Include="..\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="LedgerLite.Accounting.Reporting.Tests.Unit"/>
     </ItemGroup>
-    
+
 </Project>

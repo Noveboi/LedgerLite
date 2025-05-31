@@ -7,7 +7,7 @@ using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 namespace LedgerLite.Accounting.Reporting.Tests.Unit;
 
 /// <summary>
-/// The journal entries are based on this video: <see href="https://www.youtube.com/watch?v=3_PfoTzSCQE"/>
+///     The journal entries are based on this video: <see href="https://www.youtube.com/watch?v=3_PfoTzSCQE" />
 /// </summary>
 public class TrialBalanceSpecification1
 {
@@ -45,7 +45,7 @@ public class TrialBalanceSpecification1
 
         var result = TrialBalance.Prepare(period, entries);
         var trialBalance = result.Value;
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         trialBalance.GetTotals(CommonAccounts.Cash).ShouldBe(400);
         trialBalance.GetTotals(CommonAccounts.OwnerEquity).ShouldBe(100);
@@ -60,14 +60,14 @@ public class TrialBalanceSpecification1
 
     [Fact]
     public void ShouldBeBalanced()
-    { 
+    {
         var (period, entries) = Setup();
-        
-        var result = TrialBalance.Prepare(period, entries); 
+
+        var result = TrialBalance.Prepare(period, entries);
         var trialBalance = result.Value;
-        
-        result.Status.ShouldBe(ResultStatus.Ok); 
-        trialBalance.GetTotalCredits().ShouldBe(500); 
+
+        result.Status.ShouldBe(ResultStatus.Ok);
+        trialBalance.GetTotalCredits().ShouldBe(500);
         trialBalance.GetTotalDebits().ShouldBe(500);
     }
 
@@ -75,7 +75,7 @@ public class TrialBalanceSpecification1
     {
         var entries = new[] { _entry1, _entry2, _entry3, _entry4, _entry5, _entry6 };
         var period = FakeFiscalPeriods.Get(x => x.WithId(_entry1.FiscalPeriodId));
-        
+
         return (period, entries);
     }
 }

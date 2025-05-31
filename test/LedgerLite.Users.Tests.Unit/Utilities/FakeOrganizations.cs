@@ -6,12 +6,14 @@ namespace LedgerLite.Users.Tests.Unit.Utilities;
 
 public static class FakeOrganizations
 {
-    private static Faker<Organization> Faker(FakeOrganizationBuilder builder) => 
-        new PrivateFaker<Organization>(new PrivateBinder())
+    private static Faker<Organization> Faker(FakeOrganizationBuilder builder)
+    {
+        return new PrivateFaker<Organization>(new PrivateBinder())
             .UsePrivateConstructor()
             .RuleFor(x => x.Name, f => builder.Name ?? f.Company.CompanyName())
             .RuleFor("_members", _ => builder.Members);
-    
+    }
+
     public static Organization Get(Action<FakeOrganizationBuilder>? configure = null)
     {
         var builder = new FakeOrganizationBuilder();
@@ -23,14 +25,14 @@ public static class FakeOrganizations
 public sealed record FakeOrganizationBuilder
 {
     internal string? Name { get; private set; }
-    internal List<OrganizationMember> Members { get; private set; } = [];
+    internal List<OrganizationMember> Members { get; } = [];
 
     public FakeOrganizationBuilder WithName(string name)
     {
         Name = name;
         return this with { Name = name };
     }
-    
+
     public FakeOrganizationBuilder WithMember(OrganizationMember member)
     {
         Members.Add(member);

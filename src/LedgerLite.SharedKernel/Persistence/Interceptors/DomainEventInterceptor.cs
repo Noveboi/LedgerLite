@@ -12,14 +12,12 @@ internal sealed class DomainEventInterceptor(IPublisher publisher) : SaveChanges
     private readonly List<DomainEvent> _unprocessedEvents = [];
 
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
-        DbContextEventData eventData, 
+        DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = new())
     {
         if (eventData.Context is not { } context)
-        {
             return await base.SavingChangesAsync(eventData, result, cancellationToken);
-        }
 
         var domainEvents = context.ChangeTracker
             .Entries<IHaveDomainEvents>()
@@ -37,17 +35,14 @@ internal sealed class DomainEventInterceptor(IPublisher publisher) : SaveChanges
     }
 
     public override async ValueTask<int> SavedChangesAsync(
-        SaveChangesCompletedEventData eventData, 
+        SaveChangesCompletedEventData eventData,
         int result,
         CancellationToken token = new())
     {
         if (_unprocessedEvents.Count > 0)
         {
             _log.Information("Processing and publishing {eventData} domain events...", _unprocessedEvents.Count);
-            foreach (var domainEvent in _unprocessedEvents)
-            {
-                await publisher.PublishAsync(domainEvent, token);
-            }
+            foreach (var domainEvent in _unprocessedEvents) await publisher.PublishAsync(domainEvent, token);
 
             _unprocessedEvents.Clear();
         }

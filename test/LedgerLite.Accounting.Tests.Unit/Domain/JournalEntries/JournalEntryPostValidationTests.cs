@@ -16,7 +16,7 @@ public class JournalEntryPostValidationTests
         var entry = JournalEntryHelper.CreateWithLines(type, lines);
 
         var result = entry.Post();
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -29,21 +29,21 @@ public class JournalEntryPostValidationTests
     {
         var lines = FakeJournalEntryLines.Get(TransactionType.Credit);
         var entry = JournalEntryHelper.CreateWithLines(type, lines);
-        
+
         var result = entry.Post();
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(JournalEntryErrors.LessThanTwoLines(1));
     }
-    
+
     [Theory]
     [MemberData(nameof(JournalEntryTypes.AllTypes), MemberType = typeof(JournalEntryTypes))]
     public void Invalid_NoLines_ForAllEntryTypes(JournalEntryType type)
     {
         var entry = JournalEntryHelper.CreateWithLines(type, []);
-           
+
         var result = entry.Post();
 
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -58,7 +58,7 @@ public class JournalEntryPostValidationTests
     {
         var lines = FakeJournalEntryLines.Get(TransactionType.Credit, TransactionType.Credit);
         var entry = JournalEntryHelper.CreateWithLines(type, lines);
-           
+
         var result = entry.Post();
 
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -66,14 +66,14 @@ public class JournalEntryPostValidationTests
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(JournalEntryErrors.SameTransactionTypeOnBothLines(TransactionType.Credit));
     }
-    
+
     [Theory]
     [MemberData(nameof(JournalEntryTypes.AllTypes), MemberType = typeof(JournalEntryTypes))]
     public void Invalid_TwoDebitLines(JournalEntryType type)
     {
         var lines = FakeJournalEntryLines.Get(TransactionType.Debit, TransactionType.Debit);
         var entry = JournalEntryHelper.CreateWithLines(type, lines);
-           
+
         var result = entry.Post();
 
         result.Status.ShouldBe(ResultStatus.Invalid);
@@ -88,15 +88,15 @@ public class JournalEntryPostValidationTests
         var lines = FakeJournalEntryLines.GenerateStandardLines();
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, lines);
         entry.Post();
-        
+
         var result = entry.Post();
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(JournalEntryErrors.AlreadyPosted());
     }
-    
+
     [Fact]
     public void Invalid_WhenEntryIsReversed()
     {
@@ -105,20 +105,20 @@ public class JournalEntryPostValidationTests
         entry.Reverse();
 
         var result = entry.Post();
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(JournalEntryErrors.CantPostBecauseIsReversed());
     }
-    
+
     [Theory]
     [MemberData(nameof(JournalEntryTypes.AllTypes), MemberType = typeof(JournalEntryTypes))]
     public void Valid_OneCreditLine_And_OneDebitLine(JournalEntryType type)
     {
         var lines = FakeJournalEntryLines.GenerateStandardLines();
         var entry = JournalEntryHelper.CreateWithLines(type, lines);
-           
+
         var result = entry.Post();
 
         result.Status.ShouldBe(ResultStatus.Ok);
@@ -132,7 +132,7 @@ public class JournalEntryPostValidationTests
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Compound, [..credit, ..debits]);
 
         var result = entry.Post();
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
     }
 }

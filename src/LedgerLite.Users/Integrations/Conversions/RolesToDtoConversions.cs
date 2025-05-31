@@ -5,7 +5,10 @@ namespace LedgerLite.Users.Integrations.Conversions;
 
 internal static class RolesToDtoConversions
 {
-    public static RoleDto ToDto(this Role role) => new(
-        Id: role.Id, 
-        Name: role.Name ?? "");
+    public static RoleDto ToDto(this Role role)
+    {
+        return new RoleDto(
+            role.Id,
+            role.Name ?? "");
+    }
 }

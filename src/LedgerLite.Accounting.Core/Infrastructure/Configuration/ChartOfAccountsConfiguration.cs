@@ -17,7 +17,7 @@ internal sealed class ChartOfAccountsConfiguration : IEntityTypeConfiguration<Ch
             .ValueGeneratedNever();
 
         builder.HasIndex(x => x.OrganizationId).IsUnique();
-        
+
         builder
             .HasMany(x => x.Nodes)
             .WithOne()

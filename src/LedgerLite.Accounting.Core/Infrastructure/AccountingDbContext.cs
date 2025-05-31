@@ -16,17 +16,17 @@ internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> 
     public DbSet<JournalEntry> JournalEntries { get; private set; }
     public DbSet<JournalEntryLine> JournalEntryLines { get; private set; }
     public DbSet<FiscalPeriod> FiscalPeriods { get; private set; }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("Accounting");
-        
+
         modelBuilder
             .ConfigureEnumeration<AccountType>()
             .ConfigureEnumeration<JournalEntryType>()
             .ConfigureEnumeration<JournalEntryStatus>()
             .ConfigureEnumeration<Currency>();
-        
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAccountingEntityConfigurationMarker).Assembly);
     }
 }

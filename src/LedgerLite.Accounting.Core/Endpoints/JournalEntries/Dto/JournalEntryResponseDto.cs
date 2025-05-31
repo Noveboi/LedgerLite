@@ -10,11 +10,13 @@ public sealed record JournalEntryResponseDto(
     string Type,
     string Status)
 {
-    public static JournalEntryResponseDto FromEntity(JournalEntry entry) =>
-        new(Id: entry.Id,
-            ReferenceNumber: entry.ReferenceNumber,
-            OccursAtUtc: entry.OccursAt,
-            Description: entry.Description,
-            Type: entry.Type.ToString(),
-            Status: entry.Status.ToString());
+    public static JournalEntryResponseDto FromEntity(JournalEntry entry)
+    {
+        return new JournalEntryResponseDto(entry.Id,
+            entry.ReferenceNumber,
+            entry.OccursAt,
+            entry.Description,
+            entry.Type.ToString(),
+            entry.Status.ToString());
+    }
 }

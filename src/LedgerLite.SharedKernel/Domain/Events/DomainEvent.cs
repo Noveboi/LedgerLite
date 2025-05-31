@@ -1,5 +1,4 @@
-﻿
-using LedgerLite.SharedKernel.Events;
+﻿using LedgerLite.SharedKernel.Events;
 
 namespace LedgerLite.SharedKernel.Domain.Events;
 

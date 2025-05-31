@@ -7,8 +7,10 @@ namespace LedgerLite.SharedKernel.Persistence;
 
 public static class DbContextConfigurationExtensions
 {
-    public static DbContextOptionsBuilder AddAuditLogging(this DbContextOptionsBuilder options) => 
-        options.AddInterceptors(new TimeAuditInterceptor());
+    public static DbContextOptionsBuilder AddAuditLogging(this DbContextOptionsBuilder options)
+    {
+        return options.AddInterceptors(new TimeAuditInterceptor());
+    }
 
     public static DbContextOptionsBuilder AddDomainEventProcessing(
         this DbContextOptionsBuilder options,

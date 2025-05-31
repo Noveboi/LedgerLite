@@ -2,12 +2,19 @@
 
 namespace LedgerLite.Tests.Shared;
 
-public sealed class PrivateFaker<T> : Faker<T> where T : class 
+public sealed class PrivateFaker<T> : Faker<T> where T : class
 {
-    public PrivateFaker() {}
-    public PrivateFaker(Binder binder) : base(locale: "en", binder) { }
-    
-    public PrivateFaker<T> UsePrivateConstructor() =>
-        (CustomInstantiator(_ => (Activator.CreateInstance(typeof(T), nonPublic: true) as T)! )
+    public PrivateFaker()
+    {
+    }
+
+    public PrivateFaker(Binder binder) : base("en", binder)
+    {
+    }
+
+    public PrivateFaker<T> UsePrivateConstructor()
+    {
+        return (CustomInstantiator(_ => (Activator.CreateInstance(typeof(T), true) as T)!)
             as PrivateFaker<T>)!;
+    }
 }

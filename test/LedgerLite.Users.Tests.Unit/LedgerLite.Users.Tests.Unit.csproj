@@ -19,8 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\LedgerLite.Users\LedgerLite.Users.csproj" />
-      <ProjectReference Include="..\LedgerLite.Tests.Shared\LedgerLite.Tests.Shared.csproj" />
+        <ProjectReference Include="..\..\src\LedgerLite.Users\LedgerLite.Users.csproj"/>
+        <ProjectReference Include="..\LedgerLite.Tests.Shared\LedgerLite.Tests.Shared.csproj"/>
     </ItemGroup>
 
 </Project>

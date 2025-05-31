@@ -13,13 +13,14 @@ using LedgerLite.Users.Integrations.Conversions;
 namespace LedgerLite.Users.Endpoints.Organizations;
 
 internal sealed record CreateOrganizationRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId,
     string Name);
 
 internal sealed class CreateOrganizationEndpoint(
     IUsersUnitOfWork unitOfWork,
     IRoleService roles,
-    IUserService userService) 
+    IUserService userService)
     : Endpoint<CreateOrganizationRequestDto, OrganizationDto>
 {
     public override void Configure()
@@ -40,8 +41,8 @@ internal sealed class CreateOrganizationEndpoint(
         var organization = createResult.Value;
 
         await SendCreatedAtAsync<GetOrganizationEndpoint>(
-            routeValues: new { organization.Id },
-            responseBody: organization.ToDto(),
+            new { organization.Id },
+            organization.ToDto(),
             cancellation: ct);
     }
 
@@ -49,17 +50,17 @@ internal sealed class CreateOrganizationEndpoint(
     {
         if (await unitOfWork.OrganizationRepository.NameExistsAsync(req.Name, ct))
             return Result.Conflict($"Organization with name '{req.Name}' already exists.");
-        
+
         return await userService.GetByIdAsync(req.UserId, ct)
-            .BindAsync(user => user.OrganizationMemberId is not null 
+            .BindAsync(user => user.OrganizationMemberId is not null
                 ? Result.Invalid(OrganizationErrors.CannotBeInTwoOrganizations(user))
                 : Result.Success(user))
             .BindAsync(async user => await roles.GetByNameAsync(CommonRoles.Owner, ct)
                 .MapAsync(role => new { User = user, Role = role }))
             .BindAsync(state => Organization.Create(
-                creator: state.User,
-                creatorRole: state.Role,
-                name: req.Name)
+                    state.User,
+                    state.Role,
+                    req.Name)
                 .Map(org => new { state.User, state.Role, Organization = org }))
             .BindAsync(state =>
             {

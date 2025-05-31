@@ -15,7 +15,7 @@ internal static class AccountingUnitOfWorkConfiguration
     {
         var builder = new AccountingUnitOfWorkConfigurationBuilder(unitOfWork);
         configure?.Invoke(builder);
-        
+
         unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
     }
 

@@ -24,7 +24,7 @@ internal sealed class JournalEntryConfiguration : IEntityTypeConfiguration<Journ
             .HasOne<FiscalPeriod>()
             .WithMany()
             .HasForeignKey(x => x.FiscalPeriodId);
-        
+
         builder.HasEnumeration(x => x.Type);
         builder.HasEnumeration(x => x.Status);
     }

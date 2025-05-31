@@ -5,7 +5,7 @@ namespace LedgerLite.SharedKernel.Events;
 internal sealed class Publisher(IEventPublisher eventPublisher, IServiceProvider serviceProvider) : IPublisher
 {
     private static readonly ConcurrentDictionary<Type, EventHandlerWrapper> EventHandlers = [];
-    
+
     public ValueTask PublishAsync<TEvent>(TEvent e, CancellationToken token) where TEvent : IEvent
     {
         var handler = EventHandlers.GetOrAdd(e.GetType(), static eventType =>

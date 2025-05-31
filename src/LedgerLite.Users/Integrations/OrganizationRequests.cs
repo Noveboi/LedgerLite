@@ -13,9 +13,7 @@ internal sealed class OrganizationRequests(IOrganizationRepository repository) :
     public async Task<Result<OrganizationDto>> GetOrganizationByIdAsync(Guid id, CancellationToken token)
     {
         if (await repository.GetByIdAsync(id, token) is not { } organization)
-        {
             return Result.NotFound(CommonErrors.NotFound<Organization>(id));
-        }
 
         return organization.ToDto();
     }

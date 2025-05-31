@@ -11,7 +11,7 @@ namespace LedgerLite.Users.Endpoints.Identity;
 internal sealed class RefreshEndpoint(
     TimeProvider timeProvider,
     IOptionsMonitor<BearerTokenOptions> bearerTokenOptions,
-    SignInManager<User> signInManager) 
+    SignInManager<User> signInManager)
     : Endpoint<RefreshRequest, AccessTokenResponse>
 {
     public override void Configure()
@@ -24,7 +24,7 @@ internal sealed class RefreshEndpoint(
     {
         var refreshTokenProtector = bearerTokenOptions.Get(IdentityConstants.BearerScheme).RefreshTokenProtector;
         var refreshTicket = refreshTokenProtector.Unprotect(req.RefreshToken);
-        
+
         // Reject the /refresh attempt with a 401 if the token expired or the security stamp validation fails
         if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
             timeProvider.GetUtcNow() >= expiresUtc ||

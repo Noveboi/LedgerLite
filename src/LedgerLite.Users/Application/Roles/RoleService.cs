@@ -11,9 +11,7 @@ internal sealed class RoleService(IRoleStore<Role> store, RoleManager<Role> mana
         var normalizedName = manager.NormalizeKey(name);
 
         if (await store.FindByNameAsync(normalizedName, ct) is not { } role)
-        {
             return Result.NotFound($"Role '{normalizedName}' does not exist.");
-        }
 
         return role;
     }

@@ -1,7 +1,6 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.Tests.Shared;
-using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain;
 using LedgerLite.Users.Domain.Organizations;
@@ -13,12 +12,12 @@ public class OrganizationCreateTests
 {
     private static readonly Role Role = new(CommonRoles.Owner);
     private static readonly User User = FakeUsers.Get();
-    
+
     [Fact]
     public void Invalid_WhenNameIsEmptyOrWhitespace()
     {
         var result = Organization.Create(User, Role, "");
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(CommonErrors.NameIsEmpty());
     }
@@ -27,7 +26,7 @@ public class OrganizationCreateTests
     public void Create_WhenNameIsValid()
     {
         var result = Organization.Create(User, Role, "Test Org!");
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.Name.ShouldBe("Test Org!");
         result.Value.Members.ShouldHaveSingleItem();
@@ -48,7 +47,7 @@ public class OrganizationCreateTests
     {
         var result = Organization.Create(User, Role, "Abc!");
         var org = result.Value;
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         var member = org.Members.ShouldHaveSingleItem();
         member.User.ShouldBe(User);

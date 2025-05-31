@@ -3,7 +3,7 @@
 public readonly record struct DateRange(DateOnly Start, DateOnly End)
 {
     /// <summary>
-    /// Determines if the two date ranges overlap. 
+    ///     Determines if the two date ranges overlap.
     /// </summary>
     /// <param name="other">The other date range to check for overlap.</param>
     /// <returns>The overlap range, or null if they do not overlap.</returns>
@@ -18,10 +18,7 @@ public readonly record struct DateRange(DateOnly Start, DateOnly End)
         var overlapEnd = End < other.End ? End : other.End;
 
         // If the ranges overlap, the start must be less than or equal to the end
-        if (overlapStart <= overlapEnd)
-        {
-            return new DateRange(overlapStart, overlapEnd);
-        }
+        if (overlapStart <= overlapEnd) return new DateRange(overlapStart, overlapEnd);
 
         return null;
     }

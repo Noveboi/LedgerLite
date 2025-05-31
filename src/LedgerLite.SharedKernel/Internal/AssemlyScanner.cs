@@ -12,7 +12,7 @@ internal static class AssemblyScanner
     {
         var time = Stopwatch.GetTimestamp();
         var assemblyScanCount = 0;
-        
+
         var options = new AssemblyScanStrategyBuilder();
         configure(options);
 
@@ -32,24 +32,19 @@ internal static class AssemblyScanner
             {
                 var interfaces = search.GetInterfaces(implementation);
 
-                foreach (var @interface in interfaces)
-                {
-                    services.AddScoped(@interface, implementation);
-                }
+                foreach (var @interface in interfaces) services.AddScoped(@interface, implementation);
             }
 
-            if (options.ShouldRegisterImplementation)
-            {
-                services.AddScoped(implementation);
-            }
+            if (options.ShouldRegisterImplementation) services.AddScoped(implementation);
         }
-        
-        Log.Information("Detected {count} implementations of {interface} from {assemblyCount} assemblies in {ms} milliseconds", 
+
+        Log.Information(
+            "Detected {count} implementations of {interface} from {assemblyCount} assemblies in {ms} milliseconds",
             implementationTypes.Count,
             options.BaseType.Name,
-            assemblyScanCount, 
+            assemblyScanCount,
             Stopwatch.GetElapsedTime(time).TotalMilliseconds.ToString("N0"));
-        
+
         Log.Information("Registered {serviceCount} services for {interface}",
             services.Count - beforeCount,
             options.BaseType.Name);

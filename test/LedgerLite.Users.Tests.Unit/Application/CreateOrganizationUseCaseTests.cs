@@ -14,18 +14,17 @@ namespace LedgerLite.Users.Tests.Unit.Application;
 
 public class CreateOrganizationUseCaseTests
 {
-    private readonly IRoleService _roleService = Substitute.For<IRoleService>();
-    private readonly IUserService _userService = Substitute.For<IUserService>();
-    private readonly IUsersUnitOfWork _unitOfWork = Substitute.For<IUsersUnitOfWork>();
-    private readonly IOrganizationRepository _organizationRepository = Substitute.For<IOrganizationRepository>();
-    private readonly CreateOrganizationEndpoint _sut;
-
     private static readonly Role Role = new(CommonRoles.Owner);
+    private readonly IOrganizationRepository _organizationRepository = Substitute.For<IOrganizationRepository>();
+    private readonly IRoleService _roleService = Substitute.For<IRoleService>();
+    private readonly CreateOrganizationEndpoint _sut;
+    private readonly IUsersUnitOfWork _unitOfWork = Substitute.For<IUsersUnitOfWork>();
+    private readonly IUserService _userService = Substitute.For<IUserService>();
 
     public CreateOrganizationUseCaseTests()
     {
         _roleService.GetByNameAsync(CommonRoles.Owner, Arg.Any<CancellationToken>()).Returns(Role);
-        
+
         _unitOfWork.SaveChangesAsync(Arg.Any<CancellationToken>()).Returns(Result.Success());
         _unitOfWork.OrganizationRepository.Returns(_organizationRepository);
         _sut = new CreateOrganizationEndpoint(_unitOfWork, _roleService, _userService);
@@ -38,7 +37,7 @@ public class CreateOrganizationUseCaseTests
         var request = new CreateOrganizationRequestDto(Guid.NewGuid(), "Oh no!");
 
         var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Conflict);
         result.Errors.ShouldHaveSingleItem().ShouldMatch("Oh no!");
     }
@@ -49,7 +48,7 @@ public class CreateOrganizationUseCaseTests
         var user = ConfigureUser();
         var request = GetRequest(user, "Ok!");
         var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         _organizationRepository.Received(1).Add(Arg.Is<Organization>(o => o.Name == request.Name));
     }
@@ -59,9 +58,9 @@ public class CreateOrganizationUseCaseTests
     {
         var user = ConfigureUser();
         var request = GetRequest(user, "Ok!");
-        
+
         var result = await _sut.HandleUseCaseAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -76,10 +75,13 @@ public class CreateOrganizationUseCaseTests
 
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(OrganizationErrors.CannotBeInTwoOrganizations(user));
-;    }
+        ;
+    }
 
-    private static CreateOrganizationRequestDto GetRequest(User user, string name) => 
-        new(user.Id, name);
+    private static CreateOrganizationRequestDto GetRequest(User user, string name)
+    {
+        return new CreateOrganizationRequestDto(user.Id, name);
+    }
 
     private User ConfigureUser(User? user = null)
     {

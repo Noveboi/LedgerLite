@@ -7,19 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-        <PackageReference Include="FastEndpoints" Version="6.0.0" />
+        <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0"/>
+        <PackageReference Include="FastEndpoints" Version="6.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj" />
-      <ProjectReference Include="..\LedgerLite.Accounting.Reporting\LedgerLite.Accounting.Reporting.csproj" />
-      <ProjectReference Include="..\LedgerLite.Users\LedgerLite.Users.csproj" />
+        <ProjectReference Include="..\LedgerLite.Accounting.Core\LedgerLite.Accounting.Core.csproj"/>
+        <ProjectReference Include="..\LedgerLite.Accounting.Reporting\LedgerLite.Accounting.Reporting.csproj"/>
+        <ProjectReference Include="..\LedgerLite.Users\LedgerLite.Users.csproj"/>
     </ItemGroup>
 </Project>

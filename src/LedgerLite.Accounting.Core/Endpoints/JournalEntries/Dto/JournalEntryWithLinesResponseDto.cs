@@ -6,7 +6,10 @@ public sealed record JournalEntryWithLinesResponseDto(
     JournalEntryResponseDto Entry,
     IEnumerable<JournalEntryLineDto> Lines)
 {
-    public static JournalEntryWithLinesResponseDto FromEntity(JournalEntry entry) => new(
-        Entry: JournalEntryResponseDto.FromEntity(entry),
-        Lines: entry.Lines.Select(JournalEntryLineDto.FromEntity));
+    public static JournalEntryWithLinesResponseDto FromEntity(JournalEntry entry)
+    {
+        return new JournalEntryWithLinesResponseDto(
+            JournalEntryResponseDto.FromEntity(entry),
+            entry.Lines.Select(JournalEntryLineDto.FromEntity));
+    }
 }

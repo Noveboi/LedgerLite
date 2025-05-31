@@ -13,11 +13,10 @@ namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
 public class RecordStandardTransactionTests
 {
-    private readonly TransactionRecordingService _sut;
-    private readonly IJournalEntryRepository _repository = Substitute.For<IJournalEntryRepository>();
-    private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
-
     private static readonly CreateJournalEntryLineRequest LineRequest = new(Guid.NewGuid(), 10);
+    private readonly IJournalEntryRepository _repository = Substitute.For<IJournalEntryRepository>();
+    private readonly TransactionRecordingService _sut;
+    private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
 
     public RecordStandardTransactionTests()
     {
@@ -55,7 +54,7 @@ public class RecordStandardTransactionTests
         var request = SuccessfulRequest();
 
         var result = await _sut.RecordStandardEntryAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.Status.ShouldBe(JournalEntryStatus.Editable);
         result.Value.Lines.Count.ShouldBe(2);
@@ -82,7 +81,7 @@ public class RecordStandardTransactionTests
     private FiscalPeriod ConfigureFiscalPeriod(FiscalPeriod? period = null)
     {
         period ??= FakeFiscalPeriods.Get();
-        
+
         _unitOfWork.FiscalPeriodRepository
             .GetByIdAsync(period.Id, Arg.Any<CancellationToken>())
             .Returns(period);
@@ -94,7 +93,7 @@ public class RecordStandardTransactionTests
     {
         var period = ConfigureFiscalPeriod();
         return Request(
-            referenceNumber: "Cool!",
+            "Cool!",
             userId: Guid.NewGuid(),
             periodId: period.Id);
     }
@@ -103,16 +102,16 @@ public class RecordStandardTransactionTests
         string referenceNumber,
         CreateJournalEntryLineRequest? creditRequest = null,
         CreateJournalEntryLineRequest? debitRequest = null,
-        Guid? userId = null, 
+        Guid? userId = null,
         Guid? periodId = null)
     {
         return new RecordStandardEntryRequest(
-            ReferenceNumber: referenceNumber,
-            OccursAt: DateOnly.FromDateTime(DateTime.Today),
-            Description: "",
-            CreditLine: creditRequest ?? LineRequest,
-            DebitLine: debitRequest ?? LineRequest,
-            RequestedByUserId: userId.GetValueOrDefault(),
-            FiscalPeriodId: periodId.GetValueOrDefault());
+            referenceNumber,
+            DateOnly.FromDateTime(DateTime.Today),
+            "",
+            creditRequest ?? LineRequest,
+            debitRequest ?? LineRequest,
+            userId.GetValueOrDefault(),
+            periodId.GetValueOrDefault());
     }
 }

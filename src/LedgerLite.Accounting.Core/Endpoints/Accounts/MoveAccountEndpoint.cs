@@ -9,11 +9,13 @@ using LedgerLite.SharedKernel.Identity;
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record MoveAccountRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
-    [property: RouteParam] Guid AccountId, 
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId,
+    [property: RouteParam] Guid AccountId,
     [property: RouteParam] Guid NewParentId);
 
-internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccountService accounts) : Endpoint<MoveAccountRequestDto>
+internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccountService accounts)
+    : Endpoint<MoveAccountRequestDto>
 {
     public override void Configure()
     {
@@ -29,7 +31,7 @@ internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccou
             await SendResultAsync(chart.ToMinimalApiResult());
             return;
         }
-        
+
         var request = new MoveAccountRequest(chart, req.AccountId, req.NewParentId);
         var result = await accounts.MoveAsync(request, ct);
         await SendResultAsync(result.ToMinimalApiResult());

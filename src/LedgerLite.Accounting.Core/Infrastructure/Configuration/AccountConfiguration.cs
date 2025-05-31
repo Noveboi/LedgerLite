@@ -22,7 +22,7 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.Property(x => x.Description)
             .HasMaxLength(150)
             .IsRequired(false);
-        
+
         builder.HasEnumeration(x => x.Type);
         builder.HasEnumeration(x => x.Currency);
     }

@@ -13,10 +13,10 @@ public class JournalEntryBalanceTests
         var debit = FakeJournalEntryLines.GetDebitFaker(o => o.Amount = 100).Generate();
 
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, [credit, debit]);
-        
+
         entry.IsBalanced().ShouldBeTrue();
     }
-    
+
     [Fact]
     public void Balanced_WhenCreditEqualsDebit_Compound()
     {
@@ -24,7 +24,7 @@ public class JournalEntryBalanceTests
         var debits = FakeJournalEntryLines.GetDebitFaker(o => o.Amount = 100).Generate(3);
 
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Compound, [..credits, ..debits]);
-        
+
         entry.IsBalanced().ShouldBeTrue();
     }
 
@@ -35,10 +35,10 @@ public class JournalEntryBalanceTests
         var debit = FakeJournalEntryLines.GetDebitFaker(o => o.Amount = 99.9m).Generate();
 
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, [credit, debit]);
-        
+
         entry.IsBalanced().ShouldBeFalse();
     }
-    
+
     [Fact]
     public void Imbalanced_WhenCreditDoesNotEqualDebit_Compound()
     {
@@ -46,7 +46,7 @@ public class JournalEntryBalanceTests
         var debits = FakeJournalEntryLines.GetDebitFaker(o => o.Amount = 100).Generate(3);
 
         var entry = JournalEntryHelper.CreateWithLines(JournalEntryType.Standard, [..credits, ..debits]);
-        
+
         entry.IsBalanced().ShouldBeFalse();
     }
 }

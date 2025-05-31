@@ -13,11 +13,11 @@ namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
 public class CreateAccountTests
 {
+    private readonly IAccountRepository _accountRepository = Substitute.For<IAccountRepository>();
     private readonly ChartOfAccounts _chart = FakeChartOfAccounts.Empty;
     private readonly AccountService _sut;
     private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
-    private readonly IAccountRepository _accountRepository = Substitute.For<IAccountRepository>();
-    
+
     public CreateAccountTests()
     {
         _unitOfWork.ConfigureForTests(o => o
@@ -29,9 +29,9 @@ public class CreateAccountTests
     public async Task NoAction_WhenAccountCreateRequestIsInvalid()
     {
         var request = GetRequest(req => req with { Name = "" });
-        
+
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors.ShouldHaveSingleItem().ShouldBeEquivalentTo(AccountErrors.AccountNameIsEmpty());
         await _unitOfWork.AssertThatNoActionWasTaken();
@@ -44,7 +44,7 @@ public class CreateAccountTests
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
         _accountRepository.Received(1).Add(Arg.Is(account));
@@ -57,7 +57,7 @@ public class CreateAccountTests
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         _chart.Accounts.ShouldHaveSingleItem().ShouldBeEquivalentTo(account);
     }
@@ -68,7 +68,7 @@ public class CreateAccountTests
         var request = GetRequest(req => req with { ParentId = null });
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         _chart.Nodes.ShouldHaveSingleItem().Parent.ShouldBeNull();
     }
@@ -78,11 +78,11 @@ public class CreateAccountTests
     {
         var parent = FakeAccounts.GetPlaceholder(o => o.Type = AccountType.Expense);
         var chart = FakeChartOfAccounts.With(parent);
-        var request = GetRequest(req => req with { ParentId = parent.Id, Chart = chart});
+        var request = GetRequest(req => req with { ParentId = parent.Id, Chart = chart });
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
         var account = result.Value;
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         chart.Nodes.Count.ShouldBe(2);
         var parentNode = chart.Nodes.First(x => x.Account == parent);
@@ -94,14 +94,14 @@ public class CreateAccountTests
     private CreateAccountRequest GetRequest(Func<CreateAccountRequest, CreateAccountRequest>? transform = null)
     {
         var request = new CreateAccountRequest(
-            Name: "Groceries",
-            Number: "301",
-            Type: AccountType.Expense,
-            Currency: Currency.Euro,
-            IsPlaceholder: false,
-            Description: "Tracking grocery spending.",
-            Chart: _chart,
-            ParentId: null);
+            "Groceries",
+            "301",
+            AccountType.Expense,
+            Currency.Euro,
+            false,
+            "Tracking grocery spending.",
+            _chart,
+            null);
 
         return transform?.Invoke(request) ?? request;
     }

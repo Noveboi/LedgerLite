@@ -1,5 +1,4 @@
-﻿
-using System.Text;
+﻿using System.Text;
 using FastEndpoints;
 using LedgerLite.Users.Domain;
 using Microsoft.AspNetCore.Builder;
@@ -20,9 +19,9 @@ internal sealed class ConfirmEmailEndpoint(UserManager<User> userManager) : Endp
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var userId = Query<string>("userId", isRequired: true)!;
-        var code = Query<string>("code", isRequired: true)!;
-        var changedEmail = Query<string>("changedEmail", isRequired: true)!;
+        var userId = Query<string>("userId", true)!;
+        var code = Query<string>("code", true)!;
+        var changedEmail = Query<string>("changedEmail", true)!;
 
         if (ValidationFailed || await userManager.FindByIdAsync(userId) is not { } user)
         {
@@ -51,9 +50,7 @@ internal sealed class ConfirmEmailEndpoint(UserManager<User> userManager) : Endp
             result = await userManager.ChangeEmailAsync(user, changedEmail, code);
 
             if (result.Succeeded && user.IsUsingEmailAsUsername())
-            {
                 result = await userManager.SetUserNameAsync(user, changedEmail);
-            }
         }
 
         if (!result.Succeeded)

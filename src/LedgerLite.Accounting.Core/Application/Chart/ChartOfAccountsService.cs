@@ -14,22 +14,15 @@ public sealed class ChartOfAccountsService(
     public async Task<Result<ChartOfAccounts>> GetByUserIdAsync(Guid userId, CancellationToken token)
     {
         var userResult = await userRequests.GetUserByIdAsync(userId, token);
-        if (!userResult.IsSuccess)
-        {
-            return userResult.Map();
-        }
+        if (!userResult.IsSuccess) return userResult.Map();
 
         var user = userResult.Value;
-        
+
         if (user.Organization?.Id is not { } organizationId)
-        {
             return Result.NotFound("User does not belong in an organization.");
-        }
 
         if (await repository.GetByOrganizationIdAsync(organizationId, token) is not { } chart)
-        {
             return Result.NotFound($"Organization with ID '{organizationId}' does not exist.");
-        }
 
         return chart;
     }

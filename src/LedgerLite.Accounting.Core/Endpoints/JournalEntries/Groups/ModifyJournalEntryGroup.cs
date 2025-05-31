@@ -5,5 +5,8 @@ namespace LedgerLite.Accounting.Core.Endpoints.JournalEntries.Groups;
 
 internal sealed class ModifyJournalEntryGroup : SubGroup<JournalEntryEndpointGroup>
 {
-    public ModifyJournalEntryGroup() => Configure("", ep => ep.Policy(x => x.RequireModificationPermissions()));
+    public ModifyJournalEntryGroup()
+    {
+        Configure("", ep => ep.Policy(x => x.RequireModificationPermissions()));
+    }
 }

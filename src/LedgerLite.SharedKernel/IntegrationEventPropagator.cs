@@ -5,12 +5,12 @@ using Serilog;
 namespace LedgerLite.SharedKernel;
 
 public abstract class IntegrationEventPropagator<TDomainEvent, TIntegrationEvent>(IPublisher publisher)
-    : IEventHandler<TDomainEvent> 
+    : IEventHandler<TDomainEvent>
     where TDomainEvent : DomainEvent
     where TIntegrationEvent : IEvent
 {
-    private readonly ILogger _log = Log.ForContext<IntegrationEventPropagator<TDomainEvent, TIntegrationEvent>>(); 
-    
+    private readonly ILogger _log = Log.ForContext<IntegrationEventPropagator<TDomainEvent, TIntegrationEvent>>();
+
     public ValueTask HandleAsync(TDomainEvent e, CancellationToken token)
     {
         var integrationEvent = MapToIntegrationEvent(e);

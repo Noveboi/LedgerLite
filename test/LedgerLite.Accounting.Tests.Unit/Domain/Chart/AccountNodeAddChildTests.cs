@@ -7,14 +7,13 @@ namespace LedgerLite.Accounting.Tests.Unit.Domain.Chart;
 
 public class AccountNodeAddChildTests
 {
-    
     [Fact]
     public void Invalid_WhenAddingAccountAsItsOwnChild()
     {
         var node = FakeAccountNodes.Get();
-        
+
         var result = node.AddChild(node);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -27,7 +26,7 @@ public class AccountNodeAddChildTests
         var node = FakeAccountNodes.Get(o => o.IsPlaceholder = false);
 
         var result = node.AddChild(FakeAccountNodes.SampleChild);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -45,13 +44,13 @@ public class AccountNodeAddChildTests
         var child = FakeAccountNodes.Get(o => o.Type = AccountType.Equity);
 
         var result = node.AddChild(child);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(AccountErrors.ChildHasDifferentType(
-                expected: node.Account.Type,
-                actual: child.Account.Type));
+                node.Account.Type,
+                child.Account.Type));
     }
 
     [Fact]
@@ -61,7 +60,7 @@ public class AccountNodeAddChildTests
         node.AddChild(FakeAccountNodes.SampleChild);
 
         var result = node.AddChild(FakeAccountNodes.SampleChild);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -74,7 +73,7 @@ public class AccountNodeAddChildTests
         var node = FakeAccountNodes.Get();
 
         var result = node.AddChild(FakeAccountNodes.SampleChild);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         node.Children
             .ShouldHaveSingleItem()
@@ -88,7 +87,7 @@ public class AccountNodeAddChildTests
         var child = FakeAccountNodes.SampleChild;
 
         var result = node.AddChild(child);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         child.Parent.ShouldBeEquivalentTo(node);
         child.ParentId.ShouldBeEquivalentTo(node.Id);

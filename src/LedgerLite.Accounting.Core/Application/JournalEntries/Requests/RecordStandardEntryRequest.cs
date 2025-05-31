@@ -2,7 +2,7 @@
 
 public sealed record RecordStandardEntryRequest(
     string ReferenceNumber,
-    DateOnly OccursAt, 
+    DateOnly OccursAt,
     string Description,
     CreateJournalEntryLineRequest CreditLine,
     CreateJournalEntryLineRequest DebitLine,

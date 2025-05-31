@@ -8,9 +8,9 @@ namespace LedgerLite.SharedKernel.Persistence.Interceptors;
 internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
 {
     private readonly ILogger _log = Log.ForContext<TimeAuditInterceptor>();
-    
+
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
-        DbContextEventData eventData, 
+        DbContextEventData eventData,
         InterceptionResult<int> result,
         CancellationToken cancellationToken = new())
     {
@@ -24,7 +24,6 @@ internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
         var updateCount = 0;
 
         foreach (var entry in entries)
-        {
             switch (entry.State)
             {
                 case EntityState.Added:
@@ -36,7 +35,6 @@ internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
                     entry.Entity.ModifiedAtUtc = utcNow;
                     break;
             }
-        }
 
         LogAuditCount("CREATED", createCount);
         LogAuditCount("UPDATED", updateCount);
@@ -48,7 +46,7 @@ internal sealed class TimeAuditInterceptor : SaveChangesInterceptor
     {
         if (count == 0)
             return;
-        
+
         _log.Information("Audit {count} entities {verb}", count, verb);
     }
 }

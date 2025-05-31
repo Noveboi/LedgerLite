@@ -26,7 +26,7 @@ internal sealed class GetJournalEntryEndpoint(IJournalEntryRepository repository
             await SendResultAsync(Results.NotFound(CommonErrors.NotFound<JournalEntry>(req.Id)));
             return;
         }
-        
+
         await SendAsync(JournalEntryWithLinesResponseDto.FromEntity(journalEntry), cancellation: ct);
     }
 }

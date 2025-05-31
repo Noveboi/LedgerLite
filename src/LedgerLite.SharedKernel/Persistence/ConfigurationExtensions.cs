@@ -16,24 +16,24 @@ public static class ConfigurationExtensions
 
     public static void HasEnumeration<T, TProp>(
         this EntityTypeBuilder<T> builder,
-        Expression<Func<T, TProp?>> propertyExpression) 
-        where TProp : SmartEnum<TProp> 
+        Expression<Func<T, TProp?>> propertyExpression)
+        where TProp : SmartEnum<TProp>
         where T : class
     {
         builder.Property(propertyExpression)
             .HasConversion(
-                convertToProviderExpression: prop => prop!.Value,
-                convertFromProviderExpression: value => SmartEnum<TProp>.FromValue(value));
+                prop => prop!.Value,
+                value => SmartEnum<TProp>.FromValue(value));
     }
 
     public static ModelBuilder ConfigureEnumeration<TEnum>(this ModelBuilder builder) where TEnum : SmartEnum<TEnum>
     {
         var enumBuilder = builder.Entity<TEnum>();
-        
+
         enumBuilder.HasKey(x => x.Value);
         enumBuilder.Property(x => x.Name).IsRequired();
         enumBuilder.HasData(SmartEnum<TEnum>.List);
-        
+
         return builder;
     }
 }

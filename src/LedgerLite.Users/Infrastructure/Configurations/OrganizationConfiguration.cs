@@ -10,10 +10,10 @@ internal sealed class OrganizationConfiguration : IEntityTypeConfiguration<Organ
     public void Configure(EntityTypeBuilder<Organization> builder)
     {
         builder.IsDomainEntity();
-        
+
         builder.Property(x => x.Name).HasMaxLength(256);
         builder.HasIndex(x => x.Name).IsUnique();
-        
+
         builder
             .HasMany(x => x.Members)
             .WithOne()

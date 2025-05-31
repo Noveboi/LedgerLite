@@ -26,12 +26,15 @@ public class JournalEntryCreationTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(JournalEntryErrors.CannotEditBecausePeriodIsClosed(period));
     }
-    
-    private static Result<JournalEntry> HelpCreateEntry(string referenceNumber, FiscalPeriod period) => JournalEntry.Create(
-        referenceNumber: referenceNumber,
-        fiscalPeriod: period,
-        type: JournalEntryType.Standard, 
-        description: "",
-        occursAt: DateOnly.FromDateTime(DateTime.UtcNow),
-        createdByUserId: Guid.NewGuid());
+
+    private static Result<JournalEntry> HelpCreateEntry(string referenceNumber, FiscalPeriod period)
+    {
+        return JournalEntry.Create(
+            referenceNumber: referenceNumber,
+            fiscalPeriod: period,
+            type: JournalEntryType.Standard,
+            description: "",
+            occursAt: DateOnly.FromDateTime(DateTime.UtcNow),
+            createdByUserId: Guid.NewGuid());
+    }
 }

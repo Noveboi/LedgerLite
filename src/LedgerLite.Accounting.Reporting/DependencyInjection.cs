@@ -11,5 +11,5 @@ public static class DependencyInjection
         return services
             .AddScoped<ReportingUserAuthorization>()
             .AddScoped<TrialBalanceService>();
-    }    
+    }
 }

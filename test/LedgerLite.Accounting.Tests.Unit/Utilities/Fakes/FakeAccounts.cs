@@ -19,6 +19,7 @@ public sealed class FakeAccountOptions
         return this;
     }
 }
+
 public static class FakeAccounts
 {
     public static Faker<Account> GetAccountFaker(FakeAccountOptions? options = null)
@@ -32,8 +33,15 @@ public static class FakeAccounts
             .RuleFor(x => x.IsPlaceholder, options?.IsPlaceholder ?? false);
     }
 
-    public static Account NewAccount() => GetAccountFaker().Generate();
-    public static List<Account> NewAccounts(int count) => GetAccountFaker().Generate(count);
+    public static Account NewAccount()
+    {
+        return GetAccountFaker().Generate();
+    }
+
+    public static List<Account> NewAccounts(int count)
+    {
+        return GetAccountFaker().Generate(count);
+    }
 
     public static Account Get(Action<FakeAccountOptions>? configure = null)
     {

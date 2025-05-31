@@ -4,7 +4,7 @@ using LedgerLite.Users.Contracts.Models;
 namespace LedgerLite.Users.Contracts;
 
 /// <summary>
-/// Cross-module use cases for Users. 
+///     Cross-module use cases for Users.
 /// </summary>
 public interface IUserRequests
 {

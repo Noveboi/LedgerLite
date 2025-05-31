@@ -11,7 +11,9 @@ internal static class ModifyPolicy
         CommonRoles.Admin,
         CommonRoles.Owner
     ];
-    
-    public static AuthorizationPolicyBuilder RequireModificationPermissions(this AuthorizationPolicyBuilder builder) => 
-        builder.RequireRole(AllowedRoles);
+
+    public static AuthorizationPolicyBuilder RequireModificationPermissions(this AuthorizationPolicyBuilder builder)
+    {
+        return builder.RequireRole(AllowedRoles);
+    }
 }

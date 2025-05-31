@@ -14,7 +14,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace LedgerLite.Users.Endpoints.Organizations;
 
 internal sealed record JoinOrganizationRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId,
     [property: FromRoute] Guid OrganizationId);
 
 internal sealed class JoinOrganizationEndpoint(
@@ -23,7 +24,7 @@ internal sealed class JoinOrganizationEndpoint(
     IRoleService roles) : Endpoint<JoinOrganizationRequestDto>
 {
     private readonly IOrganizationRepository _organizations = unitOfWork.OrganizationRepository;
-    
+
     public override void Configure()
     {
         Put("/{organizationId:guid}/join");
@@ -45,8 +46,9 @@ internal sealed class JoinOrganizationEndpoint(
 
     public async Task<Result<OrganizationMember>> HandleUseCaseAsync(
         JoinOrganizationRequestDto request,
-        CancellationToken token) =>
-        await userService.GetByIdAsync(request.UserId, token)
+        CancellationToken token)
+    {
+        return await userService.GetByIdAsync(request.UserId, token)
             .BindAsync(async user => await _organizations.GetByIdAsync(request.OrganizationId, token) is { } org
                 ? Result.Success(new { User = user, Organization = org })
                 : Result.NotFound(CommonErrors.NotFound<Organization>(request.OrganizationId)))
@@ -58,4 +60,5 @@ internal sealed class JoinOrganizationEndpoint(
                 .Map(() => state.Member))
             .BindAsync(member => unitOfWork.SaveChangesAsync(token)
                 .MapAsync(() => member));
+    }
 }

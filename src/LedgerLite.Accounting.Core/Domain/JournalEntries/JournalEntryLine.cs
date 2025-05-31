@@ -4,20 +4,22 @@ using LedgerLite.SharedKernel.Domain;
 namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 /// <summary>
-/// Records one part of a financial transaction.
+///     Records one part of a financial transaction.
 /// </summary>
 public sealed class JournalEntryLine : AuditableEntity
 {
-    private JournalEntryLine() { }
-    
+    private JournalEntryLine()
+    {
+    }
+
     /// <summary>
-    /// The ID of the associated journal entry.
+    ///     The ID of the associated journal entry.
     /// </summary>
     public Guid EntryId { get; private init; }
 
-    public JournalEntry Entry { get; private init; } = null!;
+    public JournalEntry Entry { get; } = null!;
     public Guid AccountId { get; private init; }
-    public Account Account { get; private init; } = null!;
+    public Account Account { get; } = null!;
     public TransactionType TransactionType { get; private init; }
     public decimal Amount { get; private init; }
 
@@ -38,19 +40,24 @@ public sealed class JournalEntryLine : AuditableEntity
 
         return otherLine.Account;
     }
-    
+
     public static JournalEntryLine Create(
-        TransactionType type, 
-        decimal amount, 
-        Guid accountId, 
-        Guid entryId) =>
-        new()
+        TransactionType type,
+        decimal amount,
+        Guid accountId,
+        Guid entryId)
+    {
+        return new JournalEntryLine
         {
             TransactionType = type,
             Amount = amount,
             AccountId = accountId,
-            EntryId = entryId,
+            EntryId = entryId
         };
+    }
 
-    public override string ToString() => $"{TransactionType.ToString()} '{Account.Name}' - {Amount:N}";
+    public override string ToString()
+    {
+        return $"{TransactionType.ToString()} '{Account.Name}' - {Amount:N}";
+    }
 }

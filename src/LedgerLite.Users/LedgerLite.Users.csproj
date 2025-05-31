@@ -6,22 +6,22 @@
         <Nullable>enable</Nullable>
         <LangVersion>preview</LangVersion>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.4" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.4"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-      <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
-      <ProjectReference Include="..\LedgerLite.Users.Contracts\LedgerLite.Users.Contracts.csproj" />
+        <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj"/>
+        <ProjectReference Include="..\LedgerLite.Users.Contracts\LedgerLite.Users.Contracts.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <InternalsVisibleTo Include="LedgerLite.Users.Tests.Unit"/>
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>

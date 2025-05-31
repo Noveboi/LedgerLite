@@ -10,12 +10,15 @@ internal sealed record TrialBalanceDto(
     FiscalPeriodDto Period,
     IEnumerable<AccountBalanceDto> WorkingBalances)
 {
-    public static TrialBalanceDto FromEntity(TrialBalance entity) => new(
-        TotalCredits: entity.GetTotalCredits(),
-        TotalDebits: entity.GetTotalDebits(),
-        Period: FiscalPeriodDto.FromEntity(entity.Period),
-        WorkingBalances: entity.WorkingBalance.Select(entry => new AccountBalanceDto(
-            Account: SlimAccountDto.FromEntity(entry.Account),
-            Credit: entry.Type == TransactionType.Credit ? entry.Amount : 0,
-            Debit: entry.Type == TransactionType.Debit ? entry.Amount : 0)));
+    public static TrialBalanceDto FromEntity(TrialBalance entity)
+    {
+        return new TrialBalanceDto(
+            TotalCredits: entity.GetTotalCredits(),
+            TotalDebits: entity.GetTotalDebits(),
+            Period: FiscalPeriodDto.FromEntity(entity.Period),
+            WorkingBalances: entity.WorkingBalance.Select(entry => new AccountBalanceDto(
+                SlimAccountDto.FromEntity(entry.Account),
+                entry.Type == TransactionType.Credit ? entry.Amount : 0,
+                entry.Type == TransactionType.Debit ? entry.Amount : 0)));
+    }
 }

@@ -10,24 +10,24 @@ public static class AssertionEquivalenceExtensions
         var config = new ComparisonConfig
         {
             MaxDifferences = 50,
-            IgnoreCollectionOrder = true,
+            IgnoreCollectionOrder = true
         };
-        
+
         configure?.Invoke(config);
         subject.ShouldCompare(other, compareConfig: config);
     }
-    
+
     public static void EquivalentToEntity<T>(this T subject, T other, Action<ComparisonConfig>? configure = null)
         where T : Entity
     {
         var config = new ComparisonConfig
         {
             MaxDifferences = 50,
-            IgnoreCollectionOrder = true,
+            IgnoreCollectionOrder = true
         };
-        
+
         config.IgnoreProperty<T>(x => x.Id);
-        
+
         configure?.Invoke(config);
         subject.ShouldCompare(other, compareConfig: config);
     }

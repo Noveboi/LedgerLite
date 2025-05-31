@@ -1,6 +1,5 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Tests.Shared;
-using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Tests.Unit.Utilities;
@@ -16,7 +15,7 @@ public class OrganizationAddMemberTests
         var organization = FakeOrganizations.Get();
 
         var result = organization.AddMember(member);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         organization.Members.ShouldHaveSingleItem().ShouldBeEquivalentTo(member);
     }
@@ -28,7 +27,7 @@ public class OrganizationAddMemberTests
         var organization = FakeOrganizations.Get(o => o.WithMember(member));
 
         var result = organization.AddMember(member);
-        
+
         result.ShouldBeInvalid();
         result.ShouldHaveError(OrganizationErrors.MemberAlreadyInOrganization(member));
     }
@@ -41,7 +40,7 @@ public class OrganizationAddMemberTests
         var another = FakeOrganizationMembers.Get(x => x.WithRole(CommonRoles.Owner));
 
         var result = organization.AddMember(another);
-        
+
         result.ShouldBeInvalid();
         result.ShouldHaveError(OrganizationErrors.AlreadyHasOwner());
     }
@@ -53,7 +52,7 @@ public class OrganizationAddMemberTests
         var organization = FakeOrganizations.Get();
 
         var result = organization.AddMember(member);
-        
+
         result.ShouldBeInvalid();
         result.ShouldHaveError(OrganizationErrors.MemberDoesNotHaveRole(member));
     }

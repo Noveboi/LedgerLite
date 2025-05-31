@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
+        <ProjectReference Include="..\..\src\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj"/>
     </ItemGroup>
 
 </Project>

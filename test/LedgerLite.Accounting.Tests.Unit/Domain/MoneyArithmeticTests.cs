@@ -4,8 +4,11 @@ namespace LedgerLite.Accounting.Tests.Unit.Domain;
 
 public class MoneyArithmeticTests
 {
-    private static (Money, Money) Get(decimal a, decimal b) => (new Money(a, Currency.Euro), new Money(b, Currency.Euro));
-    
+    private static (Money, Money) Get(decimal a, decimal b)
+    {
+        return (new Money(a, Currency.Euro), new Money(b, Currency.Euro));
+    }
+
     [Fact]
     public void Addition()
     {
@@ -38,17 +41,36 @@ public class MoneyArithmeticTests
         result.Amount.ShouldBe(4);
     }
 
-    [Fact] public void Add_ThrowOn_DifferentCurrencies() => AssertDifferentCurrencies((a, b) => a + b);
-    [Fact] public void Subtract_ThrowOn_DifferentCurrencies() => AssertDifferentCurrencies((a, b) => a - b);
-    [Fact] public void Multiply_ThrowOn_DifferentCurrencies() => AssertDifferentCurrencies((a, b) => a * b);
-    [Fact] public void Division_ThrowOn_DifferentCurrencies() => AssertDifferentCurrencies((a, b) => a / b);
-    
+    [Fact]
+    public void Add_ThrowOn_DifferentCurrencies()
+    {
+        AssertDifferentCurrencies((a, b) => a + b);
+    }
+
+    [Fact]
+    public void Subtract_ThrowOn_DifferentCurrencies()
+    {
+        AssertDifferentCurrencies((a, b) => a - b);
+    }
+
+    [Fact]
+    public void Multiply_ThrowOn_DifferentCurrencies()
+    {
+        AssertDifferentCurrencies((a, b) => a * b);
+    }
+
+    [Fact]
+    public void Division_ThrowOn_DifferentCurrencies()
+    {
+        AssertDifferentCurrencies((a, b) => a / b);
+    }
+
     private void AssertDifferentCurrencies(Func<Money, Money, Money> operation)
     {
         var a = new Money(1337, Currency.Euro);
         var b = new Money(420, Currency.Dollar);
-        
+
         var action = () => operation(a, b);
         action.ShouldThrow<InvalidOperationException>();
-    } 
+    }
 }

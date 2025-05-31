@@ -13,5 +13,5 @@ internal static class DependencyInjection
         return services
             .AddScoped<IPublisher, Publisher>()
             .AddScoped<IEventPublisher, SequentialEventPublisher>();
-    } 
+    }
 }

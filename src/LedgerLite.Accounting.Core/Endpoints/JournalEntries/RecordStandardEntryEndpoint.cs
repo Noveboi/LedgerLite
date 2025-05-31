@@ -16,9 +16,10 @@ internal sealed record RecordStandardEntryRequestDto(
     Guid DebitAccountId,
     Guid CreditAccountId,
     [property: RouteParam] Guid FiscalPeriodId,
-    [property: FromClaim(ClaimTypes.NameIdentifier)] Guid RequestedByUserId);
+    [property: FromClaim(ClaimTypes.NameIdentifier)]
+    Guid RequestedByUserId);
 
-internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService service) 
+internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService service)
     : Endpoint<RecordStandardEntryRequestDto, JournalEntryResponseDto>
 {
     public override void Configure()
@@ -41,21 +42,23 @@ internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService s
         var entry = result.Value;
 
         await SendCreatedAtAsync<GetJournalEntryEndpoint>(
-            routeValues: new { entry.Id },
-            responseBody: JournalEntryResponseDto.FromEntity(entry),
+            new { entry.Id },
+            JournalEntryResponseDto.FromEntity(entry),
             cancellation: ct);
     }
 
-    private static RecordStandardEntryRequest MapToRequest(RecordStandardEntryRequestDto dto) => 
-        new(ReferenceNumber: dto.ReferenceNumber,
-            OccursAt: dto.OccursAt,
-            Description: dto.Description,
-            CreditLine: new CreateJournalEntryLineRequest(
-                AccountId: dto.CreditAccountId,
-                Amount: dto.Amount),
-            DebitLine: new CreateJournalEntryLineRequest(
-                AccountId: dto.DebitAccountId,
-                Amount: dto.Amount),
-            RequestedByUserId: dto.RequestedByUserId,
-            FiscalPeriodId: dto.FiscalPeriodId);
+    private static RecordStandardEntryRequest MapToRequest(RecordStandardEntryRequestDto dto)
+    {
+        return new RecordStandardEntryRequest(dto.ReferenceNumber,
+            dto.OccursAt,
+            dto.Description,
+            new CreateJournalEntryLineRequest(
+                dto.CreditAccountId,
+                dto.Amount),
+            new CreateJournalEntryLineRequest(
+                dto.DebitAccountId,
+                dto.Amount),
+            dto.RequestedByUserId,
+            dto.FiscalPeriodId);
+    }
 }

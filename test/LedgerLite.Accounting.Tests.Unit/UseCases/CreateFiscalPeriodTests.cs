@@ -12,11 +12,10 @@ namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
 public class CreateFiscalPeriodTests
 {
-    private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
+    private static readonly Guid OrganizationId = Guid.NewGuid();
     private readonly IFiscalPeriodRepository _repository = Substitute.For<IFiscalPeriodRepository>();
     private readonly FiscalPeriodService _sut;
-
-    private static readonly Guid OrganizationId = Guid.NewGuid();
+    private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
 
     public CreateFiscalPeriodTests()
     {
@@ -30,7 +29,7 @@ public class CreateFiscalPeriodTests
         var request = GetRequest(OrganizationId) with { StartDate = DateOnly.MaxValue };
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(FiscalPeriodErrors.StartIsAfterEnd(request.StartDate, request.EndDate));
         await _unitOfWork.AssertThatNoActionWasTaken();
@@ -42,10 +41,10 @@ public class CreateFiscalPeriodTests
         var request = GetRequest(OrganizationId);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
-        _repository.Received(1).Add(Arg.Is<FiscalPeriod>(f => f.OrganizationId == request.OrganizationId && 
-                                                              f.StartDate == request.StartDate && 
+        _repository.Received(1).Add(Arg.Is<FiscalPeriod>(f => f.OrganizationId == request.OrganizationId &&
+                                                              f.StartDate == request.StartDate &&
                                                               f.EndDate == request.EndDate));
     }
 
@@ -55,7 +54,7 @@ public class CreateFiscalPeriodTests
         var request = GetRequest(OrganizationId);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         await _unitOfWork.Received(1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
@@ -66,7 +65,7 @@ public class CreateFiscalPeriodTests
         var request = GetRequest(OrganizationId);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         result.Value.ShouldNotBeNull();
         var period = result.Value;
@@ -84,7 +83,7 @@ public class CreateFiscalPeriodTests
         var request = GetRequest(OrganizationId);
 
         var result = await _sut.CreateAsync(request, CancellationToken.None);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(FiscalPeriodErrors.OverlappingPeriods(
             overlap.Range,
@@ -103,12 +102,15 @@ public class CreateFiscalPeriodTests
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ShouldHaveError(FiscalPeriodErrors.PeriodWithSameName(request.Name));
     }
-    
-    private static CreateFiscalPeriodRequest GetRequest(Guid orgId) => new(
-        OrganizationId: orgId,
-        StartDate: new DateOnly(2024, 1, 1),
-        EndDate: new DateOnly(2025, 1, 1),
-        Name: "Alright!");
+
+    private static CreateFiscalPeriodRequest GetRequest(Guid orgId)
+    {
+        return new CreateFiscalPeriodRequest(
+            orgId,
+            new DateOnly(2024, 1, 1),
+            new DateOnly(2025, 1, 1),
+            "Alright!");
+    }
 
     private FiscalPeriod ConfigureExistingPeriod(DateOnly startDate, DateOnly endDate)
     {
@@ -118,7 +120,8 @@ public class CreateFiscalPeriodTests
             .WithOrganization(OrganizationId));
 
         _repository
-            .FindOverlappingPeriodAsync(OrganizationId, Arg.Any<DateOnly>(), Arg.Any<DateOnly>(), Arg.Any<CancellationToken>())
+            .FindOverlappingPeriodAsync(OrganizationId, Arg.Any<DateOnly>(), Arg.Any<DateOnly>(),
+                Arg.Any<CancellationToken>())
             .Returns(period);
 
         return period;

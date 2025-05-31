@@ -6,21 +6,24 @@ namespace LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 
 internal static class AccountDtoConversions
 {
-    public static AccountDto ToDto(this Account account) => new()
+    public static AccountDto ToDto(this Account account)
     {
-        Id = account.Id,
-        Name = account.Name,
-        Number = account.Number,
-        Type = account.Type.ToString(),
-        Currency = account.Currency.ToString(),
-        IsControl = account.IsPlaceholder,
-        Description = account.Description
-    };
-    
+        return new AccountDto
+        {
+            Id = account.Id,
+            Name = account.Name,
+            Number = account.Number,
+            Type = account.Type.ToString(),
+            Currency = account.Currency.ToString(),
+            IsControl = account.IsPlaceholder,
+            Description = account.Description
+        };
+    }
+
     public static AccountWithLinesDto ToDto(this AccountWithDetails accountWithDetails)
     {
-        var account = accountWithDetails.Node.Account; 
-            
+        var account = accountWithDetails.Node.Account;
+
         return new AccountWithLinesDto
         {
             Id = account.Id,
@@ -30,7 +33,7 @@ internal static class AccountDtoConversions
             Currency = account.Currency.ToString(),
             IsControl = account.IsPlaceholder,
             Description = account.Description,
-            Lines = accountWithDetails.Lines.Select(JournalEntryLineDto.FromEntity),
+            Lines = accountWithDetails.Lines.Select(JournalEntryLineDto.FromEntity)
         };
     }
 }

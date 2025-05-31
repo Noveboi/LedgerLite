@@ -5,7 +5,7 @@ using LedgerLite.Users.Integrations.Conversions;
 
 namespace LedgerLite.Users.Endpoints.Organizations;
 
-internal sealed class GetOrganizationsEndpoint(IOrganizationRepository organizationRepository) 
+internal sealed class GetOrganizationsEndpoint(IOrganizationRepository organizationRepository)
     : EndpointWithoutRequest<IEnumerable<OrganizationDto>>
 {
     public override void Configure()

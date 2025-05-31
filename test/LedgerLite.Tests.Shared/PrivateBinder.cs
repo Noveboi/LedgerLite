@@ -1,9 +1,10 @@
 ﻿using System.Reflection;
 using System.Runtime.CompilerServices;
+using Binder = Bogus.Binder;
 
 namespace LedgerLite.Tests.Shared;
 
-public class PrivateBinder : Bogus.Binder
+public class PrivateBinder : Binder
 {
     public override Dictionary<string, MemberInfo> GetMembers(Type t)
     {
@@ -17,10 +18,7 @@ public class PrivateBinder : Bogus.Binder
             .Where(fi => !fi.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
             .ToArray();
 
-        foreach (var privateField in allPrivateMembers)
-        {
-            members.TryAdd(privateField.Name, privateField);
-        }
+        foreach (var privateField in allPrivateMembers) members.TryAdd(privateField.Name, privateField);
 
         return members;
     }

@@ -8,24 +8,24 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <InternalsVisibleTo Include="LedgerLite.Accounting.Tests.Unit"/>
         <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj" />
-      <ProjectReference Include="..\LedgerLite.Users.Contracts\LedgerLite.Users.Contracts.csproj" />
+        <ProjectReference Include="..\LedgerLite.SharedKernel\LedgerLite.SharedKernel.csproj"/>
+        <ProjectReference Include="..\LedgerLite.Users.Contracts\LedgerLite.Users.Contracts.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
-      <PackageReference Include="FastEndpoints" Version="6.0.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-      <PackageReference Include="Serilog" Version="4.2.0" />
+        <PackageReference Include="Ardalis.Result.AspNetCore" Version="10.1.0"/>
+        <PackageReference Include="FastEndpoints" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
+        <PackageReference Include="Serilog" Version="4.2.0"/>
     </ItemGroup>
 </Project>

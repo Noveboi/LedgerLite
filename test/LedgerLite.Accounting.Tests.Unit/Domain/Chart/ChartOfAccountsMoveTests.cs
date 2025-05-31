@@ -14,14 +14,14 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With(subject, parent);
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         var subjectNode = GetNodeFromChart(subject, chart);
         var parentNode = GetNodeFromChart(parent, chart);
         subjectNode.Parent.ShouldNotBeNull().Account.ShouldBeEquivalentTo(parent);
         subjectNode.ParentId.ShouldNotBeNull().ShouldBe(parentNode.Id);
     }
-    
+
     [Fact]
     public void RemoveMoveSubject_FromChildrenOfPreviousParent()
     {
@@ -47,7 +47,7 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With(subject, parent);
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Ok);
         var parentNode = GetNodeFromChart(parent, chart);
         parentNode.Children.ShouldHaveSingleItem().Account.ShouldBeEquivalentTo(subject);
@@ -60,7 +60,7 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With(parent);
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -74,7 +74,7 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With(subject);
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -88,7 +88,7 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With(subject, parent);
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -103,7 +103,7 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With(subject, parent);
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
@@ -117,7 +117,7 @@ public class ChartOfAccountsMoveTests
         var chart = FakeChartOfAccounts.With((parent, o => o.AddChild(subject)));
 
         var result = chart.Move(subject.Id, parent.Id);
-        
+
         result.Status.ShouldBe(ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()

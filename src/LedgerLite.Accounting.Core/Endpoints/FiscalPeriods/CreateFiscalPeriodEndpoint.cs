@@ -10,13 +10,14 @@ using LedgerLite.Users.Contracts.Models;
 namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
 
 internal sealed record CreateFiscalPeriodRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId,
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId,
     DateOnly StartDate,
     DateOnly EndDate,
     string Name);
 
 internal sealed class CreateFiscalPeriodEndpoint(
-    GetOrganizationFromUserUseCase getOrganizationFromUser, 
+    GetOrganizationFromUserUseCase getOrganizationFromUser,
     IFiscalPeriodService service)
     : Endpoint<CreateFiscalPeriodRequestDto, FiscalPeriodDto>
 {
@@ -38,22 +39,21 @@ internal sealed class CreateFiscalPeriodEndpoint(
         var request = MapRequest(req, organizationResult.Value);
         var creationResult = await service.CreateAsync(request, ct);
 
-        if (!creationResult.IsSuccess)
-        {
-            await SendResultAsync(creationResult.ToMinimalApiResult());
-        }
+        if (!creationResult.IsSuccess) await SendResultAsync(creationResult.ToMinimalApiResult());
 
         var period = creationResult.Value;
 
         await SendCreatedAtAsync<GetFiscalPeriodsEndpoint>(
-            routeValues: null,
-            responseBody: period.ToDto(),
+            null,
+            period.ToDto(),
             cancellation: ct);
     }
 
-    public static CreateFiscalPeriodRequest MapRequest(CreateFiscalPeriodRequestDto dto, OrganizationDto org) =>
-        new(OrganizationId: org.Id,
-            StartDate: dto.StartDate,
-            EndDate: dto.EndDate,
-            Name: dto.Name);
+    public static CreateFiscalPeriodRequest MapRequest(CreateFiscalPeriodRequestDto dto, OrganizationDto org)
+    {
+        return new CreateFiscalPeriodRequest(org.Id,
+            dto.StartDate,
+            dto.EndDate,
+            dto.Name);
+    }
 }

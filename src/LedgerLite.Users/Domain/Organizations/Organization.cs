@@ -1,28 +1,29 @@
 ﻿using Ardalis.Result;
 using LedgerLite.SharedKernel.Domain;
 using LedgerLite.SharedKernel.Domain.Errors;
-using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain.Organizations.Events;
 
 namespace LedgerLite.Users.Domain.Organizations;
 
 /// <summary>
-/// An organization can be one person, a small business or an enterprise. It is simply a collection of users under a
-/// common entity.
+///     An organization can be one person, a small business or an enterprise. It is simply a collection of users under a
+///     common entity.
 /// </summary>
 public sealed class Organization : AuditableEntity
 {
-    private Organization() { }
+    private readonly List<OrganizationMember> _members = [];
+
+    private Organization()
+    {
+    }
+
     private Organization(string name)
     {
         Name = name;
     }
-    
+
     public string Name { get; private set; } = null!;
-    
-    
-    private readonly List<OrganizationMember> _members = [];
     public IReadOnlyCollection<OrganizationMember> Members => _members;
 
     public static Result<Organization> Create(User creator, Role creatorRole, string name)
@@ -31,14 +32,12 @@ public sealed class Organization : AuditableEntity
             return Result.Invalid(CommonErrors.NameIsEmpty());
 
         if (creatorRole.Name != CommonRoles.Owner)
-        {
             throw new InvalidOperationException($"Organization creator must be '{CommonRoles.Owner}'.");
-        }
 
         var organization = new Organization(name);
         var member = OrganizationMember.Create(creator, organization, creatorRole);
         organization.AddMember(member);
-        
+
         organization.AddDomainEvent(new OrganizationCreatedEvent(organization));
 
         return Result.Success(organization);
@@ -54,7 +53,7 @@ public sealed class Organization : AuditableEntity
 
         if (_members.Any(m => m.HasRole(CommonRoles.Owner)) && member.HasRole(CommonRoles.Owner))
             return Result.Invalid(OrganizationErrors.AlreadyHasOwner());
-        
+
         _members.Add(member);
         return Result.Success();
     }

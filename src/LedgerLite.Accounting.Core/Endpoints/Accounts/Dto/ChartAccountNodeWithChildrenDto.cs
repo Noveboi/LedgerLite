@@ -6,7 +6,10 @@ public sealed record ChartAccountNodeWithChildrenDto(
     SlimAccountDto Account,
     IEnumerable<ChartAccountNodeWithChildrenDto> Children)
 {
-    public static ChartAccountNodeWithChildrenDto FromEntity(AccountNode node) => new(
-        Account: SlimAccountDto.FromEntity(node.Account),
-        Children: node.Children.Select(FromEntity));
+    public static ChartAccountNodeWithChildrenDto FromEntity(AccountNode node)
+    {
+        return new ChartAccountNodeWithChildrenDto(
+            SlimAccountDto.FromEntity(node.Account),
+            node.Children.Select(FromEntity));
+    }
 }

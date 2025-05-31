@@ -7,7 +7,10 @@ namespace LedgerLite.Accounting.Core.Domain.Periods;
 
 public sealed class FiscalPeriod : AuditableEntity
 {
-    private FiscalPeriod() { }
+    private FiscalPeriod()
+    {
+    }
+
     private FiscalPeriod(Guid organizationId, DateOnly startDate, DateOnly endDate, string name)
     {
         OrganizationId = organizationId;
@@ -17,30 +20,31 @@ public sealed class FiscalPeriod : AuditableEntity
     }
 
     /// <summary>
-    /// The ID of the organization that created and is using this fiscal period.
+    ///     The ID of the organization that created and is using this fiscal period.
     /// </summary>
     public Guid OrganizationId { get; private init; }
-    public DateOnly StartDate { get; private init; }
-    public DateOnly EndDate { get; private init; }
+
+    public DateOnly StartDate { get; }
+    public DateOnly EndDate { get; }
     public DateTime? ClosedAtUtc { get; private set; }
     public string Name { get; private set; } = null!;
 
     public bool IsClosed => ClosedAtUtc.HasValue;
-    [NotMapped] public DateRange Range => new(Start: StartDate, End: EndDate);
+    [NotMapped] public DateRange Range => new(StartDate, EndDate);
 
     public static Result<FiscalPeriod> Create(Guid organizationId, DateOnly startDate, DateOnly endDate, string name)
     {
         if (startDate > endDate)
             return Result.Invalid(FiscalPeriodErrors.StartIsAfterEnd(startDate, endDate));
-        
+
         if (string.IsNullOrWhiteSpace(name))
             return Result.Invalid(FiscalPeriodErrors.NameCannotBeEmpty());
 
         var period = new FiscalPeriod(
-            organizationId, 
-            startDate: startDate, 
-            endDate: endDate,
-            name: name);
+            organizationId,
+            startDate,
+            endDate,
+            name);
 
         return period;
     }

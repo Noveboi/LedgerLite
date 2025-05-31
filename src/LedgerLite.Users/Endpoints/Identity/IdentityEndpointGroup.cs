@@ -17,12 +17,15 @@ internal sealed class IdentityEndpointGroup : Group
     {
         Configure("", _ => { });
     }
-    
-    public static ValidationProblem CreateValidationProblem(string errorCode, string errorDescription) =>
-        TypedResults.ValidationProblem(new Dictionary<string, string[]> {
+
+    public static ValidationProblem CreateValidationProblem(string errorCode, string errorDescription)
+    {
+        return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+        {
             { errorCode, [errorDescription] }
         });
-    
+    }
+
     public static ValidationProblem CreateValidationProblem(IdentityResult result)
     {
         // We expect a single error code and description in the normal case.
@@ -50,14 +53,14 @@ internal sealed class IdentityEndpointGroup : Group
 
         return TypedResults.ValidationProblem(errorDictionary);
     }
-    
+
     public static async Task SendConfirmationEmailAsync(
-        User user, 
-        UserManager<User> userManager, 
+        User user,
+        UserManager<User> userManager,
         IEmailSender<User> emailSender,
         LinkGenerator linkGenerator,
-        HttpContext context, 
-        string email, 
+        HttpContext context,
+        string email,
         bool isChange = false)
     {
         var code = isChange
@@ -66,21 +69,20 @@ internal sealed class IdentityEndpointGroup : Group
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
         var userId = await userManager.GetUserIdAsync(user);
-        var routeValues = new RouteValueDictionary()
+        var routeValues = new RouteValueDictionary
         {
             ["userId"] = userId,
-            ["code"] = code,
+            ["code"] = code
         };
 
         if (isChange)
-        {
             // This is validated by the /confirmEmail endpoint on change.
             routeValues.Add("changedEmail", email);
-        }
 
         const string confirmEmailEndpointName = "confirmEmail";
         var confirmEmailUrl = linkGenerator.GetUriByName(context, confirmEmailEndpointName, routeValues)
-                              ?? throw new NotSupportedException($"Could not find endpoint named '{confirmEmailEndpointName}'.");
+                              ?? throw new NotSupportedException(
+                                  $"Could not find endpoint named '{confirmEmailEndpointName}'.");
 
         await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
     }

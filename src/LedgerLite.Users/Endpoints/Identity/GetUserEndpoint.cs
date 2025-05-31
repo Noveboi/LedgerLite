@@ -6,7 +6,9 @@ using LedgerLite.Users.Contracts.Models;
 
 namespace LedgerLite.Users.Endpoints.Identity;
 
-internal sealed record GetUserRequest([property: FromClaim(LedgerClaims.UserId)] Guid UserId);
+internal sealed record GetUserRequest(
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId);
 
 internal sealed class GetUserEndpoint(IUserRequests requests) : Endpoint<GetUserRequest, UserDto>
 {

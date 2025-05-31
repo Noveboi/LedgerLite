@@ -8,9 +8,10 @@ using LedgerLite.SharedKernel.Identity;
 namespace LedgerLite.Accounting.Core.Endpoints.Accounts;
 
 internal sealed record GetChartOfAccountsRequestDto(
-    [property: FromClaim(LedgerClaims.UserId)] Guid UserId);
+    [property: FromClaim(LedgerClaims.UserId)]
+    Guid UserId);
 
-internal sealed class GetChartOfAccountsEndpoint(IChartOfAccountsService chartService) 
+internal sealed class GetChartOfAccountsEndpoint(IChartOfAccountsService chartService)
     : Endpoint<GetChartOfAccountsRequestDto, ChartOfAccountsDto>
 {
     public override void Configure()
