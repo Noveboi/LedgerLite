@@ -14,6 +14,7 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder
             .HasOne(x => x.OrganizationMember)
             .WithOne(x => x.User)
+            .IsRequired(false)
             .HasForeignKey<User>(x => x.OrganizationMemberId);
 
         builder.Navigation(x => x.OrganizationMember).AutoInclude();
