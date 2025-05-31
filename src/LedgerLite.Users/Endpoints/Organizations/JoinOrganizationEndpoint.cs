@@ -42,7 +42,7 @@ internal sealed class JoinOrganizationEndpoint(
         await SendOkAsync(ct);
     }
 
-    private async Task<Result<OrganizationMember>> HandleUseCaseAsync(
+    public async Task<Result<OrganizationMember>> HandleUseCaseAsync(
         JoinOrganizationRequestDto request,
         CancellationToken token) =>
         await userService.GetByIdAsync(request.UserId, token)
