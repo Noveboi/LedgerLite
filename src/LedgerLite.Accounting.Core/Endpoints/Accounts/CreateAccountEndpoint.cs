@@ -22,7 +22,7 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
     public override void Configure()
     {        
         Post("");
-        Group<ChartOfAccountsEndpointGroup>();
+        Group<ChartOfAccountsModifyGroup>();
     }
 
     public override async Task HandleAsync(CreateAccountRequestDto req, CancellationToken ct)

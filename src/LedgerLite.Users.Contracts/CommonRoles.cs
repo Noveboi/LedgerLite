@@ -1,6 +1,6 @@
-﻿namespace LedgerLite.Users.Application.Roles;
+﻿namespace LedgerLite.Users.Contracts;
 
-internal static class CommonRoles
+public static class CommonRoles
 {
     public const string Owner = "Owner";
     public const string Admin = "Admin";

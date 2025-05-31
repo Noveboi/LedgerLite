@@ -3,6 +3,7 @@ using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.FiscalPeriods;
 using LedgerLite.Accounting.Core.Application.UseCases;
 using LedgerLite.Accounting.Core.Endpoints.FiscalPeriods.Dto;
+using LedgerLite.Accounting.Core.Endpoints.FiscalPeriods.Groups;
 using LedgerLite.SharedKernel.Identity;
 using LedgerLite.Users.Contracts.Models;
 
@@ -22,7 +23,7 @@ internal sealed class CreateFiscalPeriodEndpoint(
     public override void Configure()
     {
         Post("");
-        Group<FiscalPeriodEndpointGroup>();
+        Group<ModifyFiscalPeriodGroup>();
     }
 
     public override async Task HandleAsync(CreateFiscalPeriodRequestDto req, CancellationToken ct)

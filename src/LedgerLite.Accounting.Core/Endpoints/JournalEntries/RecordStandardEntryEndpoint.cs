@@ -4,6 +4,7 @@ using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.JournalEntries;
 using LedgerLite.Accounting.Core.Application.JournalEntries.Requests;
 using LedgerLite.Accounting.Core.Endpoints.JournalEntries.Dto;
+using LedgerLite.Accounting.Core.Endpoints.JournalEntries.Groups;
 
 namespace LedgerLite.Accounting.Core.Endpoints.JournalEntries;
 
@@ -23,7 +24,7 @@ internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService s
     public override void Configure()
     {
         Post("");
-        Group<JournalEntryEndpointGroup>();
+        Group<ModifyJournalEntryGroup>();
     }
 
     public override async Task HandleAsync(RecordStandardEntryRequestDto req, CancellationToken ct)

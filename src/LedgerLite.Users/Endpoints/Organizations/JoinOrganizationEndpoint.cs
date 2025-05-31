@@ -5,6 +5,7 @@ using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.SharedKernel.Identity;
 using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Application.Users;
+using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Infrastructure;
 using LedgerLite.Users.Infrastructure.Repositories;

@@ -1,6 +1,7 @@
 ﻿using FastEndpoints;
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Endpoints.JournalEntries.Dto;
+using LedgerLite.Accounting.Core.Endpoints.JournalEntries.Groups;
 using LedgerLite.Accounting.Core.Infrastructure.Repositories;
 using LedgerLite.SharedKernel.Domain.Errors;
 using Microsoft.AspNetCore.Http;

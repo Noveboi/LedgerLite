@@ -2,6 +2,7 @@
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Application.UseCases;
 using LedgerLite.Accounting.Core.Endpoints.FiscalPeriods.Dto;
+using LedgerLite.Accounting.Core.Endpoints.FiscalPeriods.Groups;
 using LedgerLite.SharedKernel.Identity;
 
 namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;

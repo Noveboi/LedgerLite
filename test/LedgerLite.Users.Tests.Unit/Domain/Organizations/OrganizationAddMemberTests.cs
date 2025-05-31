@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Tests.Shared;
 using LedgerLite.Users.Application.Roles;
+using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Tests.Unit.Utilities;
 

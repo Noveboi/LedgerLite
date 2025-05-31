@@ -1,5 +1,6 @@
 using FastEndpoints;
 using LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
+using LedgerLite.Accounting.Core.Endpoints.FiscalPeriods.Groups;
 
 namespace LedgerLite.Accounting.Reporting.Trial.Endpoints;
 

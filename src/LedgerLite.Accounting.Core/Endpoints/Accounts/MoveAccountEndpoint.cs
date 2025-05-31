@@ -18,7 +18,7 @@ internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccou
     public override void Configure()
     {
         Put("{accountId:guid}/move/{newParentId:guid}");
-        Group<ChartOfAccountsEndpointGroup>();
+        Group<ChartOfAccountsModifyGroup>();
     }
 
     public override async Task HandleAsync(MoveAccountRequestDto req, CancellationToken ct)

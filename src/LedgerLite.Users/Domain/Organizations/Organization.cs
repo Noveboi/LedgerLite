@@ -2,6 +2,7 @@
 using LedgerLite.SharedKernel.Domain;
 using LedgerLite.SharedKernel.Domain.Errors;
 using LedgerLite.Users.Application.Roles;
+using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain.Organizations.Events;
 
 namespace LedgerLite.Users.Domain.Organizations;

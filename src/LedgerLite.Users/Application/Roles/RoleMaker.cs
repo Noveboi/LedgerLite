@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain;
 using Microsoft.AspNetCore.Identity;
 using Serilog;

@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 
-namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods;
+namespace LedgerLite.Accounting.Core.Endpoints.FiscalPeriods.Groups;
 
 public sealed class FiscalPeriodEndpointGroup : Group
 {

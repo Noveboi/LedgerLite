@@ -16,7 +16,7 @@ internal sealed class RemoveAccountEndpoint(RemoveAccountUseCase removeAccount) 
     public override void Configure()
     {
         Delete("{accountId:guid}");
-        Group<ChartOfAccountsEndpointGroup>();
+        Group<ChartOfAccountsModifyGroup>();
     }
 
     public override async Task HandleAsync(RemoveAccountRequestDto req, CancellationToken ct)

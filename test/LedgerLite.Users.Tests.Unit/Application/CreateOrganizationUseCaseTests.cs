@@ -2,6 +2,7 @@
 using LedgerLite.Tests.Shared;
 using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Application.Users;
+using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Domain;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Endpoints.Organizations;

@@ -7,6 +7,5 @@ internal static class RolesToDtoConversions
 {
     public static RoleDto ToDto(this Role role) => new(
         Id: role.Id, 
-        Name: role.Name ?? "", 
-        Description: role.Description ?? "");
+        Name: role.Name ?? "");
 }

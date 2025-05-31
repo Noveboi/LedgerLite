@@ -4,6 +4,7 @@ using FastEndpoints;
 using LedgerLite.SharedKernel.Identity;
 using LedgerLite.Users.Application.Roles;
 using LedgerLite.Users.Application.Users;
+using LedgerLite.Users.Contracts;
 using LedgerLite.Users.Contracts.Models;
 using LedgerLite.Users.Domain.Organizations;
 using LedgerLite.Users.Infrastructure;
