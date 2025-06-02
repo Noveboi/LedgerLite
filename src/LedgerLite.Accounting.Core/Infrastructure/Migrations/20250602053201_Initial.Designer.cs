@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LedgerLite.Accounting.Core.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountingDbContext))]
-    [Migration("20250530161147_Initial")]
+    [Migration("20250602053201_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

@@ -24,8 +24,8 @@ public sealed class FiscalPeriod : AuditableEntity
     /// </summary>
     public Guid OrganizationId { get; private init; }
 
-    public DateOnly StartDate { get; }
-    public DateOnly EndDate { get; }
+    public DateOnly StartDate { get; private set; }
+    public DateOnly EndDate { get; private set; }
     public DateTime? ClosedAtUtc { get; private set; }
     public string Name { get; private set; } = null!;
 
