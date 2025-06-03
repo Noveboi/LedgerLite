@@ -23,6 +23,6 @@ internal sealed class GetFiscalPeriodsForUserUseCase(
         return user.Organization is null
             ? new List<FiscalPeriod>()
             : Result.Success(
-                value: await repository.GetForOrganizationAsync(organizationId: user.Organization.Id, token: token));
+                await repository.GetForOrganizationAsync(organizationId: user.Organization.Id, token: token));
     }
 }

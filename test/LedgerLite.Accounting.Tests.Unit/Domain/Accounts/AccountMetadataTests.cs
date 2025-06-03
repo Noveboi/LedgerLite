@@ -10,19 +10,19 @@ public class AccountMetadataTests
     [Fact]
     public void ExpenseType_CanBeIndirect_WhenAccountTypeIsExpense()
     {
-        var metadata = new AccountMetadata(ExpenseType.Indirect);
-        var result = metadata.Verify(AccountType.Expense);
-        result.Status.ShouldBe(ResultStatus.Ok);
+        var metadata = new AccountMetadata(ExpenseType: ExpenseType.Indirect);
+        var result = metadata.Verify(accountType: AccountType.Expense);
+        result.Status.ShouldBe(expected: ResultStatus.Ok);
     }
 
     [Fact]
     public void ExpenseType_CannotBeInDirect_WhenAccountTypeIsNotExpense()
     {
-        var metadata = new AccountMetadata(ExpenseType.Indirect);
+        var metadata = new AccountMetadata(ExpenseType: ExpenseType.Indirect);
         
-        var result = metadata.Verify(AccountType.Asset);
+        var result = metadata.Verify(accountType: AccountType.Asset);
         
-        result.Status.ShouldBe(ResultStatus.Invalid);
-        result.ShouldHaveError(AccountMetadataErrors.OnlyExpensesCanBeIndirect(AccountType.Asset));
+        result.Status.ShouldBe(expected: ResultStatus.Invalid);
+        result.ShouldHaveError(AccountMetadataErrors.OnlyExpensesCanBeIndirect(accountType: AccountType.Asset));
     }
 }

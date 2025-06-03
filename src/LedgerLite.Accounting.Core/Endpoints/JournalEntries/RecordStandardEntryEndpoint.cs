@@ -35,15 +35,15 @@ internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService s
 
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result: result.ToMinimalApiResult());
+            await SendResultAsync(result.ToMinimalApiResult());
             return;
         }
 
         var entry = result.Value;
 
         await SendCreatedAtAsync<GetJournalEntryEndpoint>(
-            routeValues: new { entry.Id },
-            responseBody: JournalEntryResponseDto.FromEntity(entry: entry),
+            new { entry.Id },
+            JournalEntryResponseDto.FromEntity(entry: entry),
             cancellation: ct);
     }
 
@@ -52,10 +52,10 @@ internal sealed class RecordStandardEntryEndpoint(ITransactionRecordingService s
         return new RecordStandardEntryRequest(ReferenceNumber: dto.ReferenceNumber,
             OccursAt: dto.OccursAt,
             Description: dto.Description,
-            CreditLine: new CreateJournalEntryLineRequest(
+            new CreateJournalEntryLineRequest(
                 AccountId: dto.CreditAccountId,
                 Amount: dto.Amount),
-            DebitLine: new CreateJournalEntryLineRequest(
+            new CreateJournalEntryLineRequest(
                 AccountId: dto.DebitAccountId,
                 Amount: dto.Amount),
             RequestedByUserId: dto.RequestedByUserId,

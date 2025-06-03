@@ -28,10 +28,10 @@ internal sealed class RemoveAccountEndpoint(RemoveAccountUseCase removeAccount)
 
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result: result.ToMinimalApiResult());
+            await SendResultAsync(result.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(response: result.Value.ToDto(), cancellation: ct);
+        await SendAsync(result.Value.ToDto(), cancellation: ct);
     }
 }

@@ -43,19 +43,19 @@ public sealed class AccountNode : Entity
     public Result AddChild(AccountNode child)
     {
         if (Account == child.Account)
-            return Result.Invalid(validationError: AccountErrors.AddAccountToItself());
+            return Result.Invalid(AccountErrors.AddAccountToItself());
 
         if (!Account.IsPlaceholder)
-            return Result.Invalid(validationError: AccountErrors.NoChildrenWhenNotPlaceholder(account: Account));
+            return Result.Invalid(AccountErrors.NoChildrenWhenNotPlaceholder(account: Account));
 
         if (Account.Type != child.Account.Type)
-            return Result.Invalid(validationError: AccountErrors.ChildHasDifferentType(
+            return Result.Invalid(AccountErrors.ChildHasDifferentType(
                 expected: Account.Type,
                 actual: child.Account.Type));
 
-        if (_children.Any(predicate: node => node.Account == child.Account))
+        if (_children.Any(node => node.Account == child.Account))
             return Result.Invalid(
-                validationError: ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: child.Account));
+                ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: child.Account));
 
         _children.Add(item: child);
         child.Parent = this;
@@ -68,11 +68,11 @@ public sealed class AccountNode : Entity
     {
         if (_children.Count == 0)
             return Result.Invalid(
-                validationError: ChartOfAccountsErrors.AccountHasNoChildrenToRemove(account: Account));
+                ChartOfAccountsErrors.AccountHasNoChildrenToRemove(account: Account));
 
         if (!_children.Remove(item: child))
             return Result.Invalid(
-                validationError: ChartOfAccountsErrors.AccountNotChild(parent: Account, child: child.Account));
+                ChartOfAccountsErrors.AccountNotChild(parent: Account, child: child.Account));
 
         child.Parent = null;
         child.ParentId = null!;

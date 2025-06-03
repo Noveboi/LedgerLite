@@ -18,7 +18,7 @@ internal sealed class GetOrganizationFromUserUseCase(
         var user = userResult.Value;
         if (user.Organization?.Id is not { } organizationId)
             return Result.Invalid(
-                validationError: GetOrganizationFromUserUseCaseErrors.UserNotInOrganization(user: user));
+                GetOrganizationFromUserUseCaseErrors.UserNotInOrganization(user: user));
 
         var organizationResult = await organizationRequests.GetOrganizationByIdAsync(id: organizationId, token: token);
         if (!organizationResult.IsSuccess) return organizationResult.Map();
@@ -34,7 +34,7 @@ internal static class GetOrganizationFromUserUseCaseErrors
     public static ValidationError UserNotInOrganization(UserDto user)
     {
         return new ValidationError(identifier: UseCaseIdentifier,
-            errorMessage: $"User {user.Username} is not in organization.",
+            $"User {user.Username} is not in organization.",
             errorCode: "ACCUSR-USER_NOT_IN_ORG",
             severity: ValidationSeverity.Error);
     }

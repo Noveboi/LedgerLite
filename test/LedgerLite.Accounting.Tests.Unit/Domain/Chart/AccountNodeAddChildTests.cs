@@ -17,38 +17,38 @@ public class AccountNodeAddChildTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: AccountErrors.AddAccountToItself());
+            .ShouldBeEquivalentTo(AccountErrors.AddAccountToItself());
     }
 
     [Fact]
     public void Invalid_WhenParentIsNotAPlaceholderAccount()
     {
-        var node = FakeAccountNodes.Get(configure: o => o.IsPlaceholder = false);
+        var node = FakeAccountNodes.Get(o => o.IsPlaceholder = false);
 
         var result = node.AddChild(child: FakeAccountNodes.SampleChild);
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: AccountErrors.NoChildrenWhenNotPlaceholder(account: node.Account));
+            .ShouldBeEquivalentTo(AccountErrors.NoChildrenWhenNotPlaceholder(account: node.Account));
     }
 
     [Fact]
     public void Invalid_WhenParentAndChildAccountTypes_AreNotTheSame()
     {
-        var node = FakeAccountNodes.Get(configure: o =>
+        var node = FakeAccountNodes.Get(o =>
         {
             o.Type = AccountType.Asset;
             o.IsPlaceholder = true;
         });
-        var child = FakeAccountNodes.Get(configure: o => o.Type = AccountType.Equity);
+        var child = FakeAccountNodes.Get(o => o.Type = AccountType.Equity);
 
         var result = node.AddChild(child: child);
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: AccountErrors.ChildHasDifferentType(
+            .ShouldBeEquivalentTo(AccountErrors.ChildHasDifferentType(
                 expected: node.Account.Type,
                 actual: child.Account.Type));
     }
@@ -65,7 +65,7 @@ public class AccountNodeAddChildTests
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(
-                expected: ChartOfAccountsErrors.AccountAlreadyExists(
+                ChartOfAccountsErrors.AccountAlreadyExists(
                     existingAccount: FakeAccountNodes.SampleChild.Account));
     }
 

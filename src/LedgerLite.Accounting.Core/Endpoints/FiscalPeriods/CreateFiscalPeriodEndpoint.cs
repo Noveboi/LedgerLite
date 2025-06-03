@@ -32,20 +32,20 @@ internal sealed class CreateFiscalPeriodEndpoint(
         var organizationResult = await getOrganizationFromUser.HandleAsync(request: req.UserId, token: ct);
         if (!organizationResult.IsSuccess)
         {
-            await SendResultAsync(result: organizationResult.ToMinimalApiResult());
+            await SendResultAsync(organizationResult.ToMinimalApiResult());
             return;
         }
 
         var request = MapRequest(dto: req, org: organizationResult.Value);
         var creationResult = await service.CreateAsync(request: request, token: ct);
 
-        if (!creationResult.IsSuccess) await SendResultAsync(result: creationResult.ToMinimalApiResult());
+        if (!creationResult.IsSuccess) await SendResultAsync(creationResult.ToMinimalApiResult());
 
         var period = creationResult.Value;
 
         await SendCreatedAtAsync<GetFiscalPeriodsEndpoint>(
             routeValues: null,
-            responseBody: period.ToDto(),
+            period.ToDto(),
             cancellation: ct);
     }
 

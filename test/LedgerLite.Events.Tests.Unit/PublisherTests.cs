@@ -34,9 +34,9 @@ public class PublisherTests
         await _sut.PublishAsync(e: @event, token: CancellationToken.None);
 
         await _eventPublisher.Received(requiredNumberOfCalls: 1).PublishAsync(
-            eventExecutors: Arg.Is<IEnumerable<EventExecutor>>(predicate: executors => executors.Count() == 1),
+            Arg.Is<IEnumerable<EventExecutor>>(executors => executors.Count() == 1),
             e: @event,
-            token: Arg.Any<CancellationToken>());
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -49,13 +49,13 @@ public class PublisherTests
 
         await _sut.PublishAsync(e: @event, token: CancellationToken.None);
 
-        await handler.Received(requiredNumberOfCalls: 1).HandleAsync(e: @event, token: Arg.Any<CancellationToken>());
+        await handler.Received(requiredNumberOfCalls: 1).HandleAsync(e: @event, Arg.Any<CancellationToken>());
     }
 
 
     private void ConfigureRealEventPublisher()
     {
-        _sut = new Publisher(eventPublisher: new SequentialEventPublisher(), serviceProvider: _serviceProvider);
+        _sut = new Publisher(new SequentialEventPublisher(), serviceProvider: _serviceProvider);
     }
 
     private void ConfigureEventHandlers<TEvent>(params IList<IEventHandler<TEvent>> handlers) where TEvent : IEvent

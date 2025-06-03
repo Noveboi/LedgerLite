@@ -25,22 +25,22 @@ internal sealed class FiscalPeriodService(IAccountingUnitOfWork unitOfWork) : IF
     public async Task<Result<FiscalPeriod>> CreateAsync(CreateFiscalPeriodRequest request, CancellationToken token)
     {
         return await EnsurePeriodDoesNotOverlapWithAnother(request: request, token: token)
-            .BindAsync(bindFunc: async org =>
+            .BindAsync(async org =>
                 await _repository.NameExistsForOrganizationAsync(organizationId: request.OrganizationId,
                     name: request.Name, token: token)
-                    ? Result.Invalid(validationError: FiscalPeriodErrors.PeriodWithSameName(name: request.Name))
+                    ? Result.Invalid(FiscalPeriodErrors.PeriodWithSameName(name: request.Name))
                     : Result.Success(value: org))
-            .BindAsync(bindFunc: _ => FiscalPeriod.Create(
+            .BindAsync(_ => FiscalPeriod.Create(
                 organizationId: request.OrganizationId,
                 startDate: request.StartDate,
                 endDate: request.EndDate,
                 name: request.Name))
-            .BindAsync(bindFunc: period =>
+            .BindAsync(period =>
             {
                 _repository.Add(period: period);
                 return Result.Success(value: period);
             })
-            .BindAsync(bindFunc: period => unitOfWork.SaveChangesAsync(token: token).MapAsync(func: () => period));
+            .BindAsync(period => unitOfWork.SaveChangesAsync(token: token).MapAsync(() => period));
     }
 
     private async Task<Result<OrganizationDto>> EnsurePeriodDoesNotOverlapWithAnother(
@@ -55,8 +55,8 @@ internal sealed class FiscalPeriodService(IAccountingUnitOfWork unitOfWork) : IF
 
         return overlappingPeriod is null
             ? Result.Success()
-            : Result.Invalid(validationError: FiscalPeriodErrors.OverlappingPeriods(
+            : Result.Invalid(FiscalPeriodErrors.OverlappingPeriods(
                 a: overlappingPeriod.Range,
-                b: new DateRange(Start: request.StartDate, End: request.EndDate)));
+                new DateRange(Start: request.StartDate, End: request.EndDate)));
     }
 }

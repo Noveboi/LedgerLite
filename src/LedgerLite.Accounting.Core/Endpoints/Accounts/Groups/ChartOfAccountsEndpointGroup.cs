@@ -6,6 +6,6 @@ public sealed class ChartOfAccountsEndpointGroup : Group
 {
     public ChartOfAccountsEndpointGroup()
     {
-        Configure(routePrefix: "accounts", ep: _ => { });
+        Configure(routePrefix: "accounts", _ => { });
     }
 }

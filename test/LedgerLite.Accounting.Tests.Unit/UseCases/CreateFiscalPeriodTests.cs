@@ -19,7 +19,7 @@ public class CreateFiscalPeriodTests
 
     public CreateFiscalPeriodTests()
     {
-        _unitOfWork.ConfigureForTests(configure: o => o.MockFiscalPeriodRepository(repo: _repository));
+        _unitOfWork.ConfigureForTests(o => o.MockFiscalPeriodRepository(repo: _repository));
         _sut = new FiscalPeriodService(unitOfWork: _unitOfWork);
     }
 
@@ -32,7 +32,7 @@ public class CreateFiscalPeriodTests
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ShouldHaveError(
-            error: FiscalPeriodErrors.StartIsAfterEnd(start: request.StartDate, end: request.EndDate));
+            FiscalPeriodErrors.StartIsAfterEnd(start: request.StartDate, end: request.EndDate));
         await _unitOfWork.AssertThatNoActionWasTaken();
     }
 
@@ -44,7 +44,7 @@ public class CreateFiscalPeriodTests
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
 
         result.Status.ShouldBe(expected: ResultStatus.Ok);
-        _repository.Received(requiredNumberOfCalls: 1).Add(period: Arg.Is<FiscalPeriod>(predicate: f =>
+        _repository.Received(requiredNumberOfCalls: 1).Add(Arg.Is<FiscalPeriod>(f =>
             f.OrganizationId == request.OrganizationId &&
             f.StartDate == request.StartDate &&
             f.EndDate == request.EndDate));
@@ -58,7 +58,7 @@ public class CreateFiscalPeriodTests
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
 
         result.Status.ShouldBe(expected: ResultStatus.Ok);
-        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(token: Arg.Any<CancellationToken>());
+        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -81,16 +81,16 @@ public class CreateFiscalPeriodTests
     [Fact]
     public async Task Invalid_WhenOverlappingWithExistingFiscalPeriod()
     {
-        var overlap = ConfigureExistingPeriod(startDate: new DateOnly(year: 2024, month: 9, day: 1),
-            endDate: new DateOnly(year: 2025, month: 9, day: 1));
+        var overlap = ConfigureExistingPeriod(new DateOnly(year: 2024, month: 9, day: 1),
+            new DateOnly(year: 2025, month: 9, day: 1));
         var request = GetRequest(orgId: OrganizationId);
 
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: FiscalPeriodErrors.OverlappingPeriods(
+        result.ShouldHaveError(FiscalPeriodErrors.OverlappingPeriods(
             a: overlap.Range,
-            b: new DateRange(Start: request.StartDate, End: request.EndDate)));
+            new DateRange(Start: request.StartDate, End: request.EndDate)));
     }
 
     [Fact]
@@ -98,35 +98,35 @@ public class CreateFiscalPeriodTests
     {
         var request = GetRequest(orgId: OrganizationId);
         _repository.NameExistsForOrganizationAsync(organizationId: request.OrganizationId, name: request.Name,
-                token: Arg.Any<CancellationToken>())
+                Arg.Any<CancellationToken>())
             .Returns(returnThis: true);
 
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: FiscalPeriodErrors.PeriodWithSameName(name: request.Name));
+        result.ShouldHaveError(FiscalPeriodErrors.PeriodWithSameName(name: request.Name));
     }
 
     private static CreateFiscalPeriodRequest GetRequest(Guid orgId)
     {
         return new CreateFiscalPeriodRequest(
             OrganizationId: orgId,
-            StartDate: new DateOnly(year: 2024, month: 1, day: 1),
-            EndDate: new DateOnly(year: 2025, month: 1, day: 1),
+            new DateOnly(year: 2024, month: 1, day: 1),
+            new DateOnly(year: 2025, month: 1, day: 1),
             Name: "Alright!");
     }
 
     private FiscalPeriod ConfigureExistingPeriod(DateOnly startDate, DateOnly endDate)
     {
-        var period = FakeFiscalPeriods.Get(configure: o => o
+        var period = FakeFiscalPeriods.Get(o => o
             .StartingAt(start: startDate)
             .EndingAt(end: endDate)
             .WithOrganization(id: OrganizationId));
 
         _repository
-            .FindOverlappingPeriodAsync(organizationId: OrganizationId, startDate: Arg.Any<DateOnly>(),
-                endDate: Arg.Any<DateOnly>(),
-                token: Arg.Any<CancellationToken>())
+            .FindOverlappingPeriodAsync(organizationId: OrganizationId, Arg.Any<DateOnly>(),
+                Arg.Any<DateOnly>(),
+                Arg.Any<CancellationToken>())
             .Returns(returnThis: period);
 
         return period;

@@ -19,17 +19,17 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
         var chart = request.Chart;
 
         return await AddAccountToChart(account: account, chart: chart)
-            .Bind(bindFunc: acc => PositionAccountInChart(account: acc, parentId: request.ParentId, chart: chart))
+            .Bind(acc => PositionAccountInChart(account: acc, parentId: request.ParentId, chart: chart))
             .Bind(bindFunc: AddAccountToRepository)
-            .BindAsync(bindFunc: acc => unitOfWork.SaveChangesAsync(token: token).MapAsync(func: () => acc));
+            .BindAsync(acc => unitOfWork.SaveChangesAsync(token: token).MapAsync(() => acc));
     }
 
     public async Task<Result> MoveAsync(MoveAccountRequest request, CancellationToken token)
     {
         return await GetByIdAsync(accountId: request.AccountId, token: token)
-            .BindAsync(bindFunc: account =>
+            .BindAsync(account =>
                 PositionAccountInChart(account: account, parentId: request.ParentId, chart: request.Chart))
-            .BindAsync(bindFunc: _ => unitOfWork.SaveChangesAsync(token: token));
+            .BindAsync(_ => unitOfWork.SaveChangesAsync(token: token));
     }
 
     public async Task<Result<Account>> GetByIdAsync(Guid accountId, CancellationToken token)
@@ -52,7 +52,7 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
 
     private static Result<Account> AddAccountToChart(Account account, ChartOfAccounts chart)
     {
-        return chart.Add(account: account).Map(func: _ => account);
+        return chart.Add(account: account).Map(_ => account);
     }
 
     private static Result<Account> PositionAccountInChart(Account account, Guid? parentId, ChartOfAccounts chart)
@@ -60,7 +60,7 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
         return parentId.HasValue
             ? chart
                 .Move(accountId: account.Id, parentId: parentId.Value)
-                .Map(func: _ => account)
+                .Map(_ => account)
             : Result.Success(value: account);
     }
 

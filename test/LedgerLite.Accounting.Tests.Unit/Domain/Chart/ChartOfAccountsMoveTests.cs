@@ -26,7 +26,7 @@ public class ChartOfAccountsMoveTests
     public void RemoveMoveSubject_FromChildrenOfPreviousParent()
     {
         var (subject, parent) = GetSubjectAndTargetParent();
-        var oldParent = FakeAccounts.Get(configure: o =>
+        var oldParent = FakeAccounts.Get(o =>
         {
             o.Type = subject.Type;
             o.IsPlaceholder = true;
@@ -64,7 +64,7 @@ public class ChartOfAccountsMoveTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: ChartOfAccountsErrors.AccountNotFound(id: subject.Id));
+            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountNotFound(id: subject.Id));
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class ChartOfAccountsMoveTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: ChartOfAccountsErrors.AccountNotFound(id: parent.Id));
+            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountNotFound(id: parent.Id));
     }
 
     [Fact]
@@ -92,14 +92,14 @@ public class ChartOfAccountsMoveTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: AccountErrors.NoChildrenWhenNotPlaceholder(account: parent));
+            .ShouldBeEquivalentTo(AccountErrors.NoChildrenWhenNotPlaceholder(account: parent));
     }
 
     [Fact]
     public void Invalid_WhenChild_NotSameAccountType_AsParent()
     {
-        var subject = FakeAccounts.Get(configure: o => o.Type = AccountType.Asset);
-        var parent = FakeAccounts.GetPlaceholder(configure: o => o.Type = AccountType.Equity);
+        var subject = FakeAccounts.Get(o => o.Type = AccountType.Asset);
+        var parent = FakeAccounts.GetPlaceholder(o => o.Type = AccountType.Equity);
         var chart = FakeChartOfAccounts.With(subject, parent);
 
         var result = chart.Move(accountId: subject.Id, parentId: parent.Id);
@@ -108,7 +108,7 @@ public class ChartOfAccountsMoveTests
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(
-                expected: AccountErrors.ChildHasDifferentType(expected: parent.Type, actual: subject.Type));
+                AccountErrors.ChildHasDifferentType(expected: parent.Type, actual: subject.Type));
     }
 
     [Fact]
@@ -122,23 +122,23 @@ public class ChartOfAccountsMoveTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: ChartOfAccountsErrors.MoveToSameParent());
+            .ShouldBeEquivalentTo(ChartOfAccountsErrors.MoveToSameParent());
     }
 
     private static (Account, Account) GetSubjectAndTargetParent(
         Action<FakeAccountOptions>? configureSubject = null,
         Action<FakeAccountOptions>? configureParent = null)
     {
-        var parent = FakeAccounts.Get(configure: configureParent ?? (x => x.IsPlaceholder = true));
-        var subject = FakeAccounts.Get(configure: configureSubject ?? (x => x.Type = parent.Type));
+        var parent = FakeAccounts.Get(configureParent ?? (x => x.IsPlaceholder = true));
+        var subject = FakeAccounts.Get(configureSubject ?? (x => x.Type = parent.Type));
 
         return (subject, parent);
     }
 
     private static AccountNode GetNodeFromChart(Account subject, ChartOfAccounts chart)
     {
-        chart.Nodes.ShouldContain(elementPredicate: node => node.Account == subject);
-        var node = chart.Nodes.First(predicate: x => x.Account == subject);
+        chart.Nodes.ShouldContain(node => node.Account == subject);
+        var node = chart.Nodes.First(x => x.Account == subject);
 
         return node;
     }

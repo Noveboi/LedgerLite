@@ -7,6 +7,6 @@ internal sealed class JournalEntryEndpointGroup : SubGroup<FiscalPeriodEndpointG
 {
     public JournalEntryEndpointGroup()
     {
-        Configure(routePrefix: "{fiscalPeriodId:guid}/entries", ep: _ => { });
+        Configure(routePrefix: "{fiscalPeriodId:guid}/entries", _ => { });
     }
 }

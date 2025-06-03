@@ -12,7 +12,7 @@ public sealed record ChartAccountNodeDto(
     public static ChartAccountNodeDto FromEntity(AccountNode node)
     {
         return new ChartAccountNodeDto(
-            Account: SlimAccountDto.FromEntity(account: node.Account),
+            SlimAccountDto.FromEntity(account: node.Account),
             ParentAccountId: node.ParentId);
     }
 }

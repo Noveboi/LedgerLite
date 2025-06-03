@@ -27,10 +27,10 @@ internal sealed class GetFiscalPeriodsEndpoint(GetFiscalPeriodsForUserUseCase ge
 
         if (!response.IsSuccess)
         {
-            await SendResultAsync(result: response.ToMinimalApiResult());
+            await SendResultAsync(response.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(response: response.Value.Select(selector: x => x.ToDto()), cancellation: ct);
+        await SendAsync(response.Value.Select(x => x.ToDto()), cancellation: ct);
     }
 }

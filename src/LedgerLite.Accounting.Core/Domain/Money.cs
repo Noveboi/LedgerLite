@@ -7,22 +7,22 @@ public sealed record Money(decimal Amount, Currency Currency)
 {
     public static Money operator +(Money a, Money b)
     {
-        return ValidateAndOperate(a: a, b: b, operation: (x, y) => x + y);
+        return ValidateAndOperate(a: a, b: b, (x, y) => x + y);
     }
 
     public static Money operator -(Money a, Money b)
     {
-        return ValidateAndOperate(a: a, b: b, operation: (x, y) => x - y);
+        return ValidateAndOperate(a: a, b: b, (x, y) => x - y);
     }
 
     public static Money operator *(Money a, Money b)
     {
-        return ValidateAndOperate(a: a, b: b, operation: (x, y) => x * y);
+        return ValidateAndOperate(a: a, b: b, (x, y) => x * y);
     }
 
     public static Money operator /(Money a, Money b)
     {
-        return ValidateAndOperate(a: a, b: b, operation: (x, y) => x / y);
+        return ValidateAndOperate(a: a, b: b, (x, y) => x / y);
     }
 
     private static Money ValidateAndOperate(Money a, Money b, Func<decimal, decimal, decimal> operation)

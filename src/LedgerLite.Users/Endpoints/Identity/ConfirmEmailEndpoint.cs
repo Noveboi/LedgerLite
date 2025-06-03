@@ -13,7 +13,7 @@ internal sealed class ConfirmEmailEndpoint(UserManager<User> userManager) : Endp
     {
         AllowAnonymous();
         Get("/confirmEmail");
-        Description(builder: b => b.WithName(endpointName: "confirmEmail"));
+        Description(b => b.WithName(endpointName: "confirmEmail"));
         Group<IdentityEndpointGroup>();
     }
 
@@ -31,7 +31,7 @@ internal sealed class ConfirmEmailEndpoint(UserManager<User> userManager) : Endp
 
         try
         {
-            code = Encoding.UTF8.GetString(bytes: WebEncoders.Base64UrlDecode(input: code));
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(input: code));
         }
         catch (FormatException)
         {

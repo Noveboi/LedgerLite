@@ -22,7 +22,7 @@ public sealed record JournalEntryLineDto(
             OccursAt: line.Entry.OccursAt,
             EntryDescription: line.Entry.Description,
             Account: SlimAccountDto.FromEntity(account: line.Account),
-            TransferAccount: SlimAccountDto.FromEntity(account: line.GetTransferAccount()),
+            TransferAccount: SlimAccountDto.FromEntity(line.GetTransferAccount()),
             Credit: line.TransactionType == TransactionType.Credit ? decimal.ToDouble(d: line.Amount) : 0,
             Debit: line.TransactionType == TransactionType.Debit ? decimal.ToDouble(d: line.Amount) : 0);
     }

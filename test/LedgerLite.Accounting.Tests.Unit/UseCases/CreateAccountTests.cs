@@ -20,7 +20,7 @@ public class CreateAccountTests
 
     public CreateAccountTests()
     {
-        _unitOfWork.ConfigureForTests(configure: o => o
+        _unitOfWork.ConfigureForTests(o => o
             .MockAccountRepository(repo: _accountRepository));
         _sut = new AccountService(unitOfWork: _unitOfWork);
     }
@@ -28,13 +28,13 @@ public class CreateAccountTests
     [Fact]
     public async Task NoAction_WhenAccountCreateRequestIsInvalid()
     {
-        var request = GetRequest(transform: req => req with { Name = "" });
+        var request = GetRequest(req => req with { Name = "" });
 
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors.ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: AccountErrors.AccountNameIsEmpty());
+            .ShouldBeEquivalentTo(AccountErrors.AccountNameIsEmpty());
         await _unitOfWork.AssertThatNoActionWasTaken();
     }
 
@@ -47,8 +47,8 @@ public class CreateAccountTests
         var account = result.Value;
 
         result.Status.ShouldBe(expected: ResultStatus.Ok);
-        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(token: Arg.Any<CancellationToken>());
-        _accountRepository.Received(requiredNumberOfCalls: 1).Add(account: Arg.Is(value: account));
+        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(Arg.Any<CancellationToken>());
+        _accountRepository.Received(requiredNumberOfCalls: 1).Add(Arg.Is(value: account));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class CreateAccountTests
     [Fact]
     public async Task AddToChart_WithNoParent_WhenParentIdNullInRequest()
     {
-        var request = GetRequest(transform: req => req with { ParentId = null });
+        var request = GetRequest(req => req with { ParentId = null });
 
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
 
@@ -77,17 +77,17 @@ public class CreateAccountTests
     [Fact]
     public async Task AddToChart_WithParent_WhenParentIdIsSpecified()
     {
-        var parent = FakeAccounts.GetPlaceholder(configure: o => o.Type = AccountType.Expense);
+        var parent = FakeAccounts.GetPlaceholder(o => o.Type = AccountType.Expense);
         var chart = FakeChartOfAccounts.With(parent);
-        var request = GetRequest(transform: req => req with { ParentId = parent.Id, Chart = chart });
+        var request = GetRequest(req => req with { ParentId = parent.Id, Chart = chart });
 
         var result = await _sut.CreateAsync(request: request, token: CancellationToken.None);
         var account = result.Value;
 
         result.Status.ShouldBe(expected: ResultStatus.Ok);
         chart.Nodes.Count.ShouldBe(expected: 2);
-        var parentNode = chart.Nodes.First(predicate: x => x.Account == parent);
-        var accountNode = chart.Nodes.First(predicate: x => x.Account == account);
+        var parentNode = chart.Nodes.First(x => x.Account == parent);
+        var accountNode = chart.Nodes.First(x => x.Account == account);
         parentNode.Children.ShouldHaveSingleItem().ShouldBeEquivalentTo(expected: accountNode);
         accountNode.Parent.ShouldNotBeNull().ShouldBeEquivalentTo(expected: parentNode);
     }

@@ -7,17 +7,17 @@ internal sealed class OrganizationRepository(UsersDbContext context) : IOrganiza
 {
     public Task<bool> NameExistsAsync(string name, CancellationToken token)
     {
-        return context.Organizations.AnyAsync(predicate: x => x.Name == name, cancellationToken: token);
+        return context.Organizations.AnyAsync(x => x.Name == name, cancellationToken: token);
     }
 
     public Task<Organization?> GetByIdAsync(Guid id, CancellationToken token)
     {
         return context.Organizations
             .AsSplitQuery()
-            .Include(navigationPropertyPath: x => x.Members)
-            .ThenInclude(navigationPropertyPath: x => x.Roles)
-            .ThenInclude(navigationPropertyPath: x => x.Role)
-            .FirstOrDefaultAsync(predicate: x => x.Id == id, cancellationToken: token);
+            .Include(x => x.Members)
+            .ThenInclude(x => x.Roles)
+            .ThenInclude(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
     }
 
     public async Task<IReadOnlyList<Organization>> GetAllAsync(CancellationToken token)

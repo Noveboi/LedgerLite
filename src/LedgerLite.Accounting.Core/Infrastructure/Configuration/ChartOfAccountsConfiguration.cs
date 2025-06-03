@@ -10,19 +10,19 @@ internal sealed class ChartOfAccountsConfiguration : IEntityTypeConfiguration<Ch
     public void Configure(EntityTypeBuilder<ChartOfAccounts> builder)
     {
         builder.IsDomainEntity();
-        builder.Ignore(propertyExpression: x => x.Accounts);
+        builder.Ignore(x => x.Accounts);
 
-        builder.Property(propertyExpression: x => x.OrganizationId)
+        builder.Property(x => x.OrganizationId)
             .IsRequired()
             .ValueGeneratedNever();
 
-        builder.HasIndex(indexExpression: x => x.OrganizationId).IsUnique();
+        builder.HasIndex(x => x.OrganizationId).IsUnique();
 
         builder
-            .HasMany(navigationExpression: x => x.Nodes)
+            .HasMany(x => x.Nodes)
             .WithOne()
-            .HasForeignKey(foreignKeyExpression: x => x.ChartId);
+            .HasForeignKey(x => x.ChartId);
 
-        builder.Navigation(navigationExpression: x => x.Nodes).AutoInclude();
+        builder.Navigation(x => x.Nodes).AutoInclude();
     }
 }

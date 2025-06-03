@@ -17,6 +17,6 @@ public class FiscalPeriodCreateTests
         var result = FiscalPeriod.Create(organizationId: OrganizationId, startDate: start, endDate: end, name: "Test!");
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: FiscalPeriodErrors.StartIsAfterEnd(start: start, end: end));
+        result.ShouldHaveError(FiscalPeriodErrors.StartIsAfterEnd(start: start, end: end));
     }
 }

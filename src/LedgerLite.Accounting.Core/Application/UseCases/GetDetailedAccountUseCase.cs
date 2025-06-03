@@ -25,7 +25,7 @@ internal sealed class GetDetailedAccountUseCase(
         if (!chartResult.IsSuccess) return chartResult.Map();
 
         var chart = chartResult.Value;
-        if (chart.Nodes.FirstOrDefault(predicate: node => node.Account.Id == request.AccountId) is not { } accountNode)
+        if (chart.Nodes.FirstOrDefault(node => node.Account.Id == request.AccountId) is not { } accountNode)
             return Result.NotFound(CommonErrors.NotFound<Account>(id: request.AccountId));
 
         var options = new JournalEntryLineQueryOptions(FiscalPeriodId: request.FiscalPeriodId);

@@ -12,8 +12,8 @@ public sealed record ChartOfAccountsDto(
         return new ChartOfAccountsDto(
             Id: chart.Id,
             OrganizationId: chart.OrganizationId,
-            Accounts: chart.Nodes
-                .Where(predicate: x => x.ParentId is null)
+            chart.Nodes
+                .Where(x => x.ParentId is null)
                 .Select(selector: ChartAccountNodeWithChildrenDto.FromEntity));
     }
 }

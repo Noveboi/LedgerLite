@@ -26,7 +26,7 @@ internal sealed class GetTrialBalanceEndpoint(
             await authorization.AuthorizeAsync(userId: req.UserId, fiscalPeriodId: req.PeriodId, ct: ct);
         if (!authorizationResult.IsSuccess)
         {
-            await SendResultAsync(result: authorizationResult.ToMinimalApiResult());
+            await SendResultAsync(authorizationResult.ToMinimalApiResult());
             return;
         }
 
@@ -36,10 +36,10 @@ internal sealed class GetTrialBalanceEndpoint(
         var trialBalanceResult = await trialBalanceService.CreateTrialBalanceAsync(request: request, token: ct);
         if (!trialBalanceResult.IsSuccess)
         {
-            await SendResultAsync(result: trialBalanceResult.ToMinimalApiResult());
+            await SendResultAsync(trialBalanceResult.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(response: TrialBalanceDto.FromEntity(entity: trialBalanceResult.Value), cancellation: ct);
+        await SendAsync(TrialBalanceDto.FromEntity(entity: trialBalanceResult.Value), cancellation: ct);
     }
 }

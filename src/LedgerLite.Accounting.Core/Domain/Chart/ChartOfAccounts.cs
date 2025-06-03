@@ -26,7 +26,7 @@ public sealed class ChartOfAccounts : AuditableEntity
         OrganizationId = organizationId;
     }
 
-    public IReadOnlyCollection<Account> Accounts => _nodes.Select(selector: x => x.Account).ToList();
+    public IReadOnlyCollection<Account> Accounts => _nodes.Select(x => x.Account).ToList();
     public IReadOnlyCollection<AccountNode> Nodes => _nodes;
 
     public Guid OrganizationId { get; }
@@ -42,9 +42,9 @@ public sealed class ChartOfAccounts : AuditableEntity
     /// </summary>
     public Result Add(Account account)
     {
-        if (_nodes.Any(predicate: acc => acc.Account == account))
+        if (_nodes.Any(acc => acc.Account == account))
             return Result.Invalid(
-                validationError: ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: account));
+                ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: account));
 
         var node = AccountNode.Create(chartId: Id, account: account);
         _nodes.Add(item: node);
@@ -57,16 +57,16 @@ public sealed class ChartOfAccounts : AuditableEntity
     /// </summary>
     public Result Move(Guid accountId, Guid parentId)
     {
-        var account = _nodes.FirstOrDefault(predicate: node => node.Account.Id == accountId);
+        var account = _nodes.FirstOrDefault(node => node.Account.Id == accountId);
         if (account is null)
-            return Result.Invalid(validationError: ChartOfAccountsErrors.AccountNotFound(id: accountId));
+            return Result.Invalid(ChartOfAccountsErrors.AccountNotFound(id: accountId));
 
-        var parent = _nodes.FirstOrDefault(predicate: node => node.Account.Id == parentId);
+        var parent = _nodes.FirstOrDefault(node => node.Account.Id == parentId);
         if (parent is null)
-            return Result.Invalid(validationError: ChartOfAccountsErrors.AccountNotFound(id: parentId));
+            return Result.Invalid(ChartOfAccountsErrors.AccountNotFound(id: parentId));
 
         if (account.Parent == parent)
-            return Result.Invalid(validationError: ChartOfAccountsErrors.MoveToSameParent());
+            return Result.Invalid(ChartOfAccountsErrors.MoveToSameParent());
 
         var removeChildResult = account.Parent?.RemoveChild(child: account);
         if (removeChildResult is { IsSuccess: false })

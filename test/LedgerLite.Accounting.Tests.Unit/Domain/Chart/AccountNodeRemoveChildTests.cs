@@ -11,7 +11,7 @@ public class AccountNodeRemoveChildTests
     {
         var node = FakeAccountNodes.Get();
         var child = FakeAccountNodes.SampleChild;
-        node.AddChild(child: FakeAccountNodes.Get());
+        node.AddChild(FakeAccountNodes.Get());
 
         var result = node.RemoveChild(child: child);
 
@@ -19,7 +19,7 @@ public class AccountNodeRemoveChildTests
         result.ValidationErrors
             .ShouldHaveSingleItem()
             .ShouldBeEquivalentTo(
-                expected: ChartOfAccountsErrors.AccountNotChild(parent: node.Account, child: child.Account));
+                ChartOfAccountsErrors.AccountNotChild(parent: node.Account, child: child.Account));
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public class AccountNodeRemoveChildTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: ChartOfAccountsErrors.AccountHasNoChildrenToRemove(account: node.Account));
+            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountHasNoChildrenToRemove(account: node.Account));
     }
 
     [Fact]

@@ -27,9 +27,9 @@ internal sealed class RoleMaker(RoleManager<Role> roleManager)
             description: "Member with read-only access to the organization");
 
         return await CreateRoleAsync(role: owner)
-            .BindAsync(bindFunc: _ => CreateRoleAsync(role: admin))
-            .BindAsync(bindFunc: _ => CreateRoleAsync(role: member))
-            .BindAsync(bindFunc: _ => CreateRoleAsync(role: viewer));
+            .BindAsync(_ => CreateRoleAsync(role: admin))
+            .BindAsync(_ => CreateRoleAsync(role: member))
+            .BindAsync(_ => CreateRoleAsync(role: viewer));
     }
 
     private async Task GetIfRoleExistsAsync(string name)
@@ -46,7 +46,7 @@ internal sealed class RoleMaker(RoleManager<Role> roleManager)
         var result = await roleManager.CreateAsync(role: role);
         return result.Succeeded
             ? Result.Success()
-            : Result.Invalid(validationErrors: result.Errors.Select(selector: x => new ValidationError(
+            : Result.Invalid(result.Errors.Select(x => new ValidationError(
                 identifier: x.Code,
                 errorMessage: x.Description)));
     }

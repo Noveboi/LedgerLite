@@ -13,14 +13,14 @@ namespace LedgerLite.Accounting.Tests.Unit.UseCases;
 
 public class RecordStandardTransactionTests
 {
-    private static readonly CreateJournalEntryLineRequest LineRequest = new(AccountId: Guid.NewGuid(), Amount: 10);
+    private static readonly CreateJournalEntryLineRequest LineRequest = new(Guid.NewGuid(), Amount: 10);
     private readonly IJournalEntryRepository _repository = Substitute.For<IJournalEntryRepository>();
     private readonly TransactionRecordingService _sut;
     private readonly IAccountingUnitOfWork _unitOfWork = Substitute.For<IAccountingUnitOfWork>();
 
     public RecordStandardTransactionTests()
     {
-        _unitOfWork.ConfigureForTests(configure: o => o.MockJournalEntryRepository(repo: _repository));
+        _unitOfWork.ConfigureForTests(o => o.MockJournalEntryRepository(repo: _repository));
         _sut = new TransactionRecordingService(unitOfWork: _unitOfWork);
     }
 
@@ -37,7 +37,7 @@ public class RecordStandardTransactionTests
     {
         var request = SuccessfulRequest();
         await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
-        _repository.Received(requiredNumberOfCalls: 1).Add(entry: Arg.Any<JournalEntry>());
+        _repository.Received(requiredNumberOfCalls: 1).Add(Arg.Any<JournalEntry>());
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class RecordStandardTransactionTests
     {
         var request = SuccessfulRequest();
         await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
-        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(token: Arg.Any<CancellationToken>());
+        await _unitOfWork.Received(requiredNumberOfCalls: 1).SaveChangesAsync(Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public class RecordStandardTransactionTests
         var request = Request(referenceNumber: "123");
         var result = await _sut.RecordStandardEntryAsync(req: request, ct: CancellationToken.None);
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: TransactionRecordingErrors.FiscalPeriodNotFound(periodId: Guid.Empty));
+        result.ShouldHaveError(TransactionRecordingErrors.FiscalPeriodNotFound(periodId: Guid.Empty));
     }
 
     private FiscalPeriod ConfigureFiscalPeriod(FiscalPeriod? period = null)
@@ -83,7 +83,7 @@ public class RecordStandardTransactionTests
         period ??= FakeFiscalPeriods.Get();
 
         _unitOfWork.FiscalPeriodRepository
-            .GetByIdAsync(id: period.Id, token: Arg.Any<CancellationToken>())
+            .GetByIdAsync(id: period.Id, Arg.Any<CancellationToken>())
             .Returns(returnThis: period);
 
         return period;
@@ -107,11 +107,11 @@ public class RecordStandardTransactionTests
     {
         return new RecordStandardEntryRequest(
             ReferenceNumber: referenceNumber,
-            OccursAt: DateOnly.FromDateTime(dateTime: DateTime.Today),
+            DateOnly.FromDateTime(dateTime: DateTime.Today),
             Description: "",
-            CreditLine: creditRequest ?? LineRequest,
-            DebitLine: debitRequest ?? LineRequest,
-            RequestedByUserId: userId.GetValueOrDefault(),
-            FiscalPeriodId: periodId.GetValueOrDefault());
+            creditRequest ?? LineRequest,
+            debitRequest ?? LineRequest,
+            userId.GetValueOrDefault(),
+            periodId.GetValueOrDefault());
     }
 }

@@ -10,14 +10,14 @@ internal static class UsersToDtoConversions
     {
         if (user.OrganizationMember?.OrganizationId is { } id && organization?.Id != id)
             throw new ArgumentException(message: "Organization does not match ID of user's organization",
-                paramName: nameof(organization));
+                nameof(organization));
 
         return new UserDto(
             Id: user.Id,
-            Organization: organization?.ToDto(),
-            OrganizationRoles: user.OrganizationMember?.Roles
-                .Where(predicate: x => x.Role.Name is not null)
-                .Select(selector: x => x.Role.ToDto()) ?? [],
+            organization?.ToDto(),
+            user.OrganizationMember?.Roles
+                .Where(x => x.Role.Name is not null)
+                .Select(x => x.Role.ToDto()) ?? [],
             Username: user.UserName ?? "",
             Email: user.Email ?? "",
             FullName: (user.FirstName, user.LastName) switch

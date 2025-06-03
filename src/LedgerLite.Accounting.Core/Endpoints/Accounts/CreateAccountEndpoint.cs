@@ -32,25 +32,25 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
             propertyValue1: req.Number, propertyValue2: req.Name);
 
         var request = await MapToEntity(r: req,
-            getChart: () => chartService.GetByUserIdAsync(userId: req.UserId, token: ct));
+            () => chartService.GetByUserIdAsync(userId: req.UserId, token: ct));
         if (!request.IsSuccess)
         {
-            await SendResultAsync(result: request.ToMinimalApiResult());
+            await SendResultAsync(request.ToMinimalApiResult());
             return;
         }
 
         var creationResult = await accountService.CreateAsync(request: request, token: ct);
         if (!creationResult.IsSuccess)
         {
-            await SendResultAsync(result: creationResult.ToMinimalApiResult());
+            await SendResultAsync(creationResult.ToMinimalApiResult());
             return;
         }
 
         var account = creationResult.Value;
 
         await SendCreatedAtAsync<GetAccountEndpoint>(
-            routeValues: new { account.Id },
-            responseBody: account.ToDto(),
+            new { account.Id },
+            account.ToDto(),
             cancellation: ct);
     }
 
@@ -76,7 +76,7 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
             Type: typeConversion.Value,
             Currency: currencyConversion.Value,
             IsPlaceholder: r.IsPlaceholder,
-            Description: r.Description ?? "",
+            r.Description ?? "",
             Chart: chart,
             ParentId: r.ParentId);
     }

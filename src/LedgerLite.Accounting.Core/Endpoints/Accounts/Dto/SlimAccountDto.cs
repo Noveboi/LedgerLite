@@ -9,8 +9,8 @@ public sealed record SlimAccountDto(Guid Id, string Name, string Type, string Cu
         return new SlimAccountDto(
             Id: account.Id,
             Name: account.Name,
-            Type: account.Type.ToString(),
-            Currency: account.Currency.ToString(),
+            account.Type.ToString(),
+            account.Currency.ToString(),
             IsControl: account.IsPlaceholder);
     }
 }

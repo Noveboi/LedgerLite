@@ -13,9 +13,9 @@ public class JournalEntryCreationTests
     [InlineData("    ")]
     public void Invalid_WhenReferenceNumberIsEmptyOrWhitespace(string refNumber)
     {
-        var result = HelpCreateEntry(referenceNumber: refNumber, period: FakeFiscalPeriods.Get());
+        var result = HelpCreateEntry(referenceNumber: refNumber, FakeFiscalPeriods.Get());
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: JournalEntryErrors.EmptyReferenceNumber());
+        result.ShouldHaveError(JournalEntryErrors.EmptyReferenceNumber());
     }
 
     [Fact]
@@ -24,7 +24,7 @@ public class JournalEntryCreationTests
         var period = FakeFiscalPeriods.GetClosed();
         var result = HelpCreateEntry(referenceNumber: "abc123", period: period);
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: JournalEntryErrors.CannotEditBecausePeriodIsClosed(period: period));
+        result.ShouldHaveError(JournalEntryErrors.CannotEditBecausePeriodIsClosed(period: period));
     }
 
     private static Result<JournalEntry> HelpCreateEntry(string referenceNumber, FiscalPeriod period)

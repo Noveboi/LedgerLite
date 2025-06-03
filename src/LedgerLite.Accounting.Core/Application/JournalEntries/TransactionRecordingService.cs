@@ -15,13 +15,13 @@ internal sealed class TransactionRecordingService(IAccountingUnitOfWork unitOfWo
     {
         if (await unitOfWork.FiscalPeriodRepository.GetByIdAsync(id: req.FiscalPeriodId, token: ct) is not { } period)
             return Result.Invalid(
-                validationError: TransactionRecordingErrors.FiscalPeriodNotFound(periodId: req.FiscalPeriodId));
+                TransactionRecordingErrors.FiscalPeriodNotFound(periodId: req.FiscalPeriodId));
 
         return await CreateStandardJournalEntry(request: req, period: period)
-            .Bind(bindFunc: entry => AddCreditLine(journalEntry: entry, request: req.CreditLine))
-            .Bind(bindFunc: entry => AddDebitLine(journalEntry: entry, request: req.DebitLine))
-            .Bind(bindFunc: entry => AddJournalEntryToRepository(entry: entry))
-            .BindAsync(bindFunc: entry => SaveChangesAsync(entry: entry, token: ct));
+            .Bind(entry => AddCreditLine(journalEntry: entry, request: req.CreditLine))
+            .Bind(entry => AddDebitLine(journalEntry: entry, request: req.DebitLine))
+            .Bind(entry => AddJournalEntryToRepository(entry: entry))
+            .BindAsync(entry => SaveChangesAsync(entry: entry, token: ct));
     }
 
     private static Result<JournalEntry> CreateStandardJournalEntry(RecordStandardEntryRequest request,

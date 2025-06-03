@@ -37,12 +37,12 @@ public static class FakeJournalEntryLines
     {
         return new PrivateFaker<JournalEntryLine>()
             .UsePrivateConstructor()
-            .RuleFor(property: x => x.TransactionType, value: options.Type ?? TransactionType.Credit)
-            .RuleFor(property: x => x.Amount, setter: f => options.Amount ?? f.Random.Number(min: 1, max: 1000))
-            .RuleFor(property: x => x.AccountId,
-                setter: _ => options.Account?.Id ?? options.AccountId ?? Guid.NewGuid())
-            .RuleFor(property: x => x.Account, setter: _ => options.Account)
-            .RuleFor(property: x => x.EntryId, setter: _ => options.EntryId ?? Guid.NewGuid());
+            .RuleFor(x => x.TransactionType, options.Type ?? TransactionType.Credit)
+            .RuleFor(x => x.Amount, f => options.Amount ?? f.Random.Number(min: 1, max: 1000))
+            .RuleFor(x => x.AccountId,
+                _ => options.Account?.Id ?? options.AccountId ?? Guid.NewGuid())
+            .RuleFor(x => x.Account, _ => options.Account)
+            .RuleFor(x => x.EntryId, _ => options.EntryId ?? Guid.NewGuid());
     }
 
     public static Faker<JournalEntryLine> GetCreditFaker(Action<FakeJournalEntryLineOptions>? configure = null)
@@ -51,7 +51,7 @@ public static class FakeJournalEntryLines
         configure?.Invoke(obj: options);
 
         return GetFakerCore(options: options)
-            .RuleFor(property: x => x.TransactionType, value: TransactionType.Credit);
+            .RuleFor(x => x.TransactionType, value: TransactionType.Credit);
     }
 
     public static Faker<JournalEntryLine> GetDebitFaker(Action<FakeJournalEntryLineOptions>? configure = null)
@@ -60,13 +60,13 @@ public static class FakeJournalEntryLines
         configure?.Invoke(obj: options);
 
         return GetFakerCore(options: options)
-            .RuleFor(property: x => x.TransactionType, value: TransactionType.Debit);
+            .RuleFor(x => x.TransactionType, value: TransactionType.Debit);
     }
 
     public static List<JournalEntryLine> GenerateStandardLines()
     {
-        var credit = GetCreditFaker(configure: o => o.Amount = 10);
-        var debit = GetDebitFaker(configure: o => o.Amount = 10);
+        var credit = GetCreditFaker(o => o.Amount = 10);
+        var debit = GetDebitFaker(o => o.Amount = 10);
 
         return [credit.Generate(), debit.Generate()];
     }
@@ -77,7 +77,7 @@ public static class FakeJournalEntryLines
         var debit = GetDebitFaker();
 
         return types
-            .Select(selector: type => type == TransactionType.Credit
+            .Select(type => type == TransactionType.Credit
                 ? credit.Generate()
                 : debit.Generate())
             .ToList();

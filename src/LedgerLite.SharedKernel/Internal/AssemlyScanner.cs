@@ -18,10 +18,10 @@ internal static class AssemblyScanner
 
         var search = options.GetTypeSearchStrategy();
         var implementationTypes = AppDomain.CurrentDomain.GetAssemblies()
-            .SelectMany(selector: assembly =>
+            .SelectMany(assembly =>
             {
                 assemblyScanCount++;
-                return search.Filter(types: assembly.GetTypes());
+                return search.Filter(assembly.GetTypes());
             })
             .ToList();
 
@@ -40,15 +40,14 @@ internal static class AssemblyScanner
         }
 
         Log.Information(
-            messageTemplate:
-            "Detected {count} implementations of {interface} from {assemblyCount} assemblies in {ms} milliseconds",
+            messageTemplate: "Detected {count} implementations of {interface} from {assemblyCount} assemblies in {ms} milliseconds",
             implementationTypes.Count,
             options.BaseType.Name,
             assemblyScanCount,
             Stopwatch.GetElapsedTime(startingTimestamp: time).TotalMilliseconds.ToString(format: "N0"));
 
         Log.Information(messageTemplate: "Registered {serviceCount} services for {interface}",
-            propertyValue0: services.Count - beforeCount,
+            services.Count - beforeCount,
             propertyValue1: options.BaseType.Name);
 
         return services;

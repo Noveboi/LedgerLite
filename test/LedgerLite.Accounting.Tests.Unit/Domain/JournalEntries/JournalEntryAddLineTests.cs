@@ -22,7 +22,7 @@ public class JournalEntryAddLineTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: JournalEntryErrors.CannotEdit(status: entry.Status));
+            .ShouldBeEquivalentTo(JournalEntryErrors.CannotEdit(status: entry.Status));
     }
 
     [Fact]

@@ -25,10 +25,10 @@ internal sealed class GetChartOfAccountsEndpoint(IChartOfAccountsService chartSe
         var result = await chartService.GetByUserIdAsync(userId: req.UserId, token: ct);
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result: result.ToMinimalApiResult());
+            await SendResultAsync(result.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(response: ChartOfAccountsDto.FromEntity(chart: result.Value), cancellation: ct);
+        await SendAsync(ChartOfAccountsDto.FromEntity(chart: result.Value), cancellation: ct);
     }
 }

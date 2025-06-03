@@ -32,6 +32,6 @@ public class ChartOfAccountsAddTests
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
         result.ValidationErrors
             .ShouldHaveSingleItem()
-            .ShouldBeEquivalentTo(expected: ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: account));
+            .ShouldBeEquivalentTo(ChartOfAccountsErrors.AccountAlreadyExists(existingAccount: account));
     }
 }

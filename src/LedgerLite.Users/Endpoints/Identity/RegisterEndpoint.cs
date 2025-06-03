@@ -35,9 +35,9 @@ internal sealed class RegisterEndpoint(IServiceProvider sp) : Endpoint<LedgerLit
         var email = req.Email;
 
         if (string.IsNullOrEmpty(value: email))
-            await SendResultAsync(result: IdentityEndpointGroup
+            await SendResultAsync(IdentityEndpointGroup
                 .CreateValidationProblem(
-                    result: IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email: email))));
+                    IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email: email))));
 
         var user = new User();
         var username = req.Username ?? req.Email;
@@ -49,13 +49,13 @@ internal sealed class RegisterEndpoint(IServiceProvider sp) : Endpoint<LedgerLit
         var result = await userManager.CreateAsync(user: user, password: req.Password);
 
         if (!result.Succeeded)
-            await SendResultAsync(result: IdentityEndpointGroup.CreateValidationProblem(result: result));
+            await SendResultAsync(IdentityEndpointGroup.CreateValidationProblem(result: result));
 
         await IdentityEndpointGroup.SendConfirmationEmailAsync(
             user: user,
             userManager: userManager,
-            emailSender: sp.GetRequiredService<IEmailSender<User>>(),
-            linkGenerator: sp.GetRequiredService<LinkGenerator>(),
+            sp.GetRequiredService<IEmailSender<User>>(),
+            sp.GetRequiredService<LinkGenerator>(),
             context: HttpContext,
             email: email);
 

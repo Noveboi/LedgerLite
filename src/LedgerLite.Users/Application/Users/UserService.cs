@@ -19,9 +19,9 @@ internal sealed class UserService(UsersDbContext context) : IUserService
     {
         return context.Users
             .AsSplitQuery()
-            .Include(navigationPropertyPath: x => x.OrganizationMember)
-            .ThenInclude(navigationPropertyPath: x => x!.Roles)
-            .ThenInclude(navigationPropertyPath: x => x.Role)
-            .FirstOrDefaultAsync(predicate: x => x.Id == id, cancellationToken: token);
+            .Include(x => x.OrganizationMember)
+            .ThenInclude(x => x!.Roles)
+            .ThenInclude(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
     }
 }

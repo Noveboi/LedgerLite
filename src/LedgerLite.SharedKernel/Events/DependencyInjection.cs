@@ -10,7 +10,7 @@ internal static class DependencyInjection
     {
         Log.Information(messageTemplate: "Configuring {name}", propertyValue: "Event Pub/Sub Infrastructure");
         AssemblyScanner.RegisterServices(services: services,
-            configure: o => o.Implementing(type: typeof(IEventHandler<>)));
+            o => o.Implementing(typeof(IEventHandler<>)));
         return services
             .AddScoped<IPublisher, Publisher>()
             .AddScoped<IEventPublisher, SequentialEventPublisher>();

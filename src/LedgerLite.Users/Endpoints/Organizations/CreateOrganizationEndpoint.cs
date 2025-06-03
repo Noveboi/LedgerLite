@@ -34,15 +34,15 @@ internal sealed class CreateOrganizationEndpoint(
         var createResult = await HandleUseCaseAsync(req: req, ct: ct);
         if (!createResult.IsSuccess)
         {
-            await SendResultAsync(result: createResult.ToMinimalApiResult());
+            await SendResultAsync(createResult.ToMinimalApiResult());
             return;
         }
 
         var organization = createResult.Value;
 
         await SendCreatedAtAsync<GetOrganizationEndpoint>(
-            routeValues: new { organization.Id },
-            responseBody: organization.ToDto(),
+            new { organization.Id },
+            organization.ToDto(),
             cancellation: ct);
     }
 
@@ -52,22 +52,22 @@ internal sealed class CreateOrganizationEndpoint(
             return Result.Conflict($"Organization with name '{req.Name}' already exists.");
 
         return await userService.GetByIdAsync(id: req.UserId, token: ct)
-            .BindAsync(bindFunc: user => user.OrganizationMemberId is not null
-                ? Result.Invalid(validationError: OrganizationErrors.CannotBeInTwoOrganizations(user: user))
+            .BindAsync(user => user.OrganizationMemberId is not null
+                ? Result.Invalid(OrganizationErrors.CannotBeInTwoOrganizations(user: user))
                 : Result.Success(value: user))
-            .BindAsync(bindFunc: async user => await roles.GetByNameAsync(name: CommonRoles.Owner, ct: ct)
-                .MapAsync(func: role => new { User = user, Role = role }))
-            .BindAsync(bindFunc: state => Organization.Create(
+            .BindAsync(async user => await roles.GetByNameAsync(name: CommonRoles.Owner, ct: ct)
+                .MapAsync(role => new { User = user, Role = role }))
+            .BindAsync(state => Organization.Create(
                     creator: state.User,
                     creatorRole: state.Role,
                     name: req.Name)
-                .Map(func: org => new { state.User, state.Role, Organization = org }))
-            .BindAsync(bindFunc: state =>
+                .Map(org => new { state.User, state.Role, Organization = org }))
+            .BindAsync(state =>
             {
                 unitOfWork.OrganizationRepository.Add(organization: state.Organization);
                 return Result.Success(value: state);
             })
-            .BindAsync(bindFunc: state => unitOfWork.SaveChangesAsync(token: ct)
-                .MapAsync(func: () => state.Organization));
+            .BindAsync(state => unitOfWork.SaveChangesAsync(token: ct)
+                .MapAsync(() => state.Organization));
     }
 }

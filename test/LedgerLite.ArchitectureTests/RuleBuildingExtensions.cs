@@ -14,7 +14,7 @@ internal static class RuleBuildingExtensions
         this GivenTypesThat<GivenTypesConjunction, IType> that,
         string module)
     {
-        return that.ResideInNamespace(pattern: GetRegexNamespace(module: module, layerName: "Domain"),
+        return that.ResideInNamespace(GetRegexNamespace(module: module, layerName: "Domain"),
             useRegularExpressions: true);
     }
 
@@ -22,7 +22,7 @@ internal static class RuleBuildingExtensions
         this GivenTypesThat<GivenTypesConjunction, IType> that,
         string module)
     {
-        return that.ResideInNamespace(pattern: GetRegexNamespace(module: module, layerName: "Application"),
+        return that.ResideInNamespace(GetRegexNamespace(module: module, layerName: "Application"),
             useRegularExpressions: true);
     }
 
@@ -30,7 +30,7 @@ internal static class RuleBuildingExtensions
         this GivenTypesThat<GivenTypesConjunction, IType> that,
         string module)
     {
-        return that.ResideInNamespace(pattern: GetRegexNamespace(module: module, layerName: "Infrastructure"),
+        return that.ResideInNamespace(GetRegexNamespace(module: module, layerName: "Infrastructure"),
             useRegularExpressions: true);
     }
 
@@ -38,7 +38,7 @@ internal static class RuleBuildingExtensions
         this GivenTypesThat<GivenTypesConjunction, IType> that,
         string module)
     {
-        return that.ResideInNamespace(pattern: GetRegexNamespace(module: module, layerName: "Endpoints"),
+        return that.ResideInNamespace(GetRegexNamespace(module: module, layerName: "Endpoints"),
             useRegularExpressions: true);
     }
 

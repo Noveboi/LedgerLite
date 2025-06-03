@@ -11,7 +11,7 @@ public sealed class StartupService(IServiceProvider provider) : BackgroundServic
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _log.Information(messageTemplate: "Running {service}", propertyValue: nameof(StartupService));
+        _log.Information(messageTemplate: "Running {service}", nameof(StartupService));
         try
         {
             var scope = provider.CreateScope();
@@ -23,7 +23,7 @@ public sealed class StartupService(IServiceProvider provider) : BackgroundServic
         catch (Exception ex)
         {
             _log.Fatal(exception: ex, messageTemplate: "An exception occured in {service}",
-                propertyValue: nameof(StartupService));
+                nameof(StartupService));
             throw;
         }
     }

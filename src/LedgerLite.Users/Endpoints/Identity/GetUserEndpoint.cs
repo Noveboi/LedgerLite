@@ -21,6 +21,6 @@ internal sealed class GetUserEndpoint(IUserRequests requests) : Endpoint<GetUser
     public override async Task HandleAsync(GetUserRequest req, CancellationToken ct)
     {
         var userResult = await requests.GetUserByIdAsync(id: req.UserId, token: ct);
-        await SendResultAsync(result: userResult.ToMinimalApiResult());
+        await SendResultAsync(userResult.ToMinimalApiResult());
     }
 }

@@ -16,7 +16,7 @@ public sealed record JournalEntryResponseDto(
             ReferenceNumber: entry.ReferenceNumber,
             OccursAtUtc: entry.OccursAt,
             Description: entry.Description,
-            Type: entry.Type.ToString(),
-            Status: entry.Status.ToString());
+            entry.Type.ToString(),
+            entry.Status.ToString());
     }
 }

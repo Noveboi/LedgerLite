@@ -16,9 +16,9 @@ internal sealed record TrialBalanceDto(
             TotalCredits: entity.GetTotalCredits(),
             TotalDebits: entity.GetTotalDebits(),
             Period: FiscalPeriodDto.FromEntity(fiscalPeriod: entity.Period),
-            WorkingBalances: entity.WorkingBalance.Select(selector: entry => new AccountBalanceDto(
-                Account: SlimAccountDto.FromEntity(account: entry.Account),
-                Credit: entry.Type == TransactionType.Credit ? entry.Amount : 0,
-                Debit: entry.Type == TransactionType.Debit ? entry.Amount : 0)));
+            WorkingBalances: entity.WorkingBalance.Select(entry => new AccountBalanceDto(
+                SlimAccountDto.FromEntity(account: entry.Account),
+                entry.Type == TransactionType.Credit ? entry.Amount : 0,
+                entry.Type == TransactionType.Debit ? entry.Amount : 0)));
     }
 }

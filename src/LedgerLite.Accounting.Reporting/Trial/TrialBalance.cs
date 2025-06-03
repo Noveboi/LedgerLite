@@ -19,33 +19,35 @@ internal sealed class TrialBalance
 
     public decimal GetTotals(Account account)
     {
-        return WorkingBalance.FirstOrDefault(predicate: x => x.Account == account)?.Amount ?? 0;
+        return WorkingBalance.FirstOrDefault(x => x.Account == account)?.Amount ?? 0;
     }
 
     public decimal GetTotalDebits()
     {
         return WorkingBalance
-            .Where(predicate: x => x.Type == TransactionType.Debit)
-            .Sum(selector: x => x.Amount);
+            .Where(x => x.Type == TransactionType.Debit)
+            .Sum(x => x.Amount);
     }
 
     public decimal GetTotalCredits()
     {
         return WorkingBalance
-            .Where(predicate: x => x.Type == TransactionType.Credit)
-            .Sum(selector: x => x.Amount);
+            .Where(x => x.Type == TransactionType.Credit)
+            .Sum(x => x.Amount);
     }
 
     public static Result<TrialBalance> Prepare(FiscalPeriod period, IReadOnlyList<JournalEntry> journalEntries)
     {
-        if (journalEntries.Any(predicate: e => e.FiscalPeriodId != period.Id))
-            throw new InvalidOperationException(message: $"Expected all entry periods to be {period.Id}.");
+        if (journalEntries.Any(e => e.FiscalPeriodId != period.Id))
+            throw new InvalidOperationException($"Expected all entry periods to be {period.Id}.");
 
         var workingBalance = journalEntries
-            .SelectMany(selector: entry => entry.Lines)
-            .GroupBy(keySelector: line => line.Account)
-            .Select(selector: AccountBalance.FromGroup);
+            .SelectMany(entry => entry.Lines)
+            .GroupBy(line => line.Account)
+            .Select(AccountBalance.FromGroup);
 
-        return new TrialBalance(period: period, workingBalance: workingBalance.ToList());
+        return new TrialBalance(
+            period: period, 
+            workingBalance.ToList());
     }
 }

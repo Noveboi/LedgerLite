@@ -11,7 +11,7 @@ public class OrganizationAddMemberTests
     [Fact]
     public void AppendMember_ToList()
     {
-        var member = FakeOrganizationMembers.Get(configure: x => x.WithRole(name: CommonRoles.Member));
+        var member = FakeOrganizationMembers.Get(x => x.WithRole(name: CommonRoles.Member));
         var organization = FakeOrganizations.Get();
 
         var result = organization.AddMember(member: member);
@@ -24,25 +24,25 @@ public class OrganizationAddMemberTests
     public void Invalid_WhenMemberAlreadyInOrganization()
     {
         var member = FakeOrganizationMembers.Get();
-        var organization = FakeOrganizations.Get(configure: o => o.WithMember(member: member));
+        var organization = FakeOrganizations.Get(o => o.WithMember(member: member));
 
         var result = organization.AddMember(member: member);
 
         result.ShouldBeInvalid();
-        result.ShouldHaveError(error: OrganizationErrors.MemberAlreadyInOrganization(member: member));
+        result.ShouldHaveError(OrganizationErrors.MemberAlreadyInOrganization(member: member));
     }
 
     [Fact]
     public void Invalid_IfAddingAnotherOwner()
     {
-        var owner = FakeOrganizationMembers.Get(configure: x => x.WithRole(name: CommonRoles.Owner));
-        var organization = FakeOrganizations.Get(configure: x => x.WithMember(member: owner));
-        var another = FakeOrganizationMembers.Get(configure: x => x.WithRole(name: CommonRoles.Owner));
+        var owner = FakeOrganizationMembers.Get(x => x.WithRole(name: CommonRoles.Owner));
+        var organization = FakeOrganizations.Get(x => x.WithMember(member: owner));
+        var another = FakeOrganizationMembers.Get(x => x.WithRole(name: CommonRoles.Owner));
 
         var result = organization.AddMember(member: another);
 
         result.ShouldBeInvalid();
-        result.ShouldHaveError(error: OrganizationErrors.AlreadyHasOwner());
+        result.ShouldHaveError(OrganizationErrors.AlreadyHasOwner());
     }
 
     [Fact]
@@ -54,6 +54,6 @@ public class OrganizationAddMemberTests
         var result = organization.AddMember(member: member);
 
         result.ShouldBeInvalid();
-        result.ShouldHaveError(error: OrganizationErrors.MemberDoesNotHaveRole(member: member));
+        result.ShouldHaveError(OrganizationErrors.MemberDoesNotHaveRole(member: member));
     }
 }

@@ -52,15 +52,15 @@ public static class FakeJournalEntries
 
     private static Faker<JournalEntry> GetFaker(FakeJournalEntryOptions options)
     {
-        return new PrivateFaker<JournalEntry>(binder: new PrivateBinder())
+        return new PrivateFaker<JournalEntry>(new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(property: x => x.Id, value: options.Id)
-            .RuleFor(property: x => x.FiscalPeriodId, value: options.FiscalPeriodId ?? FiscalPeriodId)
-            .RuleFor(property: x => x.ReferenceNumber, setter: f => f.Random.String2(length: 5))
-            .RuleFor(property: x => x.OccursAt, setter: f => DateOnly.FromDateTime(dateTime: f.Date.Past()))
-            .RuleFor(property: x => x.Type, value: options.JournalEntryType ?? JournalEntryType.Standard)
-            .RuleFor(property: x => x.Status, value: JournalEntryStatus.Editable)
-            .RuleFor(propertyOrFieldName: "_lines", setter: _ => options.Lines ?? []);
+            .RuleFor(x => x.Id, value: options.Id)
+            .RuleFor(x => x.FiscalPeriodId, options.FiscalPeriodId ?? FiscalPeriodId)
+            .RuleFor(x => x.ReferenceNumber, f => f.Random.String2(length: 5))
+            .RuleFor(x => x.OccursAt, f => DateOnly.FromDateTime(f.Date.Past()))
+            .RuleFor(x => x.Type, options.JournalEntryType ?? JournalEntryType.Standard)
+            .RuleFor(x => x.Status, value: JournalEntryStatus.Editable)
+            .RuleFor(propertyOrFieldName: "_lines", _ => options.Lines ?? []);
     }
 
     public static JournalEntry Get(Action<FakeJournalEntryOptions>? configure = null)

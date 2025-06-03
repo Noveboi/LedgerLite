@@ -24,16 +24,16 @@ internal sealed class JournalEntryLineRepository(AccountingDbContext context) : 
         CancellationToken ct)
     {
         var query = context.JournalEntryLines
-            .Include(navigationPropertyPath: x => x.Entry)
-            .ThenInclude(navigationPropertyPath: x => x.Lines)
-            .Where(predicate: x => x.AccountId == account.Id);
+            .Include(x => x.Entry)
+            .ThenInclude(x => x.Lines)
+            .Where(x => x.AccountId == account.Id);
 
 
         if (options is null)
             return await query.ToListAsync(cancellationToken: ct);
 
         if (options.FiscalPeriodId is not null)
-            query = query.Where(predicate: x => x.Entry.FiscalPeriodId == options.FiscalPeriodId.Value);
+            query = query.Where(x => x.Entry.FiscalPeriodId == options.FiscalPeriodId.Value);
 
         return await query.ToListAsync(cancellationToken: ct);
     }
@@ -41,7 +41,7 @@ internal sealed class JournalEntryLineRepository(AccountingDbContext context) : 
     public async Task<IReadOnlyList<JournalEntryLine>> GetLinesForEntryAsync(JournalEntry entry, CancellationToken ct)
     {
         return await context.JournalEntryLines
-            .Where(predicate: x => x.EntryId == entry.Id)
+            .Where(x => x.EntryId == entry.Id)
             .ToListAsync(cancellationToken: ct);
     }
 }

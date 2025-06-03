@@ -20,7 +20,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         return services
-            .AddSerilog(configureLogger: (_, config) => config.ReadFrom.Configuration(configuration: configuration))
+            .AddSerilog((_, config) => config.ReadFrom.Configuration(configuration: configuration))
             .AddFastEndpoints()
             .AddOpenApi();
     }
@@ -34,7 +34,7 @@ public static class DependencyInjection
                                  message: "API Configuration does not have any allowed origins for CORS.");
 
         return services
-            .AddCors(setupAction: o => o.AddPolicy(name: "LedgerLite", configurePolicy: policy => policy
+            .AddCors(o => o.AddPolicy(name: "LedgerLite", policy => policy
                 .WithOrigins(origins: allowedOrigins)
                 .AllowAnyHeader()
                 .AllowAnyMethod()));

@@ -33,10 +33,10 @@ internal sealed class GetAccountEndpoint(GetDetailedAccountUseCase useCase)
         var result = await useCase.HandleAsync(request: request, token: ct);
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result: result.ToMinimalApiResult());
+            await SendResultAsync(result.ToMinimalApiResult());
             return;
         }
 
-        await SendAsync(response: result.Value.ToDto(), cancellation: ct);
+        await SendAsync(result.Value.ToDto(), cancellation: ct);
     }
 }

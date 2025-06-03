@@ -28,7 +28,7 @@ internal sealed class JoinOrganizationEndpoint(
     public override void Configure()
     {
         Put("/{organizationId:guid}/join");
-        Description(builder: x => x.Accepts<JoinOrganizationRequestDto>());
+        Description(x => x.Accepts<JoinOrganizationRequestDto>());
         Group<OrganizationEndpointGroup>();
     }
 
@@ -37,7 +37,7 @@ internal sealed class JoinOrganizationEndpoint(
         var result = await HandleUseCaseAsync(request: req, token: ct);
         if (!result.IsSuccess)
         {
-            await SendResultAsync(result: result.ToMinimalApiResult());
+            await SendResultAsync(result.ToMinimalApiResult());
             return;
         }
 
@@ -49,18 +49,18 @@ internal sealed class JoinOrganizationEndpoint(
         CancellationToken token)
     {
         return await userService.GetByIdAsync(id: request.UserId, token: token)
-            .BindAsync(bindFunc: async user =>
+            .BindAsync(async user =>
                 await _organizations.GetByIdAsync(id: request.OrganizationId, token: token) is { } org
-                    ? Result.Success(value: new { User = user, Organization = org })
+                    ? Result.Success(new { User = user, Organization = org })
                     : Result.NotFound(CommonErrors.NotFound<Organization>(id: request.OrganizationId)))
-            .BindAsync(bindFunc: state => roles.GetByNameAsync(name: CommonRoles.Viewer, ct: token)
-                .MapAsync(func: role => new { state.User, state.Organization, Role = role }))
-            .BindAsync(bindFunc: state => OrganizationMember
+            .BindAsync(state => roles.GetByNameAsync(name: CommonRoles.Viewer, ct: token)
+                .MapAsync(role => new { state.User, state.Organization, Role = role }))
+            .BindAsync(state => OrganizationMember
                 .Create(user: state.User, organization: state.Organization, role: state.Role)
-                .Map(func: member => new { state.User, state.Organization, Member = member }))
-            .BindAsync(bindFunc: state => state.Organization.AddMember(member: state.Member)
-                .Map(func: () => state.Member))
-            .BindAsync(bindFunc: member => unitOfWork.SaveChangesAsync(token: token)
-                .MapAsync(func: () => member));
+                .Map(member => new { state.User, state.Organization, Member = member }))
+            .BindAsync(state => state.Organization.AddMember(member: state.Member)
+                .Map(() => state.Member))
+            .BindAsync(member => unitOfWork.SaveChangesAsync(token: token)
+                .MapAsync(() => member));
     }
 }

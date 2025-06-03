@@ -11,32 +11,32 @@ namespace LedgerLite.Accounting.Reporting.Tests.Unit;
 /// </summary>
 public class TrialBalanceSpecification1
 {
-    private readonly JournalEntry _entry1 = FakeJournalEntries.Get(configure: x => x
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Cash, amount: 100))
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.OwnerEquity, amount: 100)));
+    private readonly JournalEntry _entry1 = FakeJournalEntries.Get(x => x
+        .AddLine(o => o.Debit(account: CommonAccounts.Cash, amount: 100))
+        .AddLine(o => o.Credit(account: CommonAccounts.OwnerEquity, amount: 100)));
 
-    private readonly JournalEntry _entry2 = FakeJournalEntries.Get(configure: x => x
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Cash, amount: 200))
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.LoansPayable, amount: 200)));
+    private readonly JournalEntry _entry2 = FakeJournalEntries.Get(x => x
+        .AddLine(o => o.Debit(account: CommonAccounts.Cash, amount: 200))
+        .AddLine(o => o.Credit(account: CommonAccounts.LoansPayable, amount: 200)));
 
-    private readonly JournalEntry _entry3 = FakeJournalEntries.Get(configure: x => x
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Cash, amount: 30))
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Equipment, amount: 30)));
+    private readonly JournalEntry _entry3 = FakeJournalEntries.Get(x => x
+        .AddLine(o => o.Credit(account: CommonAccounts.Cash, amount: 30))
+        .AddLine(o => o.Debit(account: CommonAccounts.Equipment, amount: 30)));
 
-    private readonly JournalEntry _entry4 = FakeJournalEntries.Get(configure: x => x
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Supplies, amount: 50))
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.AccountsPayable, amount: 50)));
+    private readonly JournalEntry _entry4 = FakeJournalEntries.Get(x => x
+        .AddLine(o => o.Debit(account: CommonAccounts.Supplies, amount: 50))
+        .AddLine(o => o.Credit(account: CommonAccounts.AccountsPayable, amount: 50)));
 
-    private readonly JournalEntry _entry5 = FakeJournalEntries.Get(configure: x => x
+    private readonly JournalEntry _entry5 = FakeJournalEntries.Get(x => x
         .WithType(journalEntryType: JournalEntryType.Compound)
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.Cash, amount: 150))
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Revenue, amount: 150))
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Supplies, amount: 25))
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.CostOfSales, amount: 25)));
+        .AddLine(o => o.Debit(account: CommonAccounts.Cash, amount: 150))
+        .AddLine(o => o.Credit(account: CommonAccounts.Revenue, amount: 150))
+        .AddLine(o => o.Credit(account: CommonAccounts.Supplies, amount: 25))
+        .AddLine(o => o.Debit(account: CommonAccounts.CostOfSales, amount: 25)));
 
-    private readonly JournalEntry _entry6 = FakeJournalEntries.Get(configure: x => x
-        .AddLine(configureLine: o => o.Credit(account: CommonAccounts.Cash, amount: 20))
-        .AddLine(configureLine: o => o.Debit(account: CommonAccounts.LaundryCosts, amount: 20)));
+    private readonly JournalEntry _entry6 = FakeJournalEntries.Get(x => x
+        .AddLine(o => o.Credit(account: CommonAccounts.Cash, amount: 20))
+        .AddLine(o => o.Debit(account: CommonAccounts.LaundryCosts, amount: 20)));
 
     [Fact]
     public void AccurateTotals_PerAccount()
@@ -74,7 +74,7 @@ public class TrialBalanceSpecification1
     private (FiscalPeriod, IReadOnlyList<JournalEntry>) Setup()
     {
         var entries = new[] { _entry1, _entry2, _entry3, _entry4, _entry5, _entry6 };
-        var period = FakeFiscalPeriods.Get(configure: x => x.WithId(id: _entry1.FiscalPeriodId));
+        var period = FakeFiscalPeriods.Get(x => x.WithId(id: _entry1.FiscalPeriodId));
 
         return (period, entries);
     }

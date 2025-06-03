@@ -15,12 +15,12 @@ internal sealed class IdentityEndpointGroup : Group
 {
     public IdentityEndpointGroup()
     {
-        Configure(routePrefix: "", ep: _ => { });
+        Configure(routePrefix: "", _ => { });
     }
 
     public static ValidationProblem CreateValidationProblem(string errorCode, string errorDescription)
     {
-        return TypedResults.ValidationProblem(errors: new Dictionary<string, string[]>
+        return TypedResults.ValidationProblem(new Dictionary<string, string[]>
         {
             { errorCode, [errorDescription] }
         });
@@ -37,7 +37,7 @@ internal sealed class IdentityEndpointGroup : Group
         {
             string[] newDescriptions;
 
-            if (errorDictionary.TryGetValue(key: error.Code, value: out var descriptions))
+            if (errorDictionary.TryGetValue(key: error.Code, out var descriptions))
             {
                 newDescriptions = new string[descriptions.Length + 1];
                 Array.Copy(sourceArray: descriptions, destinationArray: newDescriptions, length: descriptions.Length);
@@ -66,7 +66,7 @@ internal sealed class IdentityEndpointGroup : Group
         var code = isChange
             ? await userManager.GenerateChangeEmailTokenAsync(user: user, newEmail: email)
             : await userManager.GenerateEmailConfirmationTokenAsync(user: user);
-        code = WebEncoders.Base64UrlEncode(input: Encoding.UTF8.GetBytes(s: code));
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(s: code));
 
         var userId = await userManager.GetUserIdAsync(user: user);
         var routeValues = new RouteValueDictionary
@@ -83,9 +83,9 @@ internal sealed class IdentityEndpointGroup : Group
         var confirmEmailUrl = linkGenerator.GetUriByName(httpContext: context, endpointName: confirmEmailEndpointName,
                                   values: routeValues)
                               ?? throw new NotSupportedException(
-                                  message: $"Could not find endpoint named '{confirmEmailEndpointName}'.");
+                                  $"Could not find endpoint named '{confirmEmailEndpointName}'.");
 
         await emailSender.SendConfirmationLinkAsync(user: user, email: email,
-            confirmationLink: HtmlEncoder.Default.Encode(value: confirmEmailUrl));
+            HtmlEncoder.Default.Encode(value: confirmEmailUrl));
     }
 }

@@ -7,6 +7,6 @@ public class ChartOfAccountsModifyGroup : SubGroup<ChartOfAccountsEndpointGroup>
 {
     public ChartOfAccountsModifyGroup()
     {
-        Configure(routePrefix: "", ep: ep => ep.Policy(policy: x => x.RequireModificationPermissions()));
+        Configure(routePrefix: "", ep => ep.Policy(x => x.RequireModificationPermissions()));
     }
 }

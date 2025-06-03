@@ -23,31 +23,31 @@ internal sealed class RemoveAccountUseCase(
     public async Task<Result<Account>> HandleAsync(RemoveAccountRequest request, CancellationToken token)
     {
         return await userRequests.GetUserByIdAsync(id: request.UserId, token: token)
-            .BindAsync(bindFunc: user => chartService
+            .BindAsync(user => chartService
                 .GetByUserIdAsync(userId: user.Id, token: token)
-                .MapAsync(func: chart => new { Chart = chart, User = user }))
-            .BindAsync(bindFunc: state =>
-                state.Chart.Nodes.FirstOrDefault(predicate: x => x.Account.Id == request.AccountId) is { } node
-                    ? Result.Success(value: new { state.Chart, state.User, Node = node, node.Account })
+                .MapAsync(chart => new { Chart = chart, User = user }))
+            .BindAsync(state =>
+                state.Chart.Nodes.FirstOrDefault(x => x.Account.Id == request.AccountId) is { } node
+                    ? Result.Success(new { state.Chart, state.User, Node = node, node.Account })
                     : Result.Unauthorized())
-            .BindAsync(bindFunc: state => state.Node.Children.Count == 0
+            .BindAsync(state => state.Node.Children.Count == 0
                 ? Result.Success(value: state)
                 : Result.Invalid(
-                    validationError: ChartOfAccountsErrors.CannotRemoveAccountWithChildren(node: state.Node)))
-            .BindAsync(bindFunc: async state =>
+                    ChartOfAccountsErrors.CannotRemoveAccountWithChildren(node: state.Node)))
+            .BindAsync(async state =>
                 await unitOfWork.JournalEntryLineRepository.GetLinesForAccountAsync(account: state.Account) is []
                     ? Result.Success(value: state)
                     : Result.Invalid(
-                        validationError: ChartOfAccountsErrors.CannotRemoveAccountWithExistingLines(
+                        ChartOfAccountsErrors.CannotRemoveAccountWithExistingLines(
                             account: state.Account)))
-            .BindAsync(bindFunc: state =>
+            .BindAsync(state =>
             {
                 unitOfWork.AccountRepository.Remove(account: state.Account);
                 return Result.Success(value: state);
             })
-            .BindAsync(bindFunc: state => unitOfWork
+            .BindAsync(state => unitOfWork
                 .SaveChangesAsync(token: token)
-                .MapAsync(func: () => state))
-            .MapAsync(func: state => state.Account);
+                .MapAsync(() => state))
+            .MapAsync(state => state.Account);
     }
 }

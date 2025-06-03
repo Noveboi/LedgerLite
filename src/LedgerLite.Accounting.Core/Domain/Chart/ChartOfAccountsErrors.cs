@@ -20,7 +20,7 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            errorMessage: $"Account '{existingAccount}' already exists.",
+            $"Account '{existingAccount}' already exists.",
             errorCode: "COA-EXISTS",
             severity: ValidationSeverity.Error);
     }
@@ -29,7 +29,7 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            errorMessage: $"Account with ID '{id}' does not exist in chart.",
+            $"Account with ID '{id}' does not exist in chart.",
             errorCode: "COA-ACCOUNT_NOT_FOUND",
             severity: ValidationSeverity.Error);
     }
@@ -38,7 +38,7 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            errorMessage: $"Account '{child}' is not a child of '{parent}'",
+            $"Account '{child}' is not a child of '{parent}'",
             errorCode: "COA-CHILD_NOT_FOUND",
             severity: ValidationSeverity.Error);
     }
@@ -47,7 +47,7 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            errorMessage: $"Account '{account}' does not have children.",
+            $"Account '{account}' does not have children.",
             errorCode: "COA-NO_CHILDREN_TO_REMOVE",
             severity: ValidationSeverity.Error);
     }
@@ -65,7 +65,6 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            errorMessage:
             $"Cannot remove account '{node.Account.Name}' with children (found {node.Children.Count} children).",
             errorCode: "COA-REMOVE_NO_CHILDREN",
             severity: ValidationSeverity.Error);
@@ -75,7 +74,6 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            errorMessage:
             $"Cannot remove account with existing journal entry lines. Remove all entries associated with " +
             $"'{account.Name}' and try again.",
             errorCode: "COA-REMOVE_NO_LINES",

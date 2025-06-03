@@ -19,7 +19,7 @@ public class OrganizationCreateTests
         var result = Organization.Create(creator: User, creatorRole: Role, name: "");
 
         result.Status.ShouldBe(expected: ResultStatus.Invalid);
-        result.ShouldHaveError(error: CommonErrors.NameIsEmpty());
+        result.ShouldHaveError(CommonErrors.NameIsEmpty());
     }
 
     [Fact]

@@ -16,34 +16,34 @@ public static class FakeChartOfAccounts
 {
     private static readonly Faker<Account> AccountFaker = FakeAccounts.GetAccountFaker();
 
-    public static ChartOfAccounts Empty => GetFaker(options: new ChartOfAccountsFakerOptions
+    public static ChartOfAccounts Empty => GetFaker(new ChartOfAccountsFakerOptions
     {
         Nodes = []
     }).Generate();
 
     public static Faker<ChartOfAccounts> GetFaker(ChartOfAccountsFakerOptions? options = null)
     {
-        return new PrivateFaker<ChartOfAccounts>(binder: new PrivateBinder())
+        return new PrivateFaker<ChartOfAccounts>(new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(property: x => x.Id, setter: (_, c) => options?.Id ?? c.Id)
-            .RuleFor(property: x => x.OrganizationId, setter: _ => options?.OrganizationId ?? Guid.NewGuid())
-            .RuleFor(propertyOrFieldName: "_nodes", setter: (f, c) => options?.Nodes?.ToList()
-                                                                      ?? AccountFaker
-                                                                          .GenerateLazy(
-                                                                              count: f.Random.Number(min: 1, max: 3))
-                                                                          .Select(selector: x =>
-                                                                              AccountNode.Create(chartId: c.Id,
-                                                                                  account: x))
-                                                                          .ToList());
+            .RuleFor(x => x.Id, (_, c) => options?.Id ?? c.Id)
+            .RuleFor(x => x.OrganizationId, _ => options?.OrganizationId ?? Guid.NewGuid())
+            .RuleFor(propertyOrFieldName: "_nodes", (f, c) => options?.Nodes?.ToList()
+                                                              ?? AccountFaker
+                                                                  .GenerateLazy(
+                                                                      f.Random.Number(min: 1, max: 3))
+                                                                  .Select(x =>
+                                                                      AccountNode.Create(chartId: c.Id,
+                                                                          account: x))
+                                                                  .ToList());
     }
 
     public static ChartOfAccounts With(params FakeNodeBuilder[] accounts)
     {
         var id = Guid.NewGuid();
-        var faker = GetFaker(options: new ChartOfAccountsFakerOptions
+        var faker = GetFaker(new ChartOfAccountsFakerOptions
         {
             Id = id,
-            Nodes = accounts.SelectMany(selector: x =>
+            Nodes = accounts.SelectMany(x =>
             {
                 var node = AccountNode.Create(chartId: id, account: x.Account);
                 if (x.ConfigureChildren is null)

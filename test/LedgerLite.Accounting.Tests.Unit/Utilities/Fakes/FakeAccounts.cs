@@ -26,12 +26,12 @@ public static class FakeAccounts
     {
         return new PrivateFaker<Account>()
             .UsePrivateConstructor()
-            .RuleFor(property: x => x.Currency, value: options?.Currency ?? Currency.Euro)
-            .RuleFor(property: x => x.Name, setter: f => options?.Name ?? f.Lorem.Word())
-            .RuleFor(property: x => x.Number, setter: f => f.Random.String2(length: 3, chars: "0123456789"))
-            .RuleFor(property: x => x.Type,
-                setter: f => options?.Type ?? f.PickRandom(items: (IEnumerable<AccountType>)AccountType.List))
-            .RuleFor(property: x => x.IsPlaceholder, value: options?.IsPlaceholder ?? false);
+            .RuleFor(x => x.Currency, options?.Currency ?? Currency.Euro)
+            .RuleFor(x => x.Name, f => options?.Name ?? f.Lorem.Word())
+            .RuleFor(x => x.Number, f => f.Random.String2(length: 3, chars: "0123456789"))
+            .RuleFor(x => x.Type,
+                f => options?.Type ?? f.PickRandom((IEnumerable<AccountType>)AccountType.List))
+            .RuleFor(x => x.IsPlaceholder, options?.IsPlaceholder ?? false);
     }
 
     public static Account NewAccount()

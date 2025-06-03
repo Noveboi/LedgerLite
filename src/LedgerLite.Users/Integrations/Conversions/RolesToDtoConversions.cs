@@ -9,6 +9,6 @@ internal static class RolesToDtoConversions
     {
         return new RoleDto(
             Id: role.Id,
-            Name: role.Name ?? "");
+            role.Name ?? "");
     }
 }

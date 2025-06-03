@@ -8,11 +8,11 @@ internal sealed class Publisher(IEventPublisher eventPublisher, IServiceProvider
 
     public ValueTask PublishAsync<TEvent>(TEvent e, CancellationToken token) where TEvent : IEvent
     {
-        var handler = EventHandlers.GetOrAdd(key: e.GetType(), valueFactory: static eventType =>
+        var handler = EventHandlers.GetOrAdd(e.GetType(), static eventType =>
         {
             var wrapperType = typeof(EventHandlerWrapperImplementation<>).MakeGenericType(eventType);
             var wrapper = Activator.CreateInstance(type: wrapperType) ??
-                          throw new InvalidOperationException(message: $"Couldn't create wrapper for type {eventType}");
+                          throw new InvalidOperationException($"Couldn't create wrapper for type {eventType}");
             return (EventHandlerWrapper)wrapper;
         });
 

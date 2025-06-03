@@ -4,9 +4,9 @@ namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
 public sealed class JournalEntryStatus : SmartEnum<JournalEntryStatus>
 {
-    public static readonly JournalEntryStatus Editable = new(name: nameof(Editable), value: 1);
-    public static readonly JournalEntryStatus Posted = new(name: nameof(Posted), value: 2);
-    public static readonly JournalEntryStatus Reversed = new(name: nameof(Reversed), value: 3);
+    public static readonly JournalEntryStatus Editable = new(nameof(Editable), value: 1);
+    public static readonly JournalEntryStatus Posted = new(nameof(Posted), value: 2);
+    public static readonly JournalEntryStatus Reversed = new(nameof(Reversed), value: 3);
 
     private JournalEntryStatus() : this(name: "", value: 0)
     {

@@ -28,12 +28,12 @@ internal sealed class MoveAccountEndpoint(IChartOfAccountsService charts, IAccou
         var chart = await charts.GetByUserIdAsync(userId: req.UserId, token: ct);
         if (!chart.IsSuccess)
         {
-            await SendResultAsync(result: chart.ToMinimalApiResult());
+            await SendResultAsync(chart.ToMinimalApiResult());
             return;
         }
 
         var request = new MoveAccountRequest(Chart: chart, AccountId: req.AccountId, ParentId: req.NewParentId);
         var result = await accounts.MoveAsync(request: request, token: ct);
-        await SendResultAsync(result: result.ToMinimalApiResult());
+        await SendResultAsync(result.ToMinimalApiResult());
     }
 }

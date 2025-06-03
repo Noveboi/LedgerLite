@@ -9,8 +9,8 @@ internal sealed class EventHandlerWrapperImplementation<TEvent> : EventHandlerWr
     {
         var handlers = sp
             .GetServices<IEventHandler<TEvent>>()
-            .Select(selector: static x => new EventExecutor(HandlerInstance: x,
-                Callback: (ev, tok) => x.HandleAsync(e: (TEvent)ev, token: tok)));
+            .Select(static x => new EventExecutor(HandlerInstance: x,
+                (ev, tok) => x.HandleAsync((TEvent)ev, token: tok)));
 
         return publish(arg1: handlers, arg2: e, arg3: token);
     }

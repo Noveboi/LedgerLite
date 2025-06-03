@@ -8,10 +8,10 @@ public static class FakeOrganizations
 {
     private static Faker<Organization> Faker(FakeOrganizationBuilder builder)
     {
-        return new PrivateFaker<Organization>(binder: new PrivateBinder())
+        return new PrivateFaker<Organization>(new PrivateBinder())
             .UsePrivateConstructor()
-            .RuleFor(property: x => x.Name, setter: f => builder.Name ?? f.Company.CompanyName())
-            .RuleFor(propertyOrFieldName: "_members", setter: _ => builder.Members);
+            .RuleFor(x => x.Name, f => builder.Name ?? f.Company.CompanyName())
+            .RuleFor(propertyOrFieldName: "_members", _ => builder.Members);
     }
 
     public static Organization Get(Action<FakeOrganizationBuilder>? configure = null)

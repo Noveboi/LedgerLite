@@ -10,7 +10,7 @@ internal static class AccountErrors
     {
         return new ValidationError(
             identifier: AccountIdentifier,
-            errorMessage: $"Account '{account}' needs to be a placeholder to have child accounts.",
+            $"Account '{account}' needs to be a placeholder to have child accounts.",
             errorCode: "ACC-ADD_NOT_PLACEHOLDER",
             severity: ValidationSeverity.Error);
     }
@@ -19,7 +19,7 @@ internal static class AccountErrors
     {
         return new ValidationError(
             identifier: AccountIdentifier,
-            errorMessage: $"Expected child account to be {expected}, got {actual} instead.",
+            $"Expected child account to be {expected}, got {actual} instead.",
             errorCode: "ACC-ADD_WRONG_TYPE",
             severity: ValidationSeverity.Error);
     }

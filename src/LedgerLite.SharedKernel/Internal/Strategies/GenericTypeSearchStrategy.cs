@@ -5,15 +5,15 @@ internal sealed class GenericTypeSearchStrategy(Type searchTarget) : ITypeSearch
     public IEnumerable<Type> Filter(Type[] types)
     {
         return types
-            .Where(predicate: t => t is { IsAbstract: false, IsClass: true } && t
+            .Where(t => t is { IsAbstract: false, IsClass: true } && t
                 .GetInterfaces()
-                .Any(predicate: i => i.IsGenericType && i.GetGenericTypeDefinition() == searchTarget)
+                .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == searchTarget)
             );
     }
 
     public IEnumerable<Type> GetInterfaces(Type type)
     {
         return type.GetInterfaces()
-            .Where(predicate: i => i.IsGenericType && i.GetGenericTypeDefinition() == searchTarget);
+            .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == searchTarget);
     }
 }

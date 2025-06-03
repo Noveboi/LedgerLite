@@ -44,25 +44,25 @@ public class MoneyArithmeticTests
     [Fact]
     public void Add_ThrowOn_DifferentCurrencies()
     {
-        AssertDifferentCurrencies(operation: (a, b) => a + b);
+        AssertDifferentCurrencies((a, b) => a + b);
     }
 
     [Fact]
     public void Subtract_ThrowOn_DifferentCurrencies()
     {
-        AssertDifferentCurrencies(operation: (a, b) => a - b);
+        AssertDifferentCurrencies((a, b) => a - b);
     }
 
     [Fact]
     public void Multiply_ThrowOn_DifferentCurrencies()
     {
-        AssertDifferentCurrencies(operation: (a, b) => a * b);
+        AssertDifferentCurrencies((a, b) => a * b);
     }
 
     [Fact]
     public void Division_ThrowOn_DifferentCurrencies()
     {
-        AssertDifferentCurrencies(operation: (a, b) => a / b);
+        AssertDifferentCurrencies((a, b) => a / b);
     }
 
     private void AssertDifferentCurrencies(Func<Money, Money, Money> operation)

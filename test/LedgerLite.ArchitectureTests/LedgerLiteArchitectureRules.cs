@@ -38,7 +38,7 @@ internal sealed class LedgerLiteArchitectureRules
             .AreDomainEntities()
             .Should()
             .ResideInNamespace(
-                pattern: RuleBuildingExtensions.GetRegexNamespace(module: _moduleName, layerName: "Domain"),
+                RuleBuildingExtensions.GetRegexNamespace(module: _moduleName, layerName: "Domain"),
                 useRegularExpressions: true);
 
     public static void EntitiesShouldHavePrivateParameterlessConstructor(Architecture arch)
@@ -48,11 +48,11 @@ internal sealed class LedgerLiteArchitectureRules
             .That()
             .AreDomainEntities()
             .GetObjects(architecture: arch)
-            .All(predicate: entity =>
+            .All(entity =>
             {
                 var hasParameterlessPrivateCtor = entity
                     .GetConstructors()
-                    .Any(predicate: ctor => ctor.Visibility == Visibility.Private && !ctor.Parameters.Any());
+                    .Any(ctor => ctor.Visibility == Visibility.Private && !ctor.Parameters.Any());
 
                 if (!hasParameterlessPrivateCtor) badEntities.Add(item: entity);
 
@@ -61,7 +61,6 @@ internal sealed class LedgerLiteArchitectureRules
 
         if (!isValid)
             throw new Exception(
-                message:
-                $"Entities: {string.Join(separator: ", ", values: badEntities.Select(selector: x => x.Name))} do not have a parameterless private constructor.");
+                $"Entities: {string.Join(separator: ", ", badEntities.Select(x => x.Name))} do not have a parameterless private constructor.");
     }
 }

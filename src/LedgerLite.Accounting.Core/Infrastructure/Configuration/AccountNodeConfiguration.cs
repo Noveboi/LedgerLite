@@ -12,13 +12,13 @@ internal sealed class AccountNodeConfiguration : IEntityTypeConfiguration<Accoun
         builder.IsDomainEntity();
 
         builder
-            .HasOne(navigationExpression: x => x.Account)
+            .HasOne(x => x.Account)
             .WithOne()
-            .HasForeignKey<AccountNode>(foreignKeyExpression: x => x.AccountId);
+            .HasForeignKey<AccountNode>(x => x.AccountId);
 
-        builder.Navigation(navigationExpression: x => x.Parent).IsRequired(required: false);
-        builder.Navigation(navigationExpression: x => x.Account).IsRequired().AutoInclude();
+        builder.Navigation(x => x.Parent).IsRequired(required: false);
+        builder.Navigation(x => x.Account).IsRequired().AutoInclude();
 
-        builder.HasIndex(indexExpression: x => x.AccountId).IsUnique();
+        builder.HasIndex(x => x.AccountId).IsUnique();
     }
 }

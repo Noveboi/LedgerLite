@@ -27,15 +27,15 @@ public sealed class Account : AuditableEntity
         AccountMetadata? metadata = null)
     {
         if (string.IsNullOrWhiteSpace(value: number))
-            return Result.Invalid(validationError: AccountErrors.AccountNumberIsEmpty());
+            return Result.Invalid(AccountErrors.AccountNumberIsEmpty());
 
         if (string.IsNullOrWhiteSpace(value: name))
-            return Result.Invalid(validationError: AccountErrors.AccountNameIsEmpty());
+            return Result.Invalid(AccountErrors.AccountNameIsEmpty());
 
         if (number.Length > 5)
-            return Result.Invalid(validationError: AccountErrors.AccountNumberTooLong());
+            return Result.Invalid(AccountErrors.AccountNumberTooLong());
 
-        if (metadata?.Verify(type) is { IsSuccess: false } result)
+        if (metadata?.Verify(accountType: type) is { IsSuccess: false } result)
             return result.Map();
 
         return new Account

@@ -22,8 +22,8 @@ internal sealed class DomainEventInterceptor(IPublisher publisher) : SaveChanges
 
         var domainEvents = context.ChangeTracker
             .Entries<IHaveDomainEvents>()
-            .Where(predicate: x => x.Entity.DomainEvents.Count > 0)
-            .SelectMany(selector: x => x.Entity.DomainEvents)
+            .Where(x => x.Entity.DomainEvents.Count > 0)
+            .SelectMany(x => x.Entity.DomainEvents)
             .ToList();
 
         if (domainEvents.Count > 0)

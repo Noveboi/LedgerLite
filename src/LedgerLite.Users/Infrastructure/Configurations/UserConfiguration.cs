@@ -8,15 +8,15 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.Property(propertyExpression: x => x.FirstName).HasMaxLength(maxLength: 100);
-        builder.Property(propertyExpression: x => x.LastName).HasMaxLength(maxLength: 100);
+        builder.Property(x => x.FirstName).HasMaxLength(maxLength: 100);
+        builder.Property(x => x.LastName).HasMaxLength(maxLength: 100);
 
         builder
-            .HasOne(navigationExpression: x => x.OrganizationMember)
-            .WithOne(navigationExpression: x => x.User)
+            .HasOne(x => x.OrganizationMember)
+            .WithOne(x => x.User)
             .IsRequired(required: false)
-            .HasForeignKey<User>(foreignKeyExpression: x => x.OrganizationMemberId);
+            .HasForeignKey<User>(x => x.OrganizationMemberId);
 
-        builder.Navigation(navigationExpression: x => x.OrganizationMember).AutoInclude();
+        builder.Navigation(x => x.OrganizationMember).AutoInclude();
     }
 }

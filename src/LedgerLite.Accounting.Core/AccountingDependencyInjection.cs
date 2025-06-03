@@ -19,8 +19,8 @@ public static class AccountingDependencyInjection
     {
         Log.Logger.RegisteringModule(moduleName: "Accounting");
 
-        services.AddDbContext<AccountingDbContext>(optionsAction: (sp, options) => options
-            .UseNpgsql(connectionString: configuration.GetConnectionString(name: ConnectionStrings.CoreDatabase))
+        services.AddDbContext<AccountingDbContext>((sp, options) => options
+            .UseNpgsql(configuration.GetConnectionString(name: ConnectionStrings.CoreDatabase))
             .AddAuditLogging()
             .AddDomainEventProcessing(sp: sp));
 

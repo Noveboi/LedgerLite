@@ -9,7 +9,7 @@ internal static class OrganizationErrors
     public static ValidationError MemberAlreadyInOrganization(OrganizationMember member)
     {
         return new ValidationError(identifier: OrganizationIdentifier,
-            errorMessage: $"User '{member.User.UserName}' is already in this organization.",
+            $"User '{member.User.UserName}' is already in this organization.",
             errorCode: "ORG-ALREADY_IN",
             severity: ValidationSeverity.Error);
     }
@@ -17,7 +17,7 @@ internal static class OrganizationErrors
     public static ValidationError MemberNotInOrganization(OrganizationMember member)
     {
         return new ValidationError(identifier: OrganizationIdentifier,
-            errorMessage: $"User '{member.User.UserName}' is not in organization.",
+            $"User '{member.User.UserName}' is not in organization.",
             errorCode: "ORG-MEMBER_NOT_FOUND",
             severity: ValidationSeverity.Error);
     }
@@ -33,7 +33,7 @@ internal static class OrganizationErrors
     public static ValidationError CannotBeInTwoOrganizations(User user)
     {
         return new ValidationError(identifier: OrganizationIdentifier,
-            errorMessage: $"{user.UserName} is already in an organization.",
+            $"{user.UserName} is already in an organization.",
             errorCode: "ORG-ALREADY_IN_ONE",
             severity: ValidationSeverity.Error);
     }
@@ -41,7 +41,7 @@ internal static class OrganizationErrors
     public static ValidationError MemberDoesNotHaveRole(OrganizationMember member)
     {
         return new ValidationError(identifier: OrganizationIdentifier,
-            errorMessage: $"Cannot add member '{member.User.UserName}' without a role.",
+            $"Cannot add member '{member.User.UserName}' without a role.",
             errorCode: "ORG-NO_ROLE",
             severity: ValidationSeverity.Error);
     }

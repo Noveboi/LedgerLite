@@ -26,7 +26,7 @@ public static class AssertionEquivalenceExtensions
             IgnoreCollectionOrder = true
         };
 
-        config.IgnoreProperty<T>(ignoredProperty: x => x.Id);
+        config.IgnoreProperty<T>(x => x.Id);
 
         configure?.Invoke(obj: config);
         subject.ShouldCompare(expected: other, compareConfig: config);

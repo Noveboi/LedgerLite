@@ -31,12 +31,12 @@ internal sealed class RefreshEndpoint(
             await signInManager.ValidateSecurityStampAsync(principal: refreshTicket.Principal) is not { } user)
 
         {
-            await SendResultAsync(result: TypedResults.Challenge());
+            await SendResultAsync(TypedResults.Challenge());
             return;
         }
 
         var newPrincipal = await signInManager.CreateUserPrincipalAsync(user: user);
-        await SendResultAsync(result: TypedResults.SignIn(principal: newPrincipal,
+        await SendResultAsync(TypedResults.SignIn(principal: newPrincipal,
             authenticationScheme: IdentityConstants.BearerScheme));
     }
 }

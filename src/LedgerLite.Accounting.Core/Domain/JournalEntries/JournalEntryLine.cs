@@ -30,9 +30,9 @@ public sealed class JournalEntryLine : AuditableEntity
 
         if (Entry.Type == JournalEntryType.Compound)
             throw new NotSupportedException(
-                message: $"{nameof(GetTransferAccount)} is not supported for compound entries.");
+                $"{nameof(GetTransferAccount)} is not supported for compound entries.");
 
-        var otherLine = Entry.Lines.FirstOrDefault(predicate: x => x.Id != Id);
+        var otherLine = Entry.Lines.FirstOrDefault(x => x.Id != Id);
         if (otherLine is null)
             throw new InvalidOperationException(message: "Second entry line does not exist.");
 

@@ -43,6 +43,6 @@ internal sealed class LoginEndpoint(SignInManager<User> signInManager)
 
         if (!result.Succeeded)
             await SendResultAsync(
-                result: TypedResults.Problem(detail: result.ToString(), statusCode: StatusCodes.Status401Unauthorized));
+                TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized));
     }
 }

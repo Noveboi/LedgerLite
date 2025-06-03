@@ -19,9 +19,9 @@ public static class FakeUsers
     private static Faker<User> Faker(FakeUserBuilder options)
     {
         return new Faker<User>()
-            .RuleFor(property: x => x.UserName, setter: f => f.Internet.UserName())
-            .RuleFor(property: x => x.Email, setter: f => f.Internet.Email())
-            .RuleFor(property: x => x.OrganizationMemberId, value: options.OrganizationMemberId);
+            .RuleFor(x => x.UserName, f => f.Internet.UserName())
+            .RuleFor(x => x.Email, f => f.Internet.Email())
+            .RuleFor(x => x.OrganizationMemberId, value: options.OrganizationMemberId);
     }
 
     public static User Get(Action<FakeUserBuilder>? configure = null)

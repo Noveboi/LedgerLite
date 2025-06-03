@@ -18,7 +18,7 @@ public sealed class OrganizationMember : AuditableEntity
     {
         OrganizationId = organizationId;
         User = user;
-        _roles = [new UserRole(role: role, member: this)];
+        _roles = [new UserRole(role: role, this)];
     }
 
     public Guid OrganizationId { get; private set; }
@@ -27,7 +27,7 @@ public sealed class OrganizationMember : AuditableEntity
 
     public static Result<OrganizationMember> Create(User user, Organization organization, Role role)
     {
-        return Result.Success(value: new OrganizationMember(
+        return Result.Success(new OrganizationMember(
             user: user,
             organizationId: organization.Id,
             role: role));
@@ -35,6 +35,6 @@ public sealed class OrganizationMember : AuditableEntity
 
     public bool HasRole(string name)
     {
-        return _roles.Any(predicate: x => x.Role.Name == name);
+        return _roles.Any(x => x.Role.Name == name);
     }
 }

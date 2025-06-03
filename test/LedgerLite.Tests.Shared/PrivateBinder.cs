@@ -14,8 +14,8 @@ public class PrivateBinder : Binder
 
         var allPrivateMembers = t.GetMembers(bindingAttr: privateBindingFlags)
             .OfType<FieldInfo>()
-            .Where(predicate: fi => fi.IsPrivate)
-            .Where(predicate: fi => !fi.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
+            .Where(fi => fi.IsPrivate)
+            .Where(fi => !fi.GetCustomAttributes<CompilerGeneratedAttribute>().Any())
             .ToArray();
 
         foreach (var privateField in allPrivateMembers) members.TryAdd(key: privateField.Name, value: privateField);

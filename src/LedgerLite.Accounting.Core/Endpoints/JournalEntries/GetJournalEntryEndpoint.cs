@@ -23,10 +23,10 @@ internal sealed class GetJournalEntryEndpoint(IJournalEntryRepository repository
     {
         if (await repository.GetByIdAsync(id: req.Id, token: ct) is not { } journalEntry)
         {
-            await SendResultAsync(result: Results.NotFound(value: CommonErrors.NotFound<JournalEntry>(id: req.Id)));
+            await SendResultAsync(Results.NotFound(CommonErrors.NotFound<JournalEntry>(id: req.Id)));
             return;
         }
 
-        await SendAsync(response: JournalEntryWithLinesResponseDto.FromEntity(entry: journalEntry), cancellation: ct);
+        await SendAsync(JournalEntryWithLinesResponseDto.FromEntity(entry: journalEntry), cancellation: ct);
     }
 }

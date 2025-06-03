@@ -8,6 +8,6 @@ internal sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
     public void Configure(EntityTypeBuilder<Role> builder)
     {
-        builder.Property(propertyExpression: x => x.Description).HasMaxLength(maxLength: 256);
+        builder.Property(x => x.Description).HasMaxLength(maxLength: 256);
     }
 }
