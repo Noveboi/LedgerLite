@@ -39,11 +39,6 @@ public static class FakeAccounts
         return GetAccountFaker().Generate();
     }
 
-    public static List<Account> NewAccounts(int count)
-    {
-        return GetAccountFaker().Generate(count: count);
-    }
-
     public static Account Get(Action<FakeAccountOptions>? configure = null)
     {
         var options = new FakeAccountOptions();

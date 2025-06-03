@@ -17,13 +17,6 @@ public sealed class FakeJournalEntryOptions
         return this;
     }
 
-    public FakeJournalEntryOptions AddLine(JournalEntryLine line)
-    {
-        Lines ??= [];
-        Lines.Add(item: line);
-        return this;
-    }
-
     public FakeJournalEntryOptions AddLine(Action<FakeJournalEntryLineOptions> configureLine)
     {
         Lines ??= [];

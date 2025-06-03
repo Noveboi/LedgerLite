@@ -8,15 +8,16 @@ namespace LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 public sealed class FakeJournalEntryLineOptions
 {
-    public TransactionType? Type { get; set; }
-    public Account? Account { get; set; }
-    public Guid? AccountId { get; set; }
+    public TransactionType? Type { get; private set; }
+    public Account? Account { get; private set; }
+    public Guid? AccountId { get; private set; }
     public Guid? EntryId { get; set; }
     public decimal? Amount { get; set; }
 
     public FakeJournalEntryLineOptions Credit(Account account, decimal amount)
     {
         Account = account;
+        AccountId = account.Id;
         Amount = amount;
         Type = TransactionType.Credit;
         return this;
@@ -25,6 +26,7 @@ public sealed class FakeJournalEntryLineOptions
     public FakeJournalEntryLineOptions Debit(Account account, decimal amount)
     {
         Account = account;
+        AccountId = account.Id;
         Amount = amount;
         Type = TransactionType.Debit;
         return this;

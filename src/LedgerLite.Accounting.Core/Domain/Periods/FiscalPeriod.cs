@@ -7,10 +7,7 @@ namespace LedgerLite.Accounting.Core.Domain.Periods;
 
 public sealed class FiscalPeriod : AuditableEntity
 {
-    private FiscalPeriod()
-    {
-    }
-
+    private FiscalPeriod() { }
     private FiscalPeriod(Guid organizationId, DateOnly startDate, DateOnly endDate, string name)
     {
         OrganizationId = organizationId;

@@ -74,7 +74,7 @@ public class TrialBalanceSpecification1
     private (FiscalPeriod, IReadOnlyList<JournalEntry>) Setup()
     {
         var entries = new[] { _entry1, _entry2, _entry3, _entry4, _entry5, _entry6 };
-        var period = FakeFiscalPeriods.Get(x => x.WithId(id: _entry1.FiscalPeriodId));
+        var period = FakeFiscalPeriods.Get(x => x.WithId(_entry1.FiscalPeriodId));
 
         return (period, entries);
     }

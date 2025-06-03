@@ -17,9 +17,9 @@ public sealed class JournalEntryLine : AuditableEntity
     /// </summary>
     public Guid EntryId { get; private init; }
 
-    public JournalEntry Entry { get; } = null!;
+    public JournalEntry Entry { get; private init; } = null!;
     public Guid AccountId { get; private init; }
-    public Account Account { get; } = null!;
+    public Account Account { get; private init; } = null!;
     public TransactionType TransactionType { get; private init; }
     public decimal Amount { get; private init; }
 
