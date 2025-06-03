@@ -6,6 +6,7 @@ using LedgerLite.Accounting.Core.Application.Accounts.Requests;
 using LedgerLite.Accounting.Core.Application.Chart;
 using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
+using LedgerLite.Accounting.Core.Domain.Accounts.Metadata;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 using LedgerLite.Accounting.Core.Endpoints.Accounts.Groups;
@@ -70,6 +71,12 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
         if (!chart.IsSuccess)
             return chart.Map();
 
+        var expenseType = ExpenseType.Direct;
+        if (!string.IsNullOrWhiteSpace(r.ExpenseType) && !Enum.TryParse(r.ExpenseType, ignoreCase: true, out expenseType))
+        {
+            return Result.Invalid(new ValidationError($"{r.ExpenseType} is not a valid expense type."));
+        }
+        
         return new CreateAccountRequest(
             Name: r.Name,
             Number: r.Number,
@@ -78,7 +85,8 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
             IsPlaceholder: r.IsPlaceholder,
             r.Description ?? "",
             Chart: chart,
-            ParentId: r.ParentId);
+            ParentId: r.ParentId,
+            Metadata: new AccountMetadata(expenseType));
     }
 }
 
@@ -91,4 +99,5 @@ internal sealed record CreateAccountRequestDto(
     string Currency,
     bool IsPlaceholder,
     string? Description,
-    Guid? ParentId);
+    Guid? ParentId,
+    string? ExpenseType);
