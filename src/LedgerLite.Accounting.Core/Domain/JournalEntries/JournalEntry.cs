@@ -1,6 +1,8 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.SharedKernel.Domain;
+using LedgerLite.SharedKernel.Domain.Errors;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 
@@ -17,11 +19,11 @@ public sealed class JournalEntry : AuditableEntity
 
     public Guid FiscalPeriodId { get; private init; }
     public Guid CreatedByUserId { get; private init; }
-    public Guid? LastModifiedByUserId { get; private init; }
+    public Guid? LastModifiedByUserId { get; private set; }
 
     public string ReferenceNumber { get; private init; } = null!;
-    public DateOnly OccursAt { get; private init; }
-    public string Description { get; private init; } = null!;
+    public DateOnly OccursAt { get; private set; }
+    public string Description { get; private set; } = null!;
     public JournalEntryType Type { get; private init; } = null!;
     public JournalEntryStatus Status { get; private set; } = null!;
     public IReadOnlyCollection<JournalEntryLine> Lines => _lines;
@@ -54,6 +56,36 @@ public sealed class JournalEntry : AuditableEntity
             CreatedByUserId = createdByUserId,
             FiscalPeriodId = fiscalPeriod.Id
         });
+    }
+
+    public Result Update(
+        Guid userId,
+        string? description,
+        DateOnly? occursAt,
+        UpdateLineRequest? lineRequest)
+    {
+        if (_lines.Count > 2)
+            throw new NotSupportedException("Updating compound entries is not supported.");
+        
+        if (lineRequest != null)
+        {
+            if (_lines.FirstOrDefault(x => x.Id == lineRequest.LineId) is not { } line)
+            {
+                return Result.NotFound(CommonErrors.NotFound<JournalEntryLine>(lineRequest.LineId));
+            }
+
+            line.Update(lineRequest);
+        }
+        
+        if (description != null)
+            Description = description;
+
+        if (occursAt != null)
+            OccursAt = occursAt.Value;
+        
+        LastModifiedByUserId = userId;
+
+        return Result.Success();
     }
 
     public bool IsBalanced()

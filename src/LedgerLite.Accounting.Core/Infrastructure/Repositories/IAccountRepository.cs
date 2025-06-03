@@ -8,4 +8,5 @@ public interface IAccountRepository
     void Remove(Account account);
 
     Task<Account?> GetByIdAsync(Guid id, CancellationToken token);
+    Task<bool> ExistsAsync(Guid id, CancellationToken token);
 }

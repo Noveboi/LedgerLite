@@ -11,25 +11,23 @@ public sealed class FakeJournalEntryLineOptions
     public TransactionType? Type { get; private set; }
     public Account? Account { get; private set; }
     public Guid? AccountId { get; private set; }
-    public Guid? EntryId { get; set; }
     public decimal? Amount { get; set; }
+    internal JournalEntry? Entry { get; set; }
 
-    public FakeJournalEntryLineOptions Credit(Account account, decimal amount)
+    public void Credit(Account account, decimal amount)
     {
         Account = account;
         AccountId = account.Id;
         Amount = amount;
         Type = TransactionType.Credit;
-        return this;
     }
 
-    public FakeJournalEntryLineOptions Debit(Account account, decimal amount)
+    public void Debit(Account account, decimal amount)
     {
         Account = account;
         AccountId = account.Id;
         Amount = amount;
         Type = TransactionType.Debit;
-        return this;
     }
 }
 
@@ -41,12 +39,20 @@ public static class FakeJournalEntryLines
             .UsePrivateConstructor()
             .RuleFor(x => x.TransactionType, options.Type ?? TransactionType.Credit)
             .RuleFor(x => x.Amount, f => options.Amount ?? f.Random.Number(min: 1, max: 1000))
-            .RuleFor(x => x.AccountId,
-                _ => options.Account?.Id ?? options.AccountId ?? Guid.NewGuid())
-            .RuleFor(x => x.Account, _ => options.Account)
-            .RuleFor(x => x.EntryId, _ => options.EntryId ?? Guid.NewGuid());
+            .RuleFor(x => x.AccountId, _ => options.Account?.Id ?? options.AccountId ?? Guid.NewGuid())
+            .RuleFor(x => x.Account, options.Account)
+            .RuleFor(x => x.EntryId, _ => options.Entry?.Id ?? Guid.NewGuid())
+            .RuleFor(x => x.Entry, options.Entry);
     }
 
+    public static JournalEntryLine Make(Action<FakeJournalEntryLineOptions> configure)
+    {
+        var options = new FakeJournalEntryLineOptions();
+        configure(options);
+
+        return GetFakerCore(options).Generate();
+    }
+    
     public static Faker<JournalEntryLine> GetCreditFaker(Action<FakeJournalEntryLineOptions>? configure = null)
     {
         var options = new FakeJournalEntryLineOptions();

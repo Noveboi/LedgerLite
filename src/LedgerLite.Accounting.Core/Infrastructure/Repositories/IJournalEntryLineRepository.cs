@@ -13,5 +13,5 @@ internal interface IJournalEntryLineRepository
         JournalEntryLineQueryOptions? options = null,
         CancellationToken ct = default);
 
-    Task<IReadOnlyList<JournalEntryLine>> GetLinesForEntryAsync(JournalEntry entry, CancellationToken ct);
+    Task<JournalEntryLine?> GetByIdAsync(Guid id, Guid fiscalPeriodId, CancellationToken ct);
 }

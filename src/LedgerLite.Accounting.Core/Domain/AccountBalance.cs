@@ -8,16 +8,6 @@ namespace LedgerLite.Accounting.Core.Domain;
 /// </summary>
 public sealed record AccountBalance(Account Account, TransactionType Type, decimal Amount)
 {
-    public static AccountBalance FromLines(Account account, IEnumerable<JournalEntryLine> lines)
-    {
-        var lineList = lines.ToList();
-        if (lineList.FirstOrDefault(x => x.Account != account) is { } invalidLine)
-            throw new ArgumentException(
-                $"Lines contains other accounts apart from {account}. ({invalidLine.Account})");
-
-        return Create(account: account, lines: lineList);
-    }
-
     public static AccountBalance FromGroup(IGrouping<Account, JournalEntryLine> group)
     {
         return Create(account: group.Key, lines: group);

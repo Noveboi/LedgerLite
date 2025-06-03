@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LedgerLite.Accounting.Core.Infrastructure;
 
-internal sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> options) : DbContext(options: options)
+public sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> options) : DbContext(options: options)
 {
     public DbSet<Account> Accounts { get; private set; }
     public DbSet<ChartOfAccounts> Charts { get; private set; }

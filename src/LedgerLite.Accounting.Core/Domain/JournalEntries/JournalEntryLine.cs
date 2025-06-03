@@ -1,4 +1,5 @@
-﻿using LedgerLite.Accounting.Core.Domain.Accounts;
+﻿using Ardalis.GuardClauses;
+using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
@@ -8,9 +9,7 @@ namespace LedgerLite.Accounting.Core.Domain.JournalEntries;
 /// </summary>
 public sealed class JournalEntryLine : AuditableEntity
 {
-    private JournalEntryLine()
-    {
-    }
+    private JournalEntryLine() { }
 
     /// <summary>
     ///     The ID of the associated journal entry.
@@ -18,12 +17,12 @@ public sealed class JournalEntryLine : AuditableEntity
     public Guid EntryId { get; private init; }
 
     public JournalEntry Entry { get; private init; } = null!;
-    public Guid AccountId { get; private init; }
+    public Guid AccountId { get; private set; }
     public Account Account { get; private init; } = null!;
-    public TransactionType TransactionType { get; private init; }
-    public decimal Amount { get; private init; }
+    public TransactionType TransactionType { get; private set; }
+    public decimal Amount { get; private set; }
 
-    public Account GetTransferAccount()
+    public JournalEntryLine? GetRelatedLine()
     {
         if (Entry is null)
             throw new InvalidOperationException(message: "Related JournalEntry is null.");
@@ -32,9 +31,12 @@ public sealed class JournalEntryLine : AuditableEntity
             throw new NotSupportedException(
                 $"{nameof(GetTransferAccount)} is not supported for compound entries.");
 
-        var otherLine = Entry.Lines.FirstOrDefault(x => x.Id != Id);
-        if (otherLine is null)
-            throw new InvalidOperationException(message: "Second entry line does not exist.");
+        return Entry.Lines.FirstOrDefault(x => x.Id != Id);
+    }
+    
+    public Account GetTransferAccount()
+    {
+        var otherLine = GetRelatedLine() ?? throw new InvalidOperationException("Only one line exists.");
 
         if (otherLine.Account is null)
             throw new InvalidOperationException(message: "Account navigation for other entry line is null");
@@ -55,6 +57,28 @@ public sealed class JournalEntryLine : AuditableEntity
             AccountId = accountId,
             EntryId = entryId
         };
+    }
+
+    public void Update(UpdateLineRequest request)
+    {
+        var otherLine = GetRelatedLine();
+
+        if (request.Type is { } type && type != TransactionType)
+        {
+            TransactionType = type;
+            if (otherLine != null) otherLine.TransactionType = TransactionType.Opposite();
+        }
+
+        if (request.Amount is { } amount && amount != Amount)
+        {
+            Amount = amount;
+            if (otherLine != null) otherLine.Amount = amount;
+        }
+
+        if (otherLine != null && request.TransferAccountId is { } transferId && transferId != otherLine.AccountId)
+        {
+            otherLine.AccountId = transferId;
+        }
     }
 
     public override string ToString()

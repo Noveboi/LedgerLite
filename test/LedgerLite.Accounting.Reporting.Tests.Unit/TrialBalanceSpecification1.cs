@@ -2,6 +2,7 @@
 using LedgerLite.Accounting.Core.Domain.JournalEntries;
 using LedgerLite.Accounting.Core.Domain.Periods;
 using LedgerLite.Accounting.Reporting.Trial;
+using LedgerLite.Accounting.Tests.Unit.Utilities;
 using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
 namespace LedgerLite.Accounting.Reporting.Tests.Unit;

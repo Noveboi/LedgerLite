@@ -37,11 +37,12 @@ internal sealed class JournalEntryLineRepository(AccountingDbContext context) : 
 
         return await query.ToListAsync(cancellationToken: ct);
     }
-
-    public async Task<IReadOnlyList<JournalEntryLine>> GetLinesForEntryAsync(JournalEntry entry, CancellationToken ct)
+    public async Task<JournalEntryLine?> GetByIdAsync(Guid id, Guid fiscalPeriodId, CancellationToken ct)
     {
         return await context.JournalEntryLines
-            .Where(x => x.EntryId == entry.Id)
-            .ToListAsync(cancellationToken: ct);
+            .Include(x => x.Entry)
+            .ThenInclude(x => x.Lines)
+            .Where(x => x.Entry.FiscalPeriodId == fiscalPeriodId)
+            .FirstOrDefaultAsync(x => x.Id == id, ct);
     }
 }

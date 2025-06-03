@@ -19,4 +19,9 @@ internal sealed class AccountRepository(AccountingDbContext context) : IAccountR
     {
         return context.Accounts.FirstOrDefaultAsync(x => x.Id == id, cancellationToken: token);
     }
+
+    public Task<bool> ExistsAsync(Guid id, CancellationToken token)
+    {
+        return context.Accounts.AnyAsync(x => x.Id == id, token);
+    }
 }

@@ -1,9 +1,9 @@
 using LedgerLite.Accounting.Core.Domain.Accounts;
 using LedgerLite.Accounting.Tests.Unit.Utilities.Fakes;
 
-namespace LedgerLite.Accounting.Reporting.Tests.Unit;
+namespace LedgerLite.Accounting.Tests.Unit.Utilities;
 
-internal static class CommonAccounts
+public static class CommonAccounts
 {
     // Assets
     public static readonly Account Cash =

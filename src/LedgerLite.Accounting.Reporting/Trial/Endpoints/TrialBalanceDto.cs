@@ -7,7 +7,6 @@ namespace LedgerLite.Accounting.Reporting.Trial.Endpoints;
 internal sealed record TrialBalanceDto(
     decimal TotalDebits,
     decimal TotalCredits,
-    FiscalPeriodDto Period,
     IEnumerable<AccountBalanceDto> WorkingBalances)
 {
     public static TrialBalanceDto FromEntity(TrialBalance entity)
@@ -15,7 +14,6 @@ internal sealed record TrialBalanceDto(
         return new TrialBalanceDto(
             TotalCredits: entity.GetTotalCredits(),
             TotalDebits: entity.GetTotalDebits(),
-            Period: FiscalPeriodDto.FromEntity(fiscalPeriod: entity.Period),
             WorkingBalances: entity.WorkingBalance.Select(entry => new AccountBalanceDto(
                 SlimAccountDto.FromEntity(account: entry.Account),
                 entry.Type == TransactionType.Credit ? entry.Amount : 0,

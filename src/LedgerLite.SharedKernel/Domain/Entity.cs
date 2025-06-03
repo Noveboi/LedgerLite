@@ -4,9 +4,10 @@ namespace LedgerLite.SharedKernel.Domain;
 
 public abstract class Entity : IHaveDomainEvents
 {
-    private List<DomainEvent>? _domainEvents;
     public Guid Id { get; private init; } = GenerateId();
+
     IReadOnlyList<DomainEvent> IHaveDomainEvents.DomainEvents => _domainEvents ??= [];
+    private List<DomainEvent>? _domainEvents;
 
     protected void AddDomainEvent<T>(T domainEvent) where T : DomainEvent
     {
