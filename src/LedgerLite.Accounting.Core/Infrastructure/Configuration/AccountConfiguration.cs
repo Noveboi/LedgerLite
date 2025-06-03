@@ -23,6 +23,8 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
             .HasMaxLength(maxLength: 150)
             .IsRequired(required: false);
 
+        builder.OwnsOne(x => x.Metadata);
+
         builder.HasEnumeration(propertyExpression: x => x.Type);
         builder.HasEnumeration(propertyExpression: x => x.Currency);
     }

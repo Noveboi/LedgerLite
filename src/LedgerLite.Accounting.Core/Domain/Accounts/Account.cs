@@ -1,4 +1,5 @@
 ﻿using Ardalis.Result;
+using LedgerLite.Accounting.Core.Domain.Accounts.Metadata;
 using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.Accounts;
@@ -16,6 +17,7 @@ public sealed class Account : AuditableEntity
     public AccountType Type { get; private init; } = null!;
     public Currency Currency { get; private init; } = null!;
     public bool IsPlaceholder { get; private init; }
+    public AccountMetadata Metadata { get; private init; } = null!;
 
     public static Result<Account> Create(
         string name,
