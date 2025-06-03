@@ -102,7 +102,8 @@ public class CreateAccountTests
             IsPlaceholder: false,
             Description: "Tracking grocery spending.",
             Chart: _chart,
-            ParentId: null);
+            ParentId: null,
+            Metadata: null);
 
         return transform?.Invoke(arg: request) ?? request;
     }
