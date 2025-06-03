@@ -1,4 +1,5 @@
 ﻿using LedgerLite.Accounting.Core.Domain.Accounts;
+using LedgerLite.Accounting.Core.Domain.Accounts.Metadata;
 using LedgerLite.Accounting.Core.Domain.Chart;
 using LedgerLite.Accounting.Core.Endpoints.JournalEntries.Dto;
 
@@ -16,23 +17,21 @@ internal static class AccountDtoConversions
             Type = account.Type.ToString(),
             Currency = account.Currency.ToString(),
             IsControl = account.IsPlaceholder,
-            Description = account.Description
+            Description = account.Description,
+            ExpenseType = account.Metadata.ExpenseType switch
+            {
+                ExpenseType.Undefined => null,
+                var type => type.ToString(),
+            }
         };
     }
 
     public static AccountWithLinesDto ToDto(this AccountWithDetails accountWithDetails)
     {
         var account = accountWithDetails.Node.Account;
-
         return new AccountWithLinesDto
         {
-            Id = account.Id,
-            Name = account.Name,
-            Number = account.Number,
-            Type = account.Type.ToString(),
-            Currency = account.Currency.ToString(),
-            IsControl = account.IsPlaceholder,
-            Description = account.Description,
+            Account = account.ToDto(),
             Lines = accountWithDetails.Lines.Select(selector: JournalEntryLineDto.FromEntity)
         };
     }

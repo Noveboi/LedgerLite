@@ -1,5 +1,6 @@
 ﻿using LedgerLite.Accounting.Core.Domain;
 using LedgerLite.Accounting.Core.Domain.Accounts;
+using LedgerLite.Accounting.Core.Domain.Accounts.Metadata;
 using LedgerLite.Accounting.Core.Domain.Chart;
 
 namespace LedgerLite.Accounting.Core.Application.Accounts.Requests;
@@ -12,4 +13,5 @@ public sealed record CreateAccountRequest(
     bool IsPlaceholder,
     string Description,
     ChartOfAccounts Chart,
-    Guid? ParentId);
+    Guid? ParentId,
+    AccountMetadata? Metadata);

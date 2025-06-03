@@ -15,7 +15,7 @@ public sealed class Account : AuditableEntity
     public AccountType Type { get; private init; } = null!;
     public Currency Currency { get; private init; } = null!;
     public bool IsPlaceholder { get; private init; }
-    public AccountMetadata Metadata { get; private init; } = null!;
+    public AccountMetadata Metadata { get; set; } = null!;
 
     public static Result<Account> Create(
         string name,

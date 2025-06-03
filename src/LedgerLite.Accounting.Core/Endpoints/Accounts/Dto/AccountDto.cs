@@ -1,4 +1,6 @@
-﻿namespace LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
+﻿using System.Text.Json.Serialization;
+
+namespace LedgerLite.Accounting.Core.Endpoints.Accounts.Dto;
 
 internal record AccountDto
 {
@@ -9,4 +11,7 @@ internal record AccountDto
     public required string Type { get; init; }
     public required string Currency { get; init; }
     public required bool IsControl { get; init; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public required string? ExpenseType { get; init; }
 }
