@@ -1,11 +1,12 @@
 ﻿using Ardalis.Result;
 using LedgerLite.Accounting.Core.Domain.Accounts;
+using LedgerLite.Accounting.Core.Domain.Accounts.Metadata;
 using LedgerLite.SharedKernel.Domain;
 
 namespace LedgerLite.Accounting.Core.Domain.Chart;
 
 /// <summary>
-///     Organizes all <see cref="Account" />s that are used for a fiscal period.
+///     Organizes all <see cref="Account" />s that are used for an organization.
 /// </summary>
 public sealed class ChartOfAccounts : AuditableEntity
 {
@@ -71,6 +72,19 @@ public sealed class ChartOfAccounts : AuditableEntity
         var removeChildResult = account.Parent?.RemoveChild(child: account);
         if (removeChildResult is { IsSuccess: false })
             return removeChildResult.Map();
+
+        if (parent.Account.Type == AccountType.Expense &&
+            parent.Account.Metadata.ExpenseType is var parentExpense and not ExpenseType.Undefined)
+        {
+            if (account.Account.Metadata.ExpenseType is var expense and not ExpenseType.Undefined && expense != parentExpense)
+            {
+                return Result.Invalid(ChartOfAccountsErrors.AccountInvalidExpenseType(
+                    parent: parent.Account,
+                    target: account.Account));
+            }
+            
+            account.Account.Metadata = account.Account.Metadata with { ExpenseType = parentExpense };
+        }
 
         var addChildResult = parent.AddChild(child: account);
         if (!addChildResult.IsSuccess)

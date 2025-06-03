@@ -65,7 +65,7 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            $"Cannot remove account '{node.Account.Name}' with children (found {node.Children.Count} children).",
+            errorMessage: $"Cannot remove account '{node.Account.Name}' with children (found {node.Children.Count} children).",
             errorCode: "COA-REMOVE_NO_CHILDREN",
             severity: ValidationSeverity.Error);
     }
@@ -74,9 +74,19 @@ internal static class ChartOfAccountsErrors
     {
         return new ValidationError(
             identifier: ChartIdentifier,
-            $"Cannot remove account with existing journal entry lines. Remove all entries associated with " +
-            $"'{account.Name}' and try again.",
+            errorMessage: $"Cannot remove account with existing journal entry lines. Remove all entries associated with " +
+                $"'{account.Name}' and try again.",
             errorCode: "COA-REMOVE_NO_LINES",
+            severity: ValidationSeverity.Error);
+    }
+
+    public static ValidationError AccountInvalidExpenseType(Account parent, Account target)
+    {
+        return new ValidationError(
+            identifier: ChartIdentifier,
+            errorMessage: $"'{target}' has different expense type ({target.Metadata.ExpenseType}) from parent '{parent}' " +
+                          $"({parent.Metadata.ExpenseType})",
+            errorCode: "COA-EXPENSE_TYPE_DIFF",
             severity: ValidationSeverity.Error);
     }
 }
