@@ -71,7 +71,7 @@ internal sealed class CreateAccountEndpoint(IChartOfAccountsService chartService
         if (!chart.IsSuccess)
             return chart.Map();
 
-        var expenseType = ExpenseType.Direct;
+        var expenseType = ExpenseType.Undefined;
         if (!string.IsNullOrWhiteSpace(r.ExpenseType) && !Enum.TryParse(r.ExpenseType, ignoreCase: true, out expenseType))
         {
             return Result.Invalid(new ValidationError($"{r.ExpenseType} is not a valid expense type."));

@@ -47,7 +47,8 @@ internal sealed class AccountService(IAccountingUnitOfWork unitOfWork) : IAccoun
             type: request.Type,
             currency: request.Currency,
             isPlaceholder: request.IsPlaceholder,
-            description: request.Description);
+            description: request.Description,
+            metadata: request.Metadata);
     }
 
     private static Result<Account> AddAccountToChart(Account account, ChartOfAccounts chart)

@@ -23,8 +23,8 @@ public sealed class Account : AuditableEntity
         AccountType type,
         Currency currency,
         bool isPlaceholder,
-        string description = "",
-        AccountMetadata? metadata = null)
+        string description,
+        AccountMetadata? metadata)
     {
         if (string.IsNullOrWhiteSpace(value: number))
             return Result.Invalid(AccountErrors.AccountNumberIsEmpty());
