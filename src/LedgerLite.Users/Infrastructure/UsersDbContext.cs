@@ -19,6 +19,7 @@ internal sealed class UsersDbContext(DbContextOptions<UsersDbContext> options)
         IdentityUserToken<Guid>>(options: options)
 {
     public DbSet<Organization> Organizations { get; set; }
+    public DbSet<OrganizationMember> OrganizationMembers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -15,7 +15,8 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasOne(x => x.OrganizationMember)
             .WithOne(x => x.User)
             .IsRequired(required: false)
-            .HasForeignKey<User>(x => x.OrganizationMemberId);
+            .HasForeignKey<User>(x => x.OrganizationMemberId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Navigation(x => x.OrganizationMember).AutoInclude();
     }

@@ -10,5 +10,8 @@ internal sealed class OrganizationMemberConfiguration : IEntityTypeConfiguration
     public void Configure(EntityTypeBuilder<OrganizationMember> builder)
     {
         builder.IsDomainEntity();
+
+        builder.Navigation(x => x.User).AutoInclude();
+        builder.Navigation(x => x.Roles).AutoInclude();
     }
 }

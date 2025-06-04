@@ -21,6 +21,7 @@ public sealed class OrganizationMember : AuditableEntity
         _roles = [new UserRole(role: role, this)];
     }
 
+    public Organization Organization { get; private init; } = null!;
     public Guid OrganizationId { get; private set; }
     public User User { get; private init; } = null!;
     public IReadOnlyCollection<UserRole> Roles => _roles;

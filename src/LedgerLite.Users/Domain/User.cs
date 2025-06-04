@@ -16,6 +16,12 @@ public sealed class User : IdentityUser<Guid>, IAuditable
     public DateTime CreatedAtUtc { get; set; }
     public DateTime ModifiedAtUtc { get; set; }
 
+    public void RemoveMemberInformation()
+    {
+        OrganizationMemberId = null;
+        OrganizationMember = null;
+    }
+
     public bool IsUsingEmailAsUsername()
     {
         return Email == UserName;

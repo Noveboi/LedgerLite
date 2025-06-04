@@ -16,7 +16,7 @@ internal sealed class OrganizationConfiguration : IEntityTypeConfiguration<Organ
 
         builder
             .HasMany(x => x.Members)
-            .WithOne()
+            .WithOne(x => x.Organization)
             .HasForeignKey(x => x.OrganizationId);
 
         builder.Navigation(x => x.Members).AutoInclude();

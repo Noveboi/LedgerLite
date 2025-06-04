@@ -60,9 +60,13 @@ public sealed class Organization : AuditableEntity
 
     public Result RemoveMember(OrganizationMember member)
     {
-        return _members.Remove(item: member)
-            ? Result.Success()
-            : Result.Invalid(OrganizationErrors.MemberNotInOrganization(member: member));
+        if (_members.Remove(member))
+        {
+            member.User.RemoveMemberInformation();
+            return Result.Success();
+        }
+        
+        return Result.Invalid(OrganizationErrors.MemberNotInOrganization(member: member));
     }
 
     public Result Rename(string newName)

@@ -40,7 +40,7 @@ internal sealed class CreateOrganizationEndpoint(
 
         var organization = createResult.Value;
 
-        await SendCreatedAtAsync<GetOrganizationEndpoint>(
+        await SendCreatedAtAsync<GetOrganizationMembersEndpoint>(
             new { organization.Id },
             organization.ToDto(),
             cancellation: ct);

@@ -14,8 +14,9 @@ internal static class UsersToDtoConversions
 
         return new UserDto(
             Id: user.Id,
-            organization?.ToDto(),
-            user.OrganizationMember?.Roles
+            MemberId: user.OrganizationMemberId,
+            Organization: organization?.ToDto(),
+            OrganizationRoles: user.OrganizationMember?.Roles
                 .Where(x => x.Role.Name is not null)
                 .Select(x => x.Role.ToDto()) ?? [],
             Username: user.UserName ?? "",
@@ -26,5 +27,20 @@ internal static class UsersToDtoConversions
                 (null, not null) => user.LastName,
                 _ => ""
             });
+    }
+
+    public static UserDto ToUserDto(this OrganizationMember member)
+    {
+        if (member.User == null)
+        {
+            throw new InvalidOperationException("User is null");
+        }
+
+        if (member.Organization == null)
+        {
+            throw new InvalidOperationException("Organization is null");
+        }
+        
+        return ToDto(member.User, member.Organization);
     }
 }
